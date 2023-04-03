@@ -8,9 +8,9 @@ class TodoList{
 
     #verifyTime(time){
         try {
-            this.time = new Date(time).toISOString();
+            this.time = new Date(time).toUTCString();
 
-            if ( this.time <= new Date().toISOString() ){
+            if ( this.time <= new Date().toUTCString() ){
                 throw Error("Date_Error");
             }
             else{
@@ -22,11 +22,11 @@ class TodoList{
     }
 
     addTask(taskName, deadline){
-        this.deadline = this.#verifyTime(deadline);
-        let createTime = new Date().toISOString();
+        this.deadline = new Date(deadline).toLocaleString();
+        let createTime = new Date().toLocaleString();
         let id = Math.max.apply(Math, this.#TodoListArr);
-        
-        // console.log( new Date(createTime).toISOString() >= new Date(deadline).toISOString());
+        console.log(this.deadline, createTime);
+        console.log( Date.parse(createTime) ,Date.parse(this.deadline));
 
         let Task = {id: id, name: taskName, time: createTime, deadline: deadline}
 

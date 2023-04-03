@@ -10,20 +10,6 @@ class TaskItem{
         return this.#buildItem(id, this.taskName, this.deadline)
     }
 
-    // #verifyTime(time){
-    //     try {
-    //         this.time = convertDateToUTC(new Date(time));
-
-    //         if ( this.time <= this.now ){
-    //             throw Error("Date_Error");
-    //         }
-
-    //         return this.time;
-    //     } catch (error) {
-    //         console.log(error.message);
-    //     }
-    // }
-
     #buildItem(id, Name, deadline){
         const taskConteiner = document.createElement("div");
         const taskOptions = document.createElement("div");
