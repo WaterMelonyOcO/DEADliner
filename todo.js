@@ -24,7 +24,9 @@ class TodoList{
     addTask(taskName, deadline){
         this.deadline = new Date(deadline).toLocaleString();
         let createTime = new Date().toLocaleString();
-        let id = Math.max.apply(Math, this.#TodoListArr);
+        
+        let id = this.#TodoListArr.length + 1;
+        
         console.log(this.deadline, createTime);
         console.log( Date.parse(createTime) ,Date.parse(this.deadline));
 
