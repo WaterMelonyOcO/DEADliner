@@ -5,6 +5,10 @@ class TodoList{
     
     constructor(){
         this.exempleDate = luxon.DateTime
+
+        setInterval(()=>{
+            this.#TodoListArr.forEach((i)=>this.#checkDEAD(i.deadline))
+        }, 30000)
     }
 
     addTask(taskName, deadline){
@@ -53,7 +57,8 @@ class TodoList{
 
     #timeFormat(time){
         this.time = new Date(time).toISOString();
-        return luxon.DateTime.fromISO(time).toFormat("yyyy-mm-dd HH:mm");
+        // console.log(this.time);
+        return luxon.DateTime.fromISO(this.time).toFormat("yyyy-MM-dd HH:mm");
     }
 
     #verifyTime(time){
@@ -63,12 +68,21 @@ class TodoList{
 
         // console.log(this.dTime, this.cTime);
 
-        // if ( this.dTime <= this.cTime ){
-        //     throw Error("Date_Error");
-        // }
-        // else{
+        if ( this.dTime <= this.cTime ){
+            throw Error("Date_Error");
+        }
+        else{
             return [this.dTime, this.cTime];
-        // }
+        }
+    }
+
+    #checkDEAD(elem){
+        try {
+            const res = this.#verifyTime(elem)
+            // console.log("not now");
+        } catch (error) {
+            console.log("DEADEADEADEAD");
+        }
     }
 }
 
