@@ -18,9 +18,11 @@ class TaskItem{
         taskConteiner.id = id;
         taskOptions.className = "taskOptions";
 
-        const taskName = document.createElement("h2");
+        const taskName = document.createElement("input");
         taskName.className = "taskName";
-        taskName.textContent = Name;
+        taskName.value = Name.length !== 0 ? Name : "no_name";
+        taskName.dataset.taskName = taskName.value;
+        taskName.addEventListener("input", chNameListener)
 
         const taskDeadline = document.createElement("p");
         taskDeadline.className = "taskDeadline";
@@ -29,8 +31,14 @@ class TaskItem{
         const editButton = document.createElement("button")
         const delButton = document.createElement("button")
 
-        editButton.className = "optionsBtn";
-        delButton.className = "optionsBtn";
+        editButton.classList = "optionsBtn editBtn";
+        editButton.addEventListener("click", editTask)
+        editButton.disabled = true;
+        editButton.textContent = "edit"
+
+        delButton.classList = "optionsBtn deleteBtn";
+        delButton.textContent = "delete";
+        delButton.addEventListener("click", deleteTask)
 
         taskOptions.append(editButton, delButton);
         taskConteiner.append(taskName, taskDeadline, taskOptions);

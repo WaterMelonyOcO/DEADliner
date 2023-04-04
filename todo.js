@@ -34,14 +34,21 @@ class TodoList{
 
     editTask(id, taskName){
         this.taskName = taskName;
-        let TaskIndex = this.#TodoListArr.findIndex((i) => i.id === id);
+        let TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
+        
+        // console.log(TaskIndex);
+        if ( TaskIndex < 0 ) {throw new Error("NO_ELEMENT")}
 
         this.#TodoListArr[TaskIndex].name = this.taskName;
+        console.log(this.#TodoListArr);
     }
 
     deleteTask(id){
-        let TaskIndex = this.#TodoListArr.findIndex((i) => i.id === id);
+        let TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
+        if ( TaskIndex < 0 ){ throw new Error("NO_ELEMENT_TO_REMOVE") }
         this.#TodoListArr.splice(TaskIndex, 1);
+        console.log(this.#TodoListArr);
+        return true;
     }
 
     #timeFormat(time){
@@ -54,14 +61,14 @@ class TodoList{
         this.dTime = this.#timeFormat(time);
         this.cTime = this.#timeFormat(new Date().toISOString());
 
-        console.log(this.dTime, this.cTime);
+        // console.log(this.dTime, this.cTime);
 
-        if ( this.dTime <= this.cTime ){
-            throw Error("Date_Error");
-        }
-        else{
+        // if ( this.dTime <= this.cTime ){
+        //     throw Error("Date_Error");
+        // }
+        // else{
             return [this.dTime, this.cTime];
-        }
+        // }
     }
 }
 
