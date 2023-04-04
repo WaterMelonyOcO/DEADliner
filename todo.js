@@ -1,36 +1,27 @@
+const luxon = require("luxon")
 
 class TodoList{
     #TodoListArr = [];
     
     constructor(){
-        
-    }
-
-    #verifyTime(time){
-        try {
-            this.time = new Date(time).toUTCString();
-
-            if ( this.time <= new Date().toUTCString() ){
-                throw Error("Date_Error");
-            }
-            else{
-                return this.time;
-            }
-        } catch (error) {
-            console.log(error.message);
-        }
+        this.exempleDate = luxon.DateTime
     }
 
     addTask(taskName, deadline){
-        this.deadline = new Date(deadline).toLocaleString();
-        let createTime = new Date().toLocaleString();
         
+        try{
+            [this.deadline, this.cTime] = this.#verifyTime(deadline)
+        }
+        catch(err){
+            console.log(err.message);
+            return false;
+        }
+
         let id = this.#TodoListArr.length + 1;
         
-        console.log(this.deadline, createTime);
-        console.log( Date.parse(createTime) ,Date.parse(this.deadline));
+        // console.log(this.deadline, createTime);
 
-        let Task = {id: id, name: taskName, time: createTime, deadline: deadline}
+        let Task = {id: id, name: taskName, time: this.cTime, deadline: this.deadline}
 
         this.#TodoListArr.push(Task);
         console.log(this.#TodoListArr);
@@ -51,6 +42,26 @@ class TodoList{
     deleteTask(id){
         let TaskIndex = this.#TodoListArr.findIndex((i) => i.id === id);
         this.#TodoListArr.splice(TaskIndex, 1);
+    }
+
+    #timeFormat(time){
+        this.time = new Date(time).toISOString();
+        return luxon.DateTime.fromISO(time).toFormat("yyyy-mm-dd HH:mm");
+    }
+
+    #verifyTime(time){
+        
+        this.dTime = this.#timeFormat(time);
+        this.cTime = this.#timeFormat(new Date().toISOString());
+
+        console.log(this.dTime, this.cTime);
+
+        if ( this.dTime <= this.cTime ){
+            throw Error("Date_Error");
+        }
+        else{
+            return [this.dTime, this.cTime];
+        }
     }
 }
 

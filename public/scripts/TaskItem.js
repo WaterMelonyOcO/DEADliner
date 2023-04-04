@@ -20,7 +20,7 @@ class TaskItem{
 
         const taskName = document.createElement("h2");
         taskName.className = "taskName";
-        taskName.textcontent = Name;
+        taskName.textContent = Name;
 
         const taskDeadline = document.createElement("p");
         taskDeadline.className = "taskDeadline";

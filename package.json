@@ -10,9 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron": "^23.2.1"
+    "electron": "^23.2.1",
+    "luxon": "^3.3.0"
   },
   "devDependencies": {
-    "@electron/build-tools": "^1.1.0"
+    "@electron/build-tools": "^1.1.0",
+    "nodemon": "^2.0.22"
   }
 }
