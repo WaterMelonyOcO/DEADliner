@@ -16,6 +16,13 @@ function addTask() {
   time.value = "";
 }
 
+function getTasks(){
+  for ( let i of todo.get() ){
+    console.log(i);
+    content.appendChild(new TaskItem(i.id, i.name, i.deadline))
+  }
+}
+
 function editTask(e){
 
   const taskConteiner = e.target.parentNode.parentNode;
@@ -56,3 +63,5 @@ function chNameListener(e){
 }
 
 addBtn.addEventListener("click", addTask);
+
+getTasks()

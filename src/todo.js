@@ -1,13 +1,35 @@
 const luxon = require("luxon")
+const {writeFile, readFile, existsSync, mkdirSync} = require("fs");
+const {join, resolve} = require('path');
+const os = require("os")
 
 class TodoList{
     #TodoListArr = [];
+    #homeDir = join(os.homedir(), "/.config/deadliner");
     
     constructor(){
-        this.exempleDate = luxon.DateTime
+        try {
+            if ( !existsSync(this.#homeDir) ){ 
+                mkdirSync(this.#homeDir)
+                this.#homeDir = join(this.#homeDir, '/db.json');
+                writeFile(this.#homeDir, JSON.stringify([]), (err)=>false);
+                console.log(this.#homeDir);
+            }
 
+            this.exempleDate = luxon.DateTime;
+
+            readFile(this.#homeDir,(err, data)=>{
+                this.#TodoListArr =  JSON.parse(data)
+            });
+        } catch (error) {
+            console.log(error.message);
+            return false;
+        }
+        console.log(this.#TodoListArr);
         setInterval(()=>{
-            this.#TodoListArr.forEach((i)=>this.#checkDEAD(i.deadline))
+            this.#TodoListArr.forEach((i)=>this.#checkDEAD(i.deadline));
+            // if ( !this.#checkDBComplited() ) writeFileSync(this.#homeDir, JSON.stringify(this.#TodoListArr));
+            console.log("checked time");
         }, 30000)
     }
 
@@ -25,9 +47,11 @@ class TodoList{
         
         // console.log(this.deadline, createTime);
 
-        let Task = {id: id, name: taskName, time: this.cTime, deadline: this.deadline}
+        let Task = {id: id, name: taskName, deadline: this.deadline, time: this.cTime}
 
         this.#TodoListArr.push(Task);
+        writeFile(this.#homeDir, JSON.stringify(this.#TodoListArr), (err)=>{if (err) console.log(err.message, "write error");});
+        
         console.log(this.#TodoListArr);
         return id;
     }
@@ -44,13 +68,18 @@ class TodoList{
         if ( TaskIndex < 0 ) {throw new Error("NO_ELEMENT")}
 
         this.#TodoListArr[TaskIndex].name = this.taskName;
+        writeFile(this.#homeDir, JSON.stringify(this.#TodoListArr), (err)=>{if (err) console.log(err.message, "write error");});
         console.log(this.#TodoListArr);
     }
 
     deleteTask(id){
         let TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
+        
         if ( TaskIndex < 0 ){ throw new Error("NO_ELEMENT_TO_REMOVE") }
+        
         this.#TodoListArr.splice(TaskIndex, 1);
+        writeFile(this.#homeDir, JSON.stringify(this.#TodoListArr), (err)=>{if (err) console.log(err.message, "write error");});
+        
         console.log(this.#TodoListArr);
         return true;
     }
@@ -84,6 +113,12 @@ class TodoList{
             console.log("DEADEADEADEAD");
         }
     }
+
+    // #checkDBComplited(){
+    //     const db_data = readFile(this.#homeDir, (err, data));
+    //     if ( JSON.stringify(this.#TodoListArr) === db_data ) return true;
+    //     return false;
+    // }
 }
 
 module.exports.TL = new TodoList()
