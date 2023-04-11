@@ -1,5 +1,6 @@
-const { contextBridge } = require("electron")
-const { TL } = require("./todo")
+const { contextBridge } = require("electron");
+const { TL } = require("./todo");
+
 
 contextBridge.exposeInMainWorld("todo", {
     add: (task, deadline) => TL.addTask(task, deadline),

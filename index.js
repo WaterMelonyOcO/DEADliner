@@ -1,7 +1,18 @@
-const { app, BrowserWindow } = require("electron");
-const path = require("path");
+const { app, BrowserWindow, Menu, dialog, ipcMain } = require("electron");
+const { writeFile, existsSync, mkdirSync } = require("fs");
+const path = require('path');
+const os = require("os");
+const { TL } = require("./src/todo")
 
 class MainWindow extends BrowserWindow {
+  //пути к файлам
+  #homeDir = path.join(os.homedir(), "/.config/deadliner");
+  #db_path = path.join(this.#homeDir, "/db.json");
+  #config_path = path.join(this.#homeDir, "/config.json");
+  //окно с вопросом об
+  //удалении приложения или системы
+
+  //создаю основное окно
   constructor(w, h) {
     super({
       width: w,
@@ -9,13 +20,58 @@ class MainWindow extends BrowserWindow {
       webPreferences: {
         nodeIntegration: true,
         preload: path.join(__dirname, "src/preload.js"),
-      },
+        webSecurity: false,
+        devTools: true,
+      }
     });
 
-    this.loadFile(path.join(__dirname, "public/index.html"));
+    //проверяю есть ли конфиги
+    if (!existsSync(this.#homeDir)) {
+      mkdirSync(this.#homeDir)
+
+      console.log(this.#homeDir, this.#db_path, this.#config_path);
+    }
+    //функции проверки существования "базы данных" и конфигов
+    this.#databaseCheck();
+    this.#babyCheck();
+
+    //убираю ненужные менюшки
+    // this.setMenu();
+
+    TL.evn.on("DOOMDAY", function () {
+      dialog.showErrorBox("YOU ARE FUCKED THIS", "FACK YOU");
+      console.log("delite data");
+    })
+
+    this.loadFile(path.join(__dirname, "public/index.html"));//основная страница
+
   }
 
+  #babyCheck() {
+    if (!existsSync(this.#config_path)) {
+      let code = dialog.showMessageBoxSync(this, {
+        message: "u are fucked?",
+        buttons: ["no", "yes"],
+        type: "question"
+      })
+      if (code) {
+        writeFile(this.#config_path, JSON.stringify({ option: { "isBaby": false } }), (err) => false);
+        return false;
+      }
+      else {
+        writeFile(this.#config_path, JSON.stringify({ option: { "isBaby": true } }), (err) => false);
+        console.log("config exist");
+        return true;
+      }
+    }
+  }
+
+  #databaseCheck() {
+    if (!existsSync(this.#db_path)) writeFile(this.#db_path, JSON.stringify([]), (err) => false);
+  }
 }
+
+
 
 app.whenReady().then(() => {
   new MainWindow(800, 600);

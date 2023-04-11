@@ -1,20 +1,20 @@
 const luxon = require("luxon")
-const {writeFile, readFile, existsSync, mkdirSync, readFileSync} = require("fs");
-const {join, resolve} = require('path');
-const os = require("os")
+const {writeFile, readFileSync} = require("fs");
+const {join} = require('path');
+const os = require("os");
+const EventEmitter = require("events");
 
 class TodoList{
     #TodoListArr = [];
     #homeDir = join(os.homedir(), "/.config/deadliner");
-    #db_path = join(this.#homeDir, "/db.json")
+    #db_path = join(this.#homeDir, "/db.json");
+    evn = new EventEmitter();
     
     constructor(){
+
+        //кое как костылём сделал слушатель для вызова DEAD события
+
         try {
-            if ( !existsSync(this.#homeDir) ){ 
-                mkdirSync(this.#homeDir)
-                writeFile(this.#db_path, JSON.stringify([]), (err)=>false);
-                console.log(this.#homeDir, this.#db_path);
-            }
 
             this.exempleDate = luxon.DateTime;
             // console.log(this.#TodoListArr);
@@ -27,12 +27,12 @@ class TodoList{
             console.log(error.message);
             return false;
         }
-        // console.log(this.#TodoListArr);
+
+        this.#TodoListArr.forEach((i)=>this.#checkDEAD(i.deadline));
         setInterval(()=>{
             this.#TodoListArr.forEach((i)=>this.#checkDEAD(i.deadline));
-            // if ( !this.#checkDBComplited() ) writeFileSync(this.#homeDir, JSON.stringify(this.#TodoListArr));
             console.log("checked time");
-        }, 30000)
+        }, 10000)
     }
 
     addTask(taskName, deadline){
@@ -109,18 +109,12 @@ class TodoList{
 
     #checkDEAD(elem){
         try {
-            const res = this.#verifyTime(elem)
-            // console.log("not now");
+            const res = this.#verifyTime(elem);
+            return true;
         } catch (error) {
-            console.log("DEADEADEADEAD");
+            this.evn.emit("DOOMDAY")
         }
     }
-
-    // #checkDBComplited(){
-    //     const db_data = readFile(this.#homeDir, (err, data));
-    //     if ( JSON.stringify(this.#TodoListArr) === db_data ) return true;
-    //     return false;
-    // }
 }
 
 module.exports.TL = new TodoList()
