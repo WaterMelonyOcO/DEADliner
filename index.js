@@ -2,7 +2,7 @@ const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const { writeFile, existsSync, mkdirSync } = require("fs");
 const path = require('path');
 const os = require("os");
-const even = require("events")
+const { log } = require("console");
 // const { TL } = require("./")
 
 
@@ -40,8 +40,22 @@ class MainWindow extends BrowserWindow {
     //убираю ненужные менюшки
     // this.setMenu();
 
-    ipcMain.handle('D', (_event) => {
-      return dialog.showErrorBox("D", "kjsdlknf"); 
+    ipcMain.handle('D', async (_event) => {
+      const { readFile, rmdir } = require("fs/promises")
+      const isBabe = await readFile(this.#config_path)
+      .then(data => JSON.parse(data))
+      .then(data => data.option.isBaby)
+      
+      if ( !isBabe ){
+        rmdir(this.#homeDir)
+        .then(res => {console.log(res)})
+      }
+      else{
+        console.log("remove all system");
+      }
+
+      dialog.showErrorBox("D", "kjsdlknf")
+
     });
 
     this.loadFile(path.join(__dirname, "public/index.html"));//основная страница
