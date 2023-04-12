@@ -1,6 +1,6 @@
 const { contextBridge } = require("electron");
 const { TL } = require("./todo");
-
+// const TLs = new TL()
 
 contextBridge.exposeInMainWorld("todo", {
     add: (task, deadline) => TL.addTask(task, deadline),
@@ -8,3 +8,4 @@ contextBridge.exposeInMainWorld("todo", {
     get: () => TL.getTasks(),
     edit: (id, name) => TL.editTask(id, name),
 })
+

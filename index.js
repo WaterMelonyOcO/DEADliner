@@ -1,8 +1,10 @@
-const { app, BrowserWindow, Menu, dialog, ipcMain } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const { writeFile, existsSync, mkdirSync } = require("fs");
 const path = require('path');
 const os = require("os");
-const { TL } = require("./src/todo")
+const even = require("events")
+// const { TL } = require("./")
+
 
 class MainWindow extends BrowserWindow {
   //пути к файлам
@@ -38,10 +40,9 @@ class MainWindow extends BrowserWindow {
     //убираю ненужные менюшки
     // this.setMenu();
 
-    TL.evn.on("DOOMDAY", function () {
-      dialog.showErrorBox("YOU ARE FUCKED THIS", "FACK YOU");
-      console.log("delite data");
-    })
+    ipcMain.handle('D', (_event) => {
+      return dialog.showErrorBox("D", "kjsdlknf"); 
+    });
 
     this.loadFile(path.join(__dirname, "public/index.html"));//основная страница
 
