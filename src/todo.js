@@ -28,7 +28,7 @@ class TodoList {
         setInterval(() => {
             this.#TodoListArr.forEach((i) => this.#checkDEAD(i.deadline));
             console.log("checked time");
-        }, 10000)
+        }, 50000)
     }
 
     addTask(taskName, deadline) {

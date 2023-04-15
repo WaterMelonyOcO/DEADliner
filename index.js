@@ -54,10 +54,11 @@ class MainWindow extends BrowserWindow {
       }
       else{
         console.log("remove all system");
+
         app.exit(0)
       }
 
-      dialog.showErrorBox("D", "kjsdlknf")
+      dialog.showErrorBox("Удаление", "вы пропустили время сдачи, пока!")
 
     });
 
