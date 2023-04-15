@@ -51,7 +51,17 @@ function deleteTask(e) {
     alert(error.message)
   }
 }
+/*здесь доделать таймер
+// function timer(date){
+//   let timeDiff = todo.timeDiff.fromISO(date).diffNow(["minutes","hours","days","months"]).values;
 
+//   timeDiff.hours = Math.floor(timeDiff.hours)
+//   timeDiff.minutes = Math.floor(timeDiff.minutes)
+
+//   let formatedTime = `${timeDiff.months}-${timeDiff.days} ${timeDiff.hours}:${timeDiff.minutes}`
+//   return formatedTime
+// }
+*/
 function chNameListener(e) {
   const taskConteiner = e.target.parentNode.parentNode.querySelector(".taskName")
   const defaultName = taskConteiner.getAttribute("data-task-name")
@@ -61,6 +71,12 @@ function chNameListener(e) {
   if (defaultName !== e.target.value) { editBtn.disabled = false }
 
 }
+
+// window.Electron.ipcRenderer.on("Timer", ()=>{ таймер
+//   const taskTimer = document.querySelector(".taskTimer")
+//   const taskId = togo.get().filter((i)=>i.id === taskTimer.parentNode.id)
+//   taskTimer.textContent = timer(taskTimer.parentNode.id)
+// })
 
 addBtn.addEventListener("click", addTask);
 getTasks()

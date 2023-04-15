@@ -3,6 +3,7 @@ const { writeFile, readFileSync } = require("fs");
 const { join, resolve, normalize } = require('path');
 const os = require("os");
 const { ipcRenderer } = require("electron");
+const clock = require("date-events")
 
 class TodoList {
     #TodoListArr = [];
@@ -25,10 +26,10 @@ class TodoList {
         }
 
         this.#TodoListArr.forEach((i) => this.#checkDEAD(i.deadline));
-        setInterval(() => {
+        clock().on("*:*", ()=>{
             this.#TodoListArr.forEach((i) => this.#checkDEAD(i.deadline));
-            console.log("checked time");
-        }, 50000)
+            // ipcRenderer.invoke("Timer")
+        })
     }
 
     addTask(taskName, deadline) {
@@ -37,7 +38,7 @@ class TodoList {
             [this.deadline, this.cTime] = this.#verifyTime(deadline)
         }
         catch (err) {
-            console.log(err.message);
+            console.log(err);
             return false;
         }
 
@@ -89,7 +90,7 @@ class TodoList {
     }
 
     #verifyTime(time) {
-
+        console.log(time);
         this.dTime = this.#timeFormat(time);
         this.cTime = this.#timeFormat(new Date().toISOString());
 
@@ -105,7 +106,8 @@ class TodoList {
 
     #checkDEAD(elem) {
         try {
-            const res = this.#verifyTime(elem);
+            let trach = this.#verifyTime(elem);
+            console.log("checked time");
         } catch (error) {
             console.log("DOOOM");
             ipcRenderer.invoke("DOOMDAY")

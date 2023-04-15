@@ -2,10 +2,12 @@
 class TaskItem{
 
     constructor(id, name, deadline) {
-        this.now = new Date();
-
-        this.taskName = name;
-        this.deadline = deadline;
+        
+        let [dt, tm] = deadline.split(" ")//форматирую время в более удобный вид
+        dt = dt.split("-").reverse().join("-")//
+     
+        this.taskName = name;//
+        this.deadline = dt+" "+tm;//
 
         return this.#buildItem(id, this.taskName, this.deadline)
     }
@@ -28,6 +30,9 @@ class TaskItem{
         taskDeadline.className = "taskDeadline";
         taskDeadline.textContent = deadline;
 
+        let taskTimer = document.createElement('p');
+        taskTimer.className = "taskTimer";
+
         const editButton = document.createElement("button")
         const delButton = document.createElement("button")
 
@@ -41,8 +46,9 @@ class TaskItem{
         delButton.addEventListener("click", deleteTask)
 
         taskOptions.append(editButton, delButton);
-        taskConteiner.append(taskName, taskDeadline, taskOptions);
+        taskConteiner.append(taskName, taskDeadline, taskTimer, taskOptions);
 
         return taskConteiner;
     }
+
 }

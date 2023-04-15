@@ -9,8 +9,6 @@ class MainWindow extends BrowserWindow {
   #homeDir = path.join(os.homedir(), "/.config/deadliner");
   #db_path = path.join(this.#homeDir, "/db.json");
   #config_path = path.join(this.#homeDir, "/config.json");
-  //окно с вопросом об
-  //удалении приложения или системы
 
   //создаю основное окно
   constructor(w, h) {
@@ -27,36 +25,39 @@ class MainWindow extends BrowserWindow {
 
     //проверяю есть ли конфиги
     if (!existsSync(this.#homeDir)) {
-      mkdirSync(this.#homeDir)
+      mkdirSync(this.#homeDir)//если нету конфигов, то создаю папку
 
       console.log(this.#homeDir, this.#db_path, this.#config_path);
     }
+    
     //функции проверки существования "базы данных" и конфигов
-    this.#databaseCheck();
-    this.#babyCheck();
+    this.#databaseCheck();//проверка на существование бд
+    this.#confCheck();//проверка на существование конфигов
 
-    //убираю ненужные менюшки
-    // this.setMenu();
 
+    //создаю событие при натсуплении которого будет происходить удаление
     ipcMain.handle('DOOMDAY', async (_event) => {
       const { readFile, rm } = require("fs/promises")
       const isBabe = await readFile(this.#config_path)
       .then(data => JSON.parse(data))
       .then(data => data.option.isBaby)
-      
-      if ( !isBabe ){
-        rm(this.#homeDir, {recursive:true, force: true})
+      /*
+      if ( !isBabe ){//если false то удаляются только задния
+        rm(this.#db_path, {force: true})
         .then(res => {
           console.log(res); 
-          console.log("delete home folder");
+          console.log("delete tasks");
           app.exit(0)
         })
       }
       else{
-        console.log("remove all system");
-
-        app.exit(0)
-      }
+        rm(this.#homeDir, {recursive: true,force: true})
+        .then(res => {
+          // console.log(res); 
+          console.log("remove all folder");
+          app.exit(0)
+        })
+      }*/
 
       dialog.showErrorBox("Удаление", "вы пропустили время сдачи, пока!")
 
@@ -66,14 +67,14 @@ class MainWindow extends BrowserWindow {
 
   }
 
-  #babyCheck() {
-    if (!existsSync(this.#config_path)) {
-      let code = dialog.showMessageBoxSync(this, {
+  #confCheck() {
+    if (!existsSync(this.#config_path)) {//если конфигов нету
+      let code = dialog.showMessageBoxSync(this, {//вопрос на удаление всей системы или только бд
         message: "u are fucked?",
         buttons: ["no", "yes"],
         type: "question"
       })
-      if (code) {
+      if (code) {//если выбор был "yes", то удаляется только бд
         writeFile(this.#config_path, JSON.stringify({ option: { "isBaby": false } }), (err) => false);
         return false;
       }
@@ -85,7 +86,7 @@ class MainWindow extends BrowserWindow {
     }
   }
 
-  #databaseCheck() {
+  #databaseCheck() {//просто проверка существования файла бд
     if (!existsSync(this.#db_path)) writeFile(this.#db_path, JSON.stringify([]), (err) => {console.log(err);});
   }
 }
@@ -94,6 +95,9 @@ class MainWindow extends BrowserWindow {
 
 app.whenReady().then(() => {
   new MainWindow(800, 600);
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
 });
 
 app.on("window-all-closed", () => {
