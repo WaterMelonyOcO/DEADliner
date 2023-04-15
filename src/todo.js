@@ -108,7 +108,7 @@ class TodoList {
             const res = this.#verifyTime(elem);
         } catch (error) {
             console.log("DOOOM");
-            ipcRenderer.invoke("D")
+            ipcRenderer.invoke("DOOMDAY")
         }
     }
 }
