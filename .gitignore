@@ -2,3 +2,5 @@ node_modules
 out
 test
 build
+dist
+yarn.lock

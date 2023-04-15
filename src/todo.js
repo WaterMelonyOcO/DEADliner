@@ -1,13 +1,13 @@
 const luxon = require("luxon")
 const { writeFile, readFileSync } = require("fs");
-const { join } = require('path');
+const { join, resolve, normalize } = require('path');
 const os = require("os");
 const { ipcRenderer } = require("electron");
 
 class TodoList {
     #TodoListArr = [];
-    #homeDir = join(os.homedir(), "/.config/deadliner");
-    #db_path = join(this.#homeDir, "/db.json");
+    #homeDir = resolve(os.homedir(), ".config","deadliner");
+    #db_path = normalize(`${this.#homeDir}/db.json`);
 
     constructor() {
 
