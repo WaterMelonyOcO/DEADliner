@@ -7,7 +7,7 @@ const clock = require("date-events")
 
 class TodoList {
     #TodoListArr = [];
-    #homeDir = resolve(os.homedir(), ".config","deadliner");
+    #homeDir = resolve(os.homedir(), ".config", "deadliner");
     #db_path = normalize(`${this.#homeDir}/db.json`);
 
     constructor() {
@@ -26,9 +26,8 @@ class TodoList {
         }
 
         this.#TodoListArr.forEach((i) => this.#checkDEAD(i.deadline));
-        clock().on("*:*", ()=>{
+        clock().on("*:*", () => {
             this.#TodoListArr.forEach((i) => this.#checkDEAD(i.deadline));
-            // ipcRenderer.invoke("Timer")
         })
     }
 
@@ -39,6 +38,18 @@ class TodoList {
         }
         catch (err) {
             console.log(err);
+            if (err.name === "TypeError") {
+                ipcRenderer.invoke("dataErr", "TypeError");
+                return;
+            }
+            else if ( err.name === "RangeError" ){
+                ipcRenderer.invoke("dataErr");
+                return;
+            }
+            else if ( err.message === "Date_Error" ){
+                ipcRenderer.invoke("dataErr");
+                return;
+            }
             return false;
         }
 
@@ -93,7 +104,6 @@ class TodoList {
         console.log(time);
         this.dTime = this.#timeFormat(time);
         this.cTime = this.#timeFormat(new Date().toISOString());
-
         // console.log(this.dTime, this.cTime);
 
         if (this.dTime <= this.cTime) {
@@ -103,6 +113,7 @@ class TodoList {
             return [this.dTime, this.cTime];
         }
     }
+
 
     #checkDEAD(elem) {
         try {

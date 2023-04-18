@@ -1,7 +1,8 @@
 const { app, BrowserWindow, dialog, ipcMain } = require("electron");
-const { writeFile, existsSync, mkdirSync} = require("fs");
+const { writeFile, existsSync, mkdirSync } = require("fs");
 const path = require('path');
 const os = require("os");
+const { DOOMDAY, invalidDate } = require("./src/handlers");
 
 
 class MainWindow extends BrowserWindow {
@@ -29,44 +30,21 @@ class MainWindow extends BrowserWindow {
 
       console.log(this.#homeDir, this.#db_path, this.#config_path);
     }
-    
+
     //функции проверки существования "базы данных" и конфигов
     this.#databaseCheck();//проверка на существование бд
     this.#confCheck();//проверка на существование конфигов
 
 
     //создаю событие при натсуплении которого будет происходить удаление
-    ipcMain.handle('DOOMDAY', async (_event) => {
-      const { readFile, rm } = require("fs/promises")
-      const isBabe = await readFile(this.#config_path)
-      .then(data => JSON.parse(data))
-      .then(data => data.option.isBaby)
-      /*
-      if ( !isBabe ){//если false то удаляются только задния
-        rm(this.#db_path, {force: true})
-        .then(res => {
-          console.log(res); 
-          console.log("delete tasks");
-          app.exit(0)
-        })
-      }
-      else{
-        rm(this.#homeDir, {recursive: true,force: true})
-        .then(res => {
-          // console.log(res); 
-          console.log("remove all folder");
-          app.exit(0)
-        })
-      }*/
-
-      dialog.showErrorBox("Удаление", "вы пропустили время сдачи, пока!")
-
-    });
+    ipcMain.handle('DOOMDAY', (_event)=>DOOMDAY(this.#config_path));
+    ipcMain.handle('dataErr', (_event)=>invalidDate());
 
     this.loadFile(path.join(__dirname, "public/index.html"));//основная страница
 
   }
 
+  
   #confCheck() {
     if (!existsSync(this.#config_path)) {//если конфигов нету
       let code = dialog.showMessageBoxSync(this, {//вопрос на удаление всей системы или только бд
@@ -87,7 +65,7 @@ class MainWindow extends BrowserWindow {
   }
 
   #databaseCheck() {//просто проверка существования файла бд
-    if (!existsSync(this.#db_path)) writeFile(this.#db_path, JSON.stringify([]), (err) => {console.log(err);});
+    if (!existsSync(this.#db_path)) writeFile(this.#db_path, JSON.stringify([]), (err) => { console.log(err); });
   }
 }
 
