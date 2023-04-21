@@ -1,7 +1,7 @@
 const { dialog } = require("electron");
 
 
-async function DOOMDAY( confg, db=null ) {
+async function DOOMDAY(confg, db = null) {
     const { readFile, rm } = require("fs/promises")
     const isBabe = await readFile(confg)
         .then(data => JSON.parse(data))
@@ -28,10 +28,19 @@ async function DOOMDAY( confg, db=null ) {
 
 }
 
-function invalidDate(arg=null){
+function rewriteFile() {
+    let chooses = dialog.showMessageBoxSync(null, {
+        title: "rewrite data",
+        message: "файл с таким именем уже существует.\n Перезаписать существующий файл?",
+        buttons: ['нет', 'да']
+    })
+    return chooses;
+}
+
+function invalidDate(arg = null) {
     dialog.showErrorBox("Неправильное время", "Вы ввели неправильно время.\n пожалуйста введите корректную дату и время")
     console.log(arg);
 }
 
 
-module.exports = { DOOMDAY, invalidDate };
+module.exports = { DOOMDAY, invalidDate, rewriteFile };

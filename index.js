@@ -1,15 +1,14 @@
 const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const { writeFile, existsSync, mkdirSync } = require("fs");
-const path = require('path');
-const os = require("os");
-const { DOOMDAY, invalidDate } = require("./src/handlers");
+const { DOOMDAY, invalidDate, rewriteFile } = require("./src/handlers");
+const { mkdir } = require("fs/promises");
+const { paths } = require("./src/paths");
+const { resolve } = require("path");
+const { platform } = require("os");
 
 
 class MainWindow extends BrowserWindow {
-  //пути к файлам
-  #homeDir = path.join(os.homedir(), "/.config/deadliner");
-  #db_path = path.join(this.#homeDir, "/db.json");
-  #config_path = path.join(this.#homeDir, "/config.json");
+
 
   //создаю основное окно
   constructor(w, h) {
@@ -18,54 +17,64 @@ class MainWindow extends BrowserWindow {
       height: h,
       webPreferences: {
         nodeIntegration: true,
-        preload: path.join(__dirname, "src/preload.js"),
+        preload: resolve(__dirname, "src","preload.js"),
         webSecurity: false,
         devTools: true,
       }
     });
 
+    console.log(paths.homeDir);
     //проверяю есть ли конфиги
-    if (!existsSync(this.#homeDir)) {
-      mkdirSync(this.#homeDir)//если нету конфигов, то создаю папку
+    if (!existsSync(paths.homeDir)) {
+      mkdirSync(paths.homeDir, {recursive: true})//если нету конфигов, то создаю папку
 
-      console.log(this.#homeDir, this.#db_path, this.#config_path);
+      console.log(paths.homeDir, paths.db_path, paths.config_path);
     }
 
     //функции проверки существования "базы данных" и конфигов
     this.#databaseCheck();//проверка на существование бд
     this.#confCheck();//проверка на существование конфигов
-
+    this.#filesFolderCheck();
 
     //создаю событие при натсуплении которого будет происходить удаление
-    ipcMain.handle('DOOMDAY', (_event)=>DOOMDAY(this.#config_path));
+    ipcMain.handle('DOOMDAY', (_event)=>DOOMDAY(paths.config_path));
     ipcMain.handle('dataErr', (_event)=>invalidDate());
+    ipcMain.handle("rewriteError", (_event)=>rewriteFile());
 
-    this.loadFile(path.join(__dirname, "public/index.html"));//основная страница
+    this.loadFile(resolve(__dirname, "public","index.html"));//основная страница
 
   }
 
   
   #confCheck() {
-    if (!existsSync(this.#config_path)) {//если конфигов нету
+    if (!existsSync(paths.config_path)) {//если конфигов нету
       let code = dialog.showMessageBoxSync(this, {//вопрос на удаление всей системы или только бд
         message: "u are fucked?",
         buttons: ["no", "yes"],
         type: "question"
       })
       if (code) {//если выбор был "yes", то удаляется только бд
-        writeFile(this.#config_path, JSON.stringify({ option: { "isBaby": false } }), (err) => false);
+        writeFile(paths.config_path, JSON.stringify({ option: { "isBaby": false } }), (err) => false);
         return false;
       }
       else {
-        writeFile(this.#config_path, JSON.stringify({ option: { "isBaby": true } }), (err) => false);
+        writeFile(paths.config_path, JSON.stringify({ option: { "isBaby": true } }), (err) => false);
         console.log("config exist");
         return true;
       }
     }
   }
 
+  #filesFolderCheck(){
+    if (!existsSync(paths.filesFolder)){
+      mkdir(paths.filesFolder)
+      .then(data => {console.log("files folder not exist. create....", data);})
+      .catch((err)=>{console.log("error on create files folder\n"+err);})
+    }
+  }
+
   #databaseCheck() {//просто проверка существования файла бд
-    if (!existsSync(this.#db_path)) writeFile(this.#db_path, JSON.stringify([]), (err) => { console.log(err); });
+    if (!existsSync(paths.db_path)) writeFile(paths.db_path, JSON.stringify([]), (err) => { console.log(err); });
   }
 }
 
