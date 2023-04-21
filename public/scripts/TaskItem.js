@@ -5,11 +5,12 @@ class TaskItem{
         
         let [dt, tm] = deadline.split(" ")//форматирую время в более удобный вид
         dt = dt.split("-").reverse().join("-")//
-     
+        
         this.taskName = name;//
         this.deadline = dt+" "+tm;//
         this.files = files;
         console.log(this.files);
+
         return this.#buildItem(id, this.taskName, this.deadline, this.files)
     }
 

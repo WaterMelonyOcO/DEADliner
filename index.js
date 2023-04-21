@@ -37,7 +37,7 @@ class MainWindow extends BrowserWindow {
     this.#filesFolderCheck();
 
     //создаю событие при натсуплении которого будет происходить удаление
-    ipcMain.handle('DOOMDAY', (_event)=>Handlers.DOOMDAY(paths.config_path));
+    ipcMain.handle('DOOMDAY', (_event)=>Handlers.DOOMDAY(paths.config_path, null, app, this));
     ipcMain.handle('dataErr', (_event)=>Handlers.invalidDate());
     ipcMain.handle("rewriteError", (_event)=>Handlers.rewriteFile());
 

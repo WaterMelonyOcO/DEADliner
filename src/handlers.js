@@ -3,18 +3,22 @@ const { db_path, homeDir } = require("./paths").paths;
 
 class Handlers {
 
-    async DOOMDAY(confg, db = null) {//событие удаления всего
-        const { readFile, rm } = require("fs/promises")
+    async DOOMDAY(confg, db = null, app, windw) {//событие удаления всего
+        const { readFile, rm, writeFile } = require("fs/promises")
+        // const defaultConfig = {};
+        const defaultDB = JSON.stringify([]);
         const isBabe = await readFile(confg)
             .then(data => JSON.parse(data))
             .then(data => data.option.isBaby)
-        /*
+        
         if ( !isBabe ){//если false то удаляются только задния
-            rm( db_path, {force: true})
+            
+            writeFile( db_path, defaultDB,{force: true})
             .then(res => {
             console.log(res); 
             console.log("delete tasks");
-            app.exit(0)
+            windw.reload();
+            // app.exit(0)
             })
         }
         else{
@@ -24,7 +28,7 @@ class Handlers {
             console.log("remove all folder");
             app.exit(0)
             })
-        }*/
+        }
 
         dialog.showErrorBox("Удаление", "вы пропустили время сдачи, пока!")
 

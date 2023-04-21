@@ -1,4 +1,4 @@
-const { contextBridge } = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
 const { TL } = require("./todo");
 const { DateTime } = require("luxon")
 // const TLs = new TL()
@@ -11,6 +11,6 @@ contextBridge.exposeInMainWorld("todo", {
     edit: (id, name) => TL.editTask(id, name),
     removeFile: (name) => TL.removeTaskFile(name),
     timeDiff: DateTime,
-    openFile: (file) => TL.openFile(file)
+    openFile: (file) => TL.openFile(file),
 })
 
