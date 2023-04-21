@@ -1,6 +1,6 @@
 const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const { writeFile, existsSync, mkdirSync } = require("fs");
-const { DOOMDAY, invalidDate, rewriteFile } = require("./src/handlers");
+const Handlers  = require("./src/handlers");
 const { mkdir } = require("fs/promises");
 const { paths } = require("./src/paths");
 const { resolve } = require("path");
@@ -37,9 +37,9 @@ class MainWindow extends BrowserWindow {
     this.#filesFolderCheck();
 
     //создаю событие при натсуплении которого будет происходить удаление
-    ipcMain.handle('DOOMDAY', (_event)=>DOOMDAY(paths.config_path));
-    ipcMain.handle('dataErr', (_event)=>invalidDate());
-    ipcMain.handle("rewriteError", (_event)=>rewriteFile());
+    ipcMain.handle('DOOMDAY', (_event)=>Handlers.DOOMDAY(paths.config_path));
+    ipcMain.handle('dataErr', (_event)=>Handlers.invalidDate());
+    ipcMain.handle("rewriteError", (_event)=>Handlers.rewriteFile());
 
     this.loadFile(resolve(__dirname, "public","index.html"));//основная страница
 
