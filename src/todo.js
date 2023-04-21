@@ -137,7 +137,7 @@ class TodoList {
     }
 
     removeTaskFolder(path) {
-        if ( !existsSync(path) ) {
+        if (!existsSync(path)) {
             throw SyntaxError("removed file not exist");
         }
         rmSync(path, { force: true, recursive: true });
@@ -154,9 +154,16 @@ class TodoList {
     }
 
     openFile(fileName) {
-        shell.openPath(resolve(paths.filesFolder, fileName))
-            .then((data) => { console.log("open file ---- ", data); })
-            .catch((err) => { console.log("error on open file"); })
+        for (let fold of readdirSync(paths.filesFolder)) {
+            for (let file of readdirSync(resolve(paths.filesFolder, fold))) {
+                if (file === fileName) {
+                    shell.openPath(resolve(paths.filesFolder, fold, file))
+                        .then((data) => { console.log("open file ---- ", data); return})
+                        .catch((err) => { console.log("error on open file"); return})
+                }
+            }
+        }
+        // throw new Error("FILE_NOT_FOUND").name="FILE_NOT_EXIST";
     }
 }
 

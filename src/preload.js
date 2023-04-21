@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require("electron");
 const { TL } = require("./todo");
 const { DateTime } = require("luxon")
+const { sep } = require("path");
 // const TLs = new TL()
 
 contextBridge.exposeInMainWorld("todo", {
@@ -12,5 +13,6 @@ contextBridge.exposeInMainWorld("todo", {
     removeFile: (name) => TL.removeTaskFile(name),
     timeDiff: DateTime,
     openFile: (file) => TL.openFile(file),
+    sep: sep
 })
 
