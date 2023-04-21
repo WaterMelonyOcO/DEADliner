@@ -11,7 +11,7 @@ class Handlers {
             .then(data => JSON.parse(data))
             .then(data => data.option.isBaby)
         
-        if ( !isBabe ){//если false то удаляются только задния
+        /*if ( !isBabe ){//если false то удаляются только задния
             
             writeFile( db_path, defaultDB,{force: true})
             .then(res => {
@@ -28,7 +28,7 @@ class Handlers {
             console.log("remove all folder");
             app.exit(0)
             })
-        }
+        }*/
 
         dialog.showErrorBox("Удаление", "вы пропустили время сдачи, пока!")
 
@@ -46,6 +46,11 @@ class Handlers {
     invalidDate(arg = null) {
         dialog.showErrorBox("Неправильное время", "Вы ввели неправильно время.\n пожалуйста введите корректную дату и время")
         console.log(arg);
+    }
+
+    linkedFile(){
+        console.log("link");
+        // dialog.showMessageBox()
     }
 }
 

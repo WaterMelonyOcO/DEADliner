@@ -1,9 +1,9 @@
 const luxon = require("luxon")
-const { writeFile, readFileSync, mkdir, existsSync, copyFileSync, rmSync } = require("fs");
+const { writeFile, readFileSync, mkdir, existsSync, copyFileSync, rmSync, mkdirSync, readdirSync } = require("fs");
 const { ipcRenderer, dialog, shell } = require("electron");
 const clock = require("date-events");
 const { paths } = require("./paths");
-const { resolve, sep, join } = require("path");
+const { resolve, sep, join, dirname } = require("path");
 
 class TodoList {
     #TodoListArr = [];
@@ -54,30 +54,13 @@ class TodoList {
             return false;
         }
 
-
-        // console.log(this.deadline, createTime);
+        let newTaskFolder = join(paths.filesFolder, `task_${id}_${Math.floor(Math.random() * 20)}`)
+        mkdirSync(newTaskFolder);
         for (let file of files) {
-            console.log(file);
-            let toCopy = resolve(paths.filesFolder, file.name);
-
-            if (existsSync(toCopy)) {
-                let chooses = ipcRenderer.invoke("rewriteError").then(data=>data);
-                if (chooses === 0) {
-                    this.files.push(file.name);
-                    console.log("not rewrite");
-                    continue;
-                }
-                else {
-                    copyFileSync(file.path, toCopy);
-                    this.files.push(file.name);
-                    console.log("not rewrite");
-                    continue;
-                }
-            }
-            console.log("usual write file");
-            copyFileSync(file.path, toCopy);
+            copyFileSync(file.path, join(newTaskFolder, file.name));
             this.files.push(file.name)
         }
+
         console.log("configure task");
         let Task = {
             id: id,
@@ -85,7 +68,8 @@ class TodoList {
             deadline: this.deadline,
             time: this.cTime,
             description: description,
-            files: this.files
+            files: this.files,
+            filePath: newTaskFolder
         };
 
         this.#TodoListArr.push(Task);
@@ -99,8 +83,8 @@ class TodoList {
         return this.#TodoListArr;
     }
 
-    getTask(id){
-        return this.#TodoListArr.filter((i)=>i.id===id);
+    getTask(id) {
+        return this.#TodoListArr.filter((i) => i.id === id);
     }
 
     editTask(id, taskName) {
@@ -116,16 +100,14 @@ class TodoList {
     }
 
     deleteTask(id) {
-        let TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
+        const TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
 
         if (TaskIndex < 0) { throw new Error("NO_ELEMENT_TO_REMOVE") }
 
         try {
             const deletedTask = this.#TodoListArr.splice(TaskIndex, 1);
+            this.removeTaskFolder(deletedTask[0].filePath)
             writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
-            deletedTask[0].files.forEach((i) => {
-                this.removeTaskFile(i)
-            })
         } catch (error) {
             console.log("error on delete task\n", error);
         }
@@ -154,12 +136,11 @@ class TodoList {
         }
     }
 
-    removeTaskFile(name) {
-        const filePath = resolve(paths.filesFolder, name);
-        if (!existsSync(filePath)) {
+    removeTaskFolder(path) {
+        if ( !existsSync(path) ) {
             throw SyntaxError("removed file not exist");
         }
-        rmSync(filePath, { force: true });
+        rmSync(path, { force: true, recursive: true });
     }
 
     #checkDEAD(elem) {
@@ -172,10 +153,10 @@ class TodoList {
         }
     }
 
-    openFile(fileName){
+    openFile(fileName) {
         shell.openPath(resolve(paths.filesFolder, fileName))
-        .then((data) => {console.log("open file ---- ", data);})
-        .catch((err) => {console.log("error on open file");})
+            .then((data) => { console.log("open file ---- ", data); })
+            .catch((err) => { console.log("error on open file"); })
     }
 }
 
