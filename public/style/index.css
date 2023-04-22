@@ -1,4 +1,4 @@
-
+/* 
 :root{
     --element-color: #ffd60a;
 }
@@ -13,14 +13,15 @@ header{
     padding-left: 10%;
     margin-bottom: 20px;
     border: 1px solid #001d3d;
-}
+} */
 
 .taskConteiner{
-    background-color: #003566;
+    /* background-color: #003566; */
+    width: 660px;
     border: 1px solid #ffc300;
     border-radius: 20px;
 
-    margin-left: 15px;
+    /* margin-left: 15px; */
 }
 
 .taskName{

@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require("electron");
+const { contextBridge, Notification } = require("electron");
 const { TL } = require("./todo");
 const { DateTime } = require("luxon")
 const { sep } = require("path");

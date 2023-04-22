@@ -40,6 +40,7 @@ class MainWindow extends BrowserWindow {
     ipcMain.handle('DOOMDAY', (_event)=>Handlers.DOOMDAY(paths.config_path, null, app, this));
     ipcMain.handle('dataErr', (_event)=>Handlers.invalidDate());
     ipcMain.handle("rewriteError", (_event)=>Handlers.rewriteFile());
+    ipcMain.on("deleteTask", (_event)=>Handlers.onDeleteTask(_event))
 
     this.loadFile(resolve(__dirname, "public","index.html"));//основная страница
 

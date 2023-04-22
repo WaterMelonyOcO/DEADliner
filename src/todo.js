@@ -1,5 +1,5 @@
 const luxon = require("luxon")
-const { writeFile, readFileSync, mkdir, existsSync, copyFileSync, rmSync, mkdirSync, readdirSync } = require("fs");
+const { writeFile, readFileSync, mkdir, existsSync, copyFileSync, rmSync, mkdirSync, readdirSync, rm } = require("fs");
 const { ipcRenderer, dialog, shell } = require("electron");
 const clock = require("date-events");
 const { paths } = require("./paths");
@@ -66,7 +66,7 @@ class TodoList {
             id: id,
             name: taskName,
             deadline: this.deadline,
-            time: this.cTime,
+            CreateTime: this.cTime,
             description: description,
             files: this.files,
             filePath: newTaskFolder
@@ -99,21 +99,39 @@ class TodoList {
         console.log(this.#TodoListArr);
     }
 
+    deleteTaskFile(filename) {
+        const path = this.#getFilePath(filename);
+        rm(path, (data) => {
+            if (data) console.log(data);
+        })
+    }
+
     deleteTask(id) {
         const TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
 
         if (TaskIndex < 0) { throw new Error("NO_ELEMENT_TO_REMOVE") }
 
-        try {
-            const deletedTask = this.#TodoListArr.splice(TaskIndex, 1);
-            this.removeTaskFolder(deletedTask[0].filePath)
-            writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
-        } catch (error) {
-            console.log("error on delete task\n", error);
+        const data = ipcRenderer.sendSync("deleteTask");
+        console.log(data);
+        if (data) {
+            try {
+                const deletedTask = this.#TodoListArr.splice(TaskIndex, 1);
+                this.removeTaskFolder(deletedTask[0].filePath);
+                writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => {
+                    if (err)
+                        console.log(err.message, "write error");
+                });
+                return true
+            } catch (error) {
+                console.log("error on delete task\n", error);
+            }
+            finally{
+                console.log(this.#TodoListArr);
+            }
         }
-
-        console.log(this.#TodoListArr);
-        return true;
+        else{
+            return false;
+        }
     }
 
     #timeFormat(time) {
@@ -153,15 +171,23 @@ class TodoList {
         }
     }
 
-    openFile(fileName) {
+    #getFilePath(fileName) {
         for (let fold of readdirSync(paths.filesFolder)) {
             for (let file of readdirSync(resolve(paths.filesFolder, fold))) {
                 if (file === fileName) {
-                    shell.openPath(resolve(paths.filesFolder, fold, file))
-                        .then((data) => { console.log("open file ---- ", data); return})
-                        .catch((err) => { console.log("error on open file"); return})
+                    return resolve(paths.filesFolder, fold, fileName);
                 }
             }
+        }
+        return false;
+    }
+
+    openFile(fileName) {
+        const path = this.#getFilePath(fileName);
+        if (path) {
+            shell.openPath(path)
+                .then((data) => { console.log("open file ---- ", data); return })
+                .catch((err) => { console.log("error on open file"); return })
         }
         // throw new Error("FILE_NOT_FOUND").name="FILE_NOT_EXIST";
     }

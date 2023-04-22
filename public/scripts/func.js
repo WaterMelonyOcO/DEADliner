@@ -6,18 +6,17 @@ function addTask() {
 
   let name = document.querySelector("#TaskName");
   let time = document.querySelector("#deadline");
-  let file = Object.values( document.querySelector("#data").files );
-
+  let file = Object.values(document.querySelector("#data").files);
   let timeVal = time.value.split("T").join(" ");
 
   let cr = todo.add(name.value, time.value, null, file);
-  if (cr) content.appendChild(new TaskItem(cr, name.value, timeVal, file.map((i)=>i.name)))
+  if (cr) content.appendChild(new TaskItem(cr, name.value, timeVal, file.map((i) => i.name)))
 
   name.value = "";
   time.value = "";
 }
 
-function openFile(e){
+function openFile(e) {
   const nameFile = e.target.dataset.file;
   // console.log(nameFile);
   todo.openFile(nameFile);

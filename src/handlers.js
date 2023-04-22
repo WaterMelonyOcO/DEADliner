@@ -48,6 +48,14 @@ class Handlers {
         console.log(arg);
     }
 
+    onDeleteTask(_, title = "удаление задания", message = "Вы точно хотите удалить задание?"){
+        _.returnValue =  dialog.showMessageBoxSync(null, {
+            title:title,
+            message: message,
+            buttons: ['Нет', 'Да']
+        })
+    }
+
     linkedFile(){
         console.log("link");
         // dialog.showMessageBox()
