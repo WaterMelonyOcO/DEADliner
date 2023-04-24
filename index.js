@@ -4,6 +4,7 @@ const Handlers  = require("./src/handlers");
 const { mkdir } = require("fs/promises");
 const { paths } = require("./src/paths");
 const { resolve } = require("path");
+const handlers = require("./src/handlers");
 
 
 class MainWindow extends BrowserWindow {
@@ -35,13 +36,17 @@ class MainWindow extends BrowserWindow {
     this.#confCheck();//проверка на существование конфигов
     this.#filesFolderCheck();
 
-    this.on("close", ()=>this.hide())
+    this.on("close", (ev)=>{
+      ev.preventDefault();
+      this.hide();
+    })
 
     //создаю событие при натсуплении которого будет происходить удаление
     ipcMain.handle('DOOMDAY', (_event)=>Handlers.DOOMDAY(paths.config_path, null, app, this));
-    ipcMain.handle('dataErr', (_event)=>Handlers.invalidDate());
-    ipcMain.handle("rewriteError", (_event)=>Handlers.rewriteFile());
+    ipcMain.on('dataErr', (_event)=>Handlers.invalidDate());
+    ipcMain.on("rewriteError", (_event)=>Handlers.rewriteFile());
     ipcMain.on("deleteTask", (_event)=>Handlers.onDeleteTask(_event))
+    ipcMain.on("exit", (_event)=>Handlers.exit(_event))
 
     this.loadFile(resolve(__dirname, "public","index.html"));//основная страница
 
@@ -83,7 +88,7 @@ class MainWindow extends BrowserWindow {
 
 
 app.whenReady().then(() => {
-  new MainWindow(800, 600);
+  const win = new MainWindow(800, 600);
 
   //tray. На linux kde не работает. доделать
   //сделать иконку
@@ -91,19 +96,23 @@ app.whenReady().then(() => {
   const icon = nativeImage.createEmpty()
   const tr = new Tray(icon);
   const ContextMenu = Menu.buildFromTemplate([
-    {label:"text", type: "normal"}
+    {label:"exit", type: "normal", click: ()=>{if (handlers.exit()) app.exit(0) } }
   ])
 
   tr.setToolTip("DEADliner");
   tr.setTitle("DEADliner")
   tr.setContextMenu(ContextMenu);
-  tr.on("click", openWindowTray)
 
-  // app.on('activate', () => {
-  //   if (BrowserWindow.getAllWindows().length === 0) new MainWindow ()
-  // })
+  tr.on("click", ()=>{
+    if ( !win?.isVisible() ) win.show()
+  })
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) new MainWindow ()
+  })
 });
 
-// app.on("window-all-closed", () => {
-//   if (process.platform !== "darwin") app.quit();
-// });
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") app.quit();
+});
+
