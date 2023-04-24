@@ -87,7 +87,7 @@ class TodoList {
         return this.#TodoListArr.filter((i) => i.id === id);
     }
 
-    editTask(id, taskName) {
+    editTask(id, taskName, taskDesc = '') {
         this.taskName = taskName;
         let TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
 
@@ -97,13 +97,6 @@ class TodoList {
         this.#TodoListArr[TaskIndex].name = this.taskName;
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
         console.log(this.#TodoListArr);
-    }
-
-    deleteTaskFile(filename) {
-        const path = this.#getFilePath(filename);
-        rm(path, (data) => {
-            if (data) console.log(data);
-        })
     }
 
     deleteTask(id) {
@@ -134,6 +127,30 @@ class TodoList {
         }
     }
 
+    removeTaskFolder(path) {
+        if (!existsSync(path)) {
+            throw SyntaxError("removed file not exist");
+        }
+        rmSync(path, { force: true, recursive: true });
+    }
+
+    openFile(fileName) {
+        const path = this.#getFilePath(fileName);
+        if (path) {
+            shell.openPath(path)
+                .then((data) => { console.log("open file ---- ", data); return })
+                .catch((err) => { console.log("error on open file"); return })
+        }
+        // throw new Error("FILE_NOT_FOUND").name="FILE_NOT_EXIST";
+    }
+
+    deleteTaskFile(filename) {
+        const path = this.#getFilePath(filename);
+        rm(path, (data) => {
+            if (data) console.log(data);
+        })
+    }
+
     #timeFormat(time) {
         this.time = new Date(time).toISOString();
         // console.log(this.time);
@@ -152,13 +169,6 @@ class TodoList {
         else {
             return [this.dTime, this.cTime];
         }
-    }
-
-    removeTaskFolder(path) {
-        if (!existsSync(path)) {
-            throw SyntaxError("removed file not exist");
-        }
-        rmSync(path, { force: true, recursive: true });
     }
 
     #checkDEAD(elem) {
@@ -180,16 +190,6 @@ class TodoList {
             }
         }
         return false;
-    }
-
-    openFile(fileName) {
-        const path = this.#getFilePath(fileName);
-        if (path) {
-            shell.openPath(path)
-                .then((data) => { console.log("open file ---- ", data); return })
-                .catch((err) => { console.log("error on open file"); return })
-        }
-        // throw new Error("FILE_NOT_FOUND").name="FILE_NOT_EXIST";
     }
 }
 

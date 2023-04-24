@@ -1,17 +1,16 @@
-const { app, BrowserWindow, dialog, ipcMain } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain, Tray, Menu, nativeImage } = require("electron");
 const { writeFile, existsSync, mkdirSync } = require("fs");
 const Handlers  = require("./src/handlers");
 const { mkdir } = require("fs/promises");
 const { paths } = require("./src/paths");
 const { resolve } = require("path");
-const { platform } = require("os");
 
 
 class MainWindow extends BrowserWindow {
 
 
   //создаю основное окно
-  constructor(w, h) {
+  constructor(w = 800, h = 600) {
     super({
       width: w,
       height: h,
@@ -35,6 +34,8 @@ class MainWindow extends BrowserWindow {
     this.#databaseCheck();//проверка на существование бд
     this.#confCheck();//проверка на существование конфигов
     this.#filesFolderCheck();
+
+    this.on("close", ()=>this.hide())
 
     //создаю событие при натсуплении которого будет происходить удаление
     ipcMain.handle('DOOMDAY', (_event)=>Handlers.DOOMDAY(paths.config_path, null, app, this));
@@ -83,11 +84,26 @@ class MainWindow extends BrowserWindow {
 
 app.whenReady().then(() => {
   new MainWindow(800, 600);
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
+
+  //tray. На linux kde не работает. доделать
+  //сделать иконку
+  // const icon = nativeImage.createFromPath(paths.trayIcon);
+  const icon = nativeImage.createEmpty()
+  const tr = new Tray(icon);
+  const ContextMenu = Menu.buildFromTemplate([
+    {label:"text", type: "normal"}
+  ])
+
+  tr.setToolTip("DEADliner");
+  tr.setTitle("DEADliner")
+  tr.setContextMenu(ContextMenu);
+  tr.on("click", openWindowTray)
+
+  // app.on('activate', () => {
+  //   if (BrowserWindow.getAllWindows().length === 0) new MainWindow ()
+  // })
 });
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
-});
+// app.on("window-all-closed", () => {
+//   if (process.platform !== "darwin") app.quit();
+// });

@@ -55,11 +55,6 @@ class Handlers {
             buttons: ['Нет', 'Да']
         })
     }
-
-    linkedFile(){
-        console.log("link");
-        // dialog.showMessageBox()
-    }
 }
 
 module.exports = new Handlers();
