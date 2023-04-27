@@ -1,10 +1,11 @@
-const { app, BrowserWindow, dialog, ipcMain, Tray, Menu, nativeImage } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain, BrowserView } = require("electron");
 const { writeFile, existsSync, mkdirSync } = require("fs");
 const Handlers  = require("./src/handlers");
 const { mkdir } = require("fs/promises");
 const { paths } = require("./src/paths");
 const { resolve } = require("path");
 const handlers = require("./src/handlers");
+const { MTray } = require("./src/tray");
 
 
 class MainWindow extends BrowserWindow {
@@ -23,7 +24,8 @@ class MainWindow extends BrowserWindow {
       }
     });
 
-    console.log(paths.homeDir);
+    this.menuBarVisible = false;
+    // console.log(paths.homeDir);
     //проверяю есть ли конфиги
     if (!existsSync(paths.homeDir)) {
       mkdirSync(paths.homeDir, {recursive: true})//если нету конфигов, то создаю папку
@@ -47,6 +49,12 @@ class MainWindow extends BrowserWindow {
     ipcMain.on("rewriteError", (_event)=>Handlers.rewriteFile());
     ipcMain.on("deleteTask", (_event)=>Handlers.onDeleteTask(_event))
     ipcMain.on("exit", (_event)=>Handlers.exit(_event))
+    ipcMain.on('trayTask', (_event, tName, time, desc, file)=>{
+      console.log("main aaaaaaaaaa");
+      // console.log(tName, time, desc, file);
+      this.webContents.send('trayAddTask', tName, time, desc, file);
+      this.reload()
+    })
 
     this.loadFile(resolve(__dirname, "public","index.html"));//основная страница
 
@@ -88,27 +96,12 @@ class MainWindow extends BrowserWindow {
 
 
 app.whenReady().then(() => {
-  const win = new MainWindow(800, 600);
+  const win = new MainWindow(1280, 985);
 
-  //tray. На linux kde не работает. доделать
-  //сделать иконку
-  // const icon = nativeImage.createFromPath(paths.trayIcon);
-  const icon = nativeImage.createEmpty()
-  const tr = new Tray(icon);
-  const ContextMenu = Menu.buildFromTemplate([
-    {label:"exit", type: "normal", click: ()=>{if (handlers.exit()) app.exit(0) } }
-  ])
-
-  tr.setToolTip("DEADliner");
-  tr.setTitle("DEADliner")
-  tr.setContextMenu(ContextMenu);
-
-  tr.on("click", ()=>{
-    if ( !win?.isVisible() ) win.show()
-  })
+  const tray = new MTray(win, app);//tray
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) new MainWindow ()
+    if (win.getAllWindows().length === 0) new MainWindow ()
   })
 });
 

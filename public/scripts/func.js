@@ -2,6 +2,7 @@
 const addBtn = document.querySelector("#addTaskBtn");
 const content = document.querySelector("#content");
 
+
 function addTask() {
 
   let name = document.querySelector("#TaskName");
@@ -15,6 +16,7 @@ function addTask() {
   name.value = "";
   time.value = "";
 }
+
 
 function openFile(e) {
   const nameFile = e.target.dataset.file;
@@ -85,4 +87,7 @@ function chNameListener(e) {
 // })
 
 addBtn.addEventListener("click", addTask);
+// todo.addHandl((taskName, deadline, description, files)=>{
+//   content.appendChild(new TaskItem(cr, name.value, timeVal, files.map((i) => i.name)))
+// })
 getTasks()

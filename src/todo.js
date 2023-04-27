@@ -27,6 +27,13 @@ class TodoList {
         clock().on("*:*", () => {
             this.#TodoListArr.forEach((i) => this.#checkDEAD(i.deadline));
         })
+
+        
+
+        ipcRenderer.on("trayAddTask", (ev,taskName, deadline, description, files) =>{
+            console.log("todo event", taskName, deadline, description, files);
+            this.addTask(taskName, deadline, description, files);
+        })
     }
 
     addTask(taskName, deadline, description = "", files = []) {
