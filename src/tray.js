@@ -1,20 +1,18 @@
 const { Tray, Menu, nativeImage, BrowserWindow } = require("electron");
 const handlers = require("./handlers");
 const { resolve } = require("path");
+const { paths } = require('./paths')
 
 
 class MTray extends Tray {
-    constructor(win, app, icon = nativeImage.createEmpty()) {
+    constructor(win, app, icon = nativeImage.createFromPath(paths.trayIcon)) {
         super(icon)
-
-        //tray. На linux kde не работает. доделать
-        //сделать иконку
-        // const icon = nativeImage.createFromPath(paths.trayIcon);
+        console.log(paths.trayIcon);
         const ContextMenu = Menu.buildFromTemplate([
             { label: "Выход", type: "normal", click: () => { if (handlers.exit()) app.exit(0) } },
             { label: "Добавить задание", type: "normal", click:(ev)=>{  this.#addNewTask()}}
         ])
-        this.#addNewTask()
+        // this.#addNsewTask()
 
         this.setToolTip("DEADliner");
         this.setTitle("DEADliner");
