@@ -55,6 +55,14 @@ class Handlers {
             buttons: ['Нет', 'Да']
         })
     }
+
+    exit(title = "выход из приложения", message = "вы уверены, что хотите закрыть приложение?"){
+        return dialog.showMessageBoxSync({
+            title: title,
+            message: message,
+            buttons: ["Нет", "Да"]
+        })
+    }
 }
 
 module.exports = new Handlers();
