@@ -2,13 +2,15 @@
 const addBtn = document.querySelector("#addTaskBtn");
 const content = document.querySelector("#content");
 
-
 function addTask() {
 
   let name = document.querySelector("#TaskName");
   let time = document.querySelector("#deadline");
   let file = Object.values(document.querySelector("#data").files);
   let timeVal = time.value.split("T").join(" ");
+
+  //СОФА ЭТО УВЕДОМЛЕНИЯ
+  // new Notification("вы добавили задание")
 
   let cr = todo.add(name.value, time.value, null, file);
   if (cr) content.appendChild(new TaskItem(cr, name.value, timeVal, file.map((i) => i.name)))
