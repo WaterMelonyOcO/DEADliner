@@ -83,7 +83,7 @@ class MainWindow extends BrowserWindow {
 
 
 app.whenReady().then(() => {
-  new MainWindow(800, 600);
+  new MainWindow(1280, 985);
 
   //tray. На linux kde не работает. доделать
   //сделать иконку
