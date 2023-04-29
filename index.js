@@ -6,7 +6,7 @@ const { paths } = require("./src/paths");
 const { resolve } = require("path");
 const handlers = require("./src/handlers");
 const { MTray } = require("./src/tray");
-const { CustomDialog } = require("./src/CDialog")
+const { CustomDialog } = require("./src/CustomDialog/CDialog")
 
 class MainWindow extends BrowserWindow {
 
@@ -56,7 +56,11 @@ class MainWindow extends BrowserWindow {
       this.reload()
     })
 
-    CustomDialog.showMessage(this)
+    // new Notification({
+    //   title:"djsok",
+    //   body: "<h1 style='color:red;'>dlfmglmdfg</h1>"
+    // }).show()
+    CustomDialog.showMessage()
 
     this.loadFile(resolve(__dirname, "public","index.html"));//основная страница
 

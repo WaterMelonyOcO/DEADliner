@@ -10,7 +10,10 @@ function addTask() {
   let timeVal = time.value.split("T").join(" ");
 
   //СОФА ЭТО УВЕДОМЛЕНИЯ
-  // new Notification("вы добавили задание")
+  // let myNotification = new Notification('Title', {
+  //   body: "<p style='color:red;'>Amit Patel Hello world</p>"
+  // })
+
 
   let cr = todo.add(name.value, time.value, null, file);
   if (cr) content.appendChild(new TaskItem(cr, name.value, timeVal, file.map((i) => i.name)))
