@@ -65,10 +65,10 @@ class MainWindow extends BrowserWindow {
     //   title:"djsok",
     //   body: "<h1 style='color:red;'>dlfmglmdfg</h1>"
     // }).show()
-    CustomDialog.showMessage(['dkjf'],"some",(data)=>{
-      console.log(data);
-    })
-
+    // CustomDialog.showMessage(['dkjf'],"some",(data)=>{
+    //   console.log(data);
+    // })
+    CustomDialog.showError()
     this.loadFile(resolve(__dirname, "public", "index.html"));//основная страница
 
   }
