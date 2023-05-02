@@ -13,7 +13,7 @@ contextBridge.exposeInMainWorld("todo", {
     getTask: (id) => TL.getTask(id),
     delete: (id) => TL.deleteTask(id),
     get: () => TL.getTasks(),
-    edit: (id, name) => TL.editTask(id, name),
+    edit: (id, name='', description='') => TL.editTask(id, name),
     removeFile: (name) => TL.removeTaskFile(name),
     timeDiff: DateTime,
     openFile: (file) => TL.openFile(file),

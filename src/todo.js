@@ -95,14 +95,23 @@ class TodoList {
         return this.#TodoListArr.filter((i) => i.id === id);
     }
 
-    editTask(id, taskName, taskDesc = '') {
+    editTask(id, taskName, taskDesc = '', file=[]) {
         this.taskName = taskName;
         let TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
 
         // console.log(TaskIndex);
         if (TaskIndex < 0) { throw new Error("NO_ELEMENT") }
 
-        this.#TodoListArr[TaskIndex].name = this.taskName;
+        const Task = this.#TodoListArr[TaskIndex];
+
+        const oldArray = Task.files.sort();
+        const newArray = file.sort();
+
+        Task.name = this.taskName;
+        Task.description = taskDesc.length === 0 ? Task.description : taskDesc;
+        Task.files = oldArray === newArray ? oldArray : newArray;
+
+
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
         console.log(this.#TodoListArr);
     }
