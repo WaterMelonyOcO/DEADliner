@@ -4,6 +4,7 @@ const { ipcRenderer, dialog, shell } = require("electron");
 const clock = require("date-events");
 const { paths } = require("./paths");
 const { resolve, sep, join, dirname } = require("path");
+const handlers = require("./handlers");
 
 
 class TodoList {
@@ -121,27 +122,30 @@ class TodoList {
 
         if (TaskIndex < 0) { throw new Error("NO_ELEMENT_TO_REMOVE") }
 
-        const data = ipcRenderer.sendSync("deleteTask");
-        console.log(data);
-        if (data) {
-            try {
-                const deletedTask = this.#TodoListArr.splice(TaskIndex, 1);
-                this.removeTaskFolder(deletedTask[0].filePath);
-                writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => {
-                    if (err)
-                        console.log(err.message, "write error");
-                });
-                return true
-            } catch (error) {
-                console.log("error on delete task\n", error);
-            }
-            finally{
-                console.log(this.#TodoListArr);
-            }
-        }
-        else{
-            return false;
-        }
+        let a= handlers.onDeleteTask()
+        return true
+        // const data = ipcRenderer.sendSync("deleteTask");
+        // data.then(data=>{console.log(data);})
+        // console.log(data);
+        // if (data) {
+        //     try {
+        //         const deletedTask = this.#TodoListArr.splice(TaskIndex, 1);
+        //         this.removeTaskFolder(deletedTask[0].filePath);
+        //         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => {
+        //             if (err)
+        //                 console.log(err.message, "write error");
+        //         });
+        //         return true
+        //     } catch (error) {
+        //         console.log("error on delete task\n", error);
+        //     }
+        //     finally{
+        //         console.log(this.#TodoListArr);
+        //     }
+        // }
+        // else{
+        //     return false;
+        // }
     }
 
     removeTaskFolder(path) {

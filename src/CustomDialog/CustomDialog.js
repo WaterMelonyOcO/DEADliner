@@ -69,8 +69,8 @@ class CustomDialog extends BrowserWindow {
 
         // .then((data)=>{ipcMain.handle("show",(ev, da)=>{console.log(da);})})
 
-        return ipcMain.handle("dialog::Send", (ev, data) => {
-            callback(data);
+        ipcMain.on("dialog::Send", (ev, data) => {
+            callback( data );
             dial.destroy()
         });
     }
@@ -90,7 +90,7 @@ class CustomDialog extends BrowserWindow {
         const dial = new CustomDialog(null, { title, desc, interfacePath })
         dial.webContents.send("dialog::Show::Error", desc)
 
-        return ipcMain.handle("dialog::Send::Error", (ev) => {
+        return ipcMain.on("dialog::Send::Error", (ev) => {
             dial.destroy()
         });
     }

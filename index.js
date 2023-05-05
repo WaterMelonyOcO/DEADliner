@@ -24,7 +24,7 @@ class MainWindow extends BrowserWindow {
       }
     });
 
-    this.menuBarVisible = false;
+    // this.menuBarVisible = false;
     // console.log(paths.homeDir);
     //проверяю есть ли конфиги
     if (!existsSync(paths.homeDir)) {
@@ -47,7 +47,7 @@ class MainWindow extends BrowserWindow {
     ipcMain.handle('DOOMDAY', (_event) => Handlers.DOOMDAY(paths.config_path, null, app, this));
     ipcMain.on('dataErr', (_event) => Handlers.invalidDate());
     ipcMain.on("rewriteError", (_event) => Handlers.rewriteFile());
-    ipcMain.on("deleteTask", (_event) => Handlers.onDeleteTask(_event))
+    // ipcMain.on("deleteTask", async (_event) => Handlers.onDeleteTask(_event))
     ipcMain.on("exit", (_event) => Handlers.exit(_event))
     ipcMain.on('trayTask', (_event, tName, time, desc, file) => {
       console.log("main aaaaaaaaaa");
@@ -68,7 +68,7 @@ class MainWindow extends BrowserWindow {
     // CustomDialog.showMessage({button:["one", "two"],title: "new title"},(data)=>{
     //   console.log(data);
     // })
-    CustomDialog.showError({desc:"some err title"})
+    // CustomDialog.showError({desc:"some err title"})
     this.loadFile(resolve(__dirname, "public", "index.html"));//основная страница
 
   }

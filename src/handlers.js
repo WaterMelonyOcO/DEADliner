@@ -1,5 +1,6 @@
 const { dialog } = require("electron");
 const { db_path, homeDir } = require("./paths").paths;
+const { CustomDialog } = require("./CustomDialog/CustomDialog")
 
 class Handlers {
 
@@ -35,12 +36,17 @@ class Handlers {
     }
 
     rewriteFile() {
-        let chooses = dialog.showMessageBoxSync(null, {
-            title: "rewrite data",
-            message: "файл с таким именем уже существует.\n Перезаписать существующий файл?",
-            buttons: ['нет', 'да']
+        // let chooses = dialog.showMessageBoxSync(null, {
+        //     title: "rewrite data",
+        //     message: "файл с таким именем уже существует.\n Перезаписать существующий файл?",
+        //     buttons: ['нет', 'да']
+        // })
+        // return chooses;
+        return new Promise((resolve, reject)=>{
+            CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
+                resolve(data);
+            })
         })
-        return chooses;
     }
 
     invalidDate(arg = null) {
@@ -48,19 +54,20 @@ class Handlers {
         console.log(arg);
     }
 
-    onDeleteTask(_, title = "удаление задания", message = "Вы точно хотите удалить задание?"){
-        _.returnValue =  dialog.showMessageBoxSync(null, {
-            title:title,
-            message: message,
-            buttons: ['Нет', 'Да']
-        })
+    onDeleteTask(title = "удаление задания", message = "Вы точно хотите удалить задание?"){
+        // return new Promise((resolve, reject)=>{
+        //     CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
+        //         resolve(data);
+        //     })
+        // })
+        return 1
     }
 
     exit(title = "выход из приложения", message = "вы уверены, что хотите закрыть приложение?"){
-        return dialog.showMessageBoxSync({
-            title: title,
-            message: message,
-            buttons: ["Нет", "Да"]
+        return new Promise((resolve, reject)=>{
+            CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
+                resolve(data);
+            })
         })
     }
 }
