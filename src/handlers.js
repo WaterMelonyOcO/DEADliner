@@ -1,6 +1,6 @@
-const { dialog, ipcRenderer, ipcMain } = require("electron");
+const { dialog, ipcRenderer, ipcMain, BrowserWindow } = require("electron");
+const { prepareDialog, openDialog } = require("electron-custom-dialog");
 const { db_path, homeDir } = require("./paths").paths;
-const { CustomDialog } = require("./CustomDialog/CustomDialog")
 
 class Handlers {
 
@@ -57,17 +57,14 @@ class Handlers {
     onDeleteTask(title = "удаление задания", message = "Вы точно хотите удалить задание?") {
 
         CustomDialog.showMessage({ button: ['yes', 'no'], title: title, desc: message })
-        return new Promise((resolve, reject)=>{
-            ipcRenderer.on("dialog::Send::Data", (data)=>{resolve(data)})
+        return new Promise((resolve, reject) => {
+            ipcRenderer.on("dialog::Send::Data", (data) => { resolve(data) })
         })
         // return 1
     }
 
     exit(title = "выход из приложения", message = "вы уверены, что хотите закрыть приложение?") {
-        CustomDialog.showMessage({ button: ['yes', 'no'], title: title, desc: message })
-        return new Promise((resolve, reject)=>{
-            ipcMain.on("dialog::Send::Data", (data)=>{console.log(data, "dialog::send::data other main");resolve(data)})
-        })
+        return openDialog("myDialog", {question:"ldkf"})
     }
 }
 
