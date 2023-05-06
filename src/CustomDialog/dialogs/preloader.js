@@ -1,7 +1,7 @@
 const { contextBridge, ipcRenderer} = require("electron")
 
 contextBridge.exposeInMainWorld("MyDialog",{
-    send: (num)=>{ipcRenderer.sendSync("dialog::Send", num)},
+    send: (num)=>{ipcRenderer.send("dialog::Send", num)},
     getBtn: (cb)=>{
         ipcRenderer.on("dialog::Show::Button", (ev, ...arg)=>{cb(...arg)})
     },

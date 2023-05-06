@@ -55,11 +55,6 @@ class MainWindow extends BrowserWindow {
       this.webContents.send('trayAddTask', tName, time, desc, file);
       this.reload()
     })
-  //   ipcMain.handle("show", (ev, num)=>{
-  //     console.log(num);
-  //     console.log("abobos");
-  //     // return num
-  // })
 
     // new Notification({
     //   title:"djsok",

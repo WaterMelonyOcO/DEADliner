@@ -1,4 +1,4 @@
-const { BrowserWindow, ipcMain } = require("electron");
+const { BrowserWindow, ipcMain, ipcRenderer } = require("electron");
 
 const { join, resolve } = require("path")
 
@@ -54,7 +54,7 @@ class CustomDialog extends BrowserWindow {
      * возвращает значение нажатой кнопки
      */
 
-    static showMessage(opt, callback) {
+    static showMessage(opt, callback = (arg)=>{return arg}) {
 
         let button = opt.button || [],
         desc = opt.desc || "some description",
@@ -67,10 +67,9 @@ class CustomDialog extends BrowserWindow {
 
         dial.webContents.send("dialog::Show::Button", button, desc)
 
-        // .then((data)=>{ipcMain.handle("show",(ev, da)=>{console.log(da);})})
-
         ipcMain.on("dialog::Send", (ev, data) => {
-            callback( data );
+            console.log(data, "delog::send main");
+            dial.webContents.send("dialog::Send::Data", data );
             dial.destroy()
         });
     }
@@ -93,6 +92,10 @@ class CustomDialog extends BrowserWindow {
         return ipcMain.on("dialog::Send::Error", (ev) => {
             dial.destroy()
         });
+    }
+
+    static returnValue(value){
+        return value
     }
 }
 

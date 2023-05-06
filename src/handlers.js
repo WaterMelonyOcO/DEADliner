@@ -1,4 +1,4 @@
-const { dialog } = require("electron");
+const { dialog, ipcRenderer, ipcMain } = require("electron");
 const { db_path, homeDir } = require("./paths").paths;
 const { CustomDialog } = require("./CustomDialog/CustomDialog")
 
@@ -11,7 +11,7 @@ class Handlers {
         const isBabe = await readFile(confg)
             .then(data => JSON.parse(data))
             .then(data => data.option.isBaby)
-        
+
         /*if ( !isBabe ){//если false то удаляются только задния
             
             writeFile( db_path, defaultDB,{force: true})
@@ -36,17 +36,17 @@ class Handlers {
     }
 
     rewriteFile() {
-        // let chooses = dialog.showMessageBoxSync(null, {
-        //     title: "rewrite data",
-        //     message: "файл с таким именем уже существует.\n Перезаписать существующий файл?",
-        //     buttons: ['нет', 'да']
-        // })
-        // return chooses;
-        return new Promise((resolve, reject)=>{
-            CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
-                resolve(data);
-            })
+        let chooses = dialog.showMessageBoxSync(null, {
+            title: "rewrite data",
+            message: "файл с таким именем уже существует.\n Перезаписать существующий файл?",
+            buttons: ['нет', 'да']
         })
+        return chooses;
+        // return new Promise((resolve, reject)=>{
+        //     CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
+        //         resolve(data);
+        //     })
+        // })
     }
 
     invalidDate(arg = null) {
@@ -54,20 +54,19 @@ class Handlers {
         console.log(arg);
     }
 
-    onDeleteTask(title = "удаление задания", message = "Вы точно хотите удалить задание?"){
-        // return new Promise((resolve, reject)=>{
-        //     CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
-        //         resolve(data);
-        //     })
-        // })
-        return 1
+    onDeleteTask(title = "удаление задания", message = "Вы точно хотите удалить задание?") {
+
+        CustomDialog.showMessage({ button: ['yes', 'no'], title: title, desc: message })
+        return new Promise((resolve, reject)=>{
+            ipcRenderer.on("dialog::Send::Data", (data)=>{resolve(data)})
+        })
+        // return 1
     }
 
-    exit(title = "выход из приложения", message = "вы уверены, что хотите закрыть приложение?"){
+    exit(title = "выход из приложения", message = "вы уверены, что хотите закрыть приложение?") {
+        CustomDialog.showMessage({ button: ['yes', 'no'], title: title, desc: message })
         return new Promise((resolve, reject)=>{
-            CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
-                resolve(data);
-            })
+            ipcMain.on("dialog::Send::Data", (data)=>{console.log(data, "dialog::send::data other main");resolve(data)})
         })
     }
 }
