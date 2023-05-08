@@ -1,5 +1,4 @@
 const { dialog, ipcRenderer, ipcMain, BrowserWindow } = require("electron");
-const { prepareDialog, openDialog } = require("electron-custom-dialog");
 const { db_path, homeDir } = require("./paths").paths;
 
 class Handlers {
@@ -64,7 +63,7 @@ class Handlers {
     }
 
     exit(title = "выход из приложения", message = "вы уверены, что хотите закрыть приложение?") {
-        return openDialog("myDialog", {question:"ldkf"})
+        
     }
 }
 

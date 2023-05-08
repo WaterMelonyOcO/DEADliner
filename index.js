@@ -6,7 +6,6 @@ const { paths } = require("./src/paths");
 const { resolve, join } = require("path");
 const handlers = require("./src/handlers");
 const { MTray } = require("./src/tray");
-const { prepareDialog }= require("electron-custom-dialog")
 
 class MainWindow extends BrowserWindow {
 
@@ -56,16 +55,8 @@ class MainWindow extends BrowserWindow {
       this.reload()
     })
 
-
-    prepareDialog({
-      name: 'myDialog',
-      webPreferences:{
-        preload: join(__dirname, "src", "CustomDialog", "prerender.js")
-      },
-      load(win = new BrowserWindow()) {
-        win.loadFile(join(__dirname, "src", 'CustomDialog', "dialog.html"))
-      }
-    })
+//CUSTOM DIALOG WINDOW
+    
     // new Notification({
     //   title:"djsok",
     //   body: "<h1 style='color:red;'>dlfmglmdfg</h1>"

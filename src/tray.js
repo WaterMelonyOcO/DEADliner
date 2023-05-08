@@ -2,7 +2,7 @@ const { Tray, Menu, nativeImage, BrowserWindow } = require("electron");
 const handlers = require("./handlers");
 const { resolve } = require("path");
 const { paths } = require('./paths')
-const { openDialog } = require("electron-custom-dialog")
+// const { openDialog } = require("electron-custom-dialog")
 
 
 class MTray extends Tray {
@@ -10,7 +10,7 @@ class MTray extends Tray {
         super(icon)
         console.log(paths.trayIcon);
         const ContextMenu = Menu.buildFromTemplate([
-            { label: "Выход", type: "normal", click:  () => { openDialog("myDialog", {question:"ldkf"}).then((result)=>{console.log(result);}) }},
+            { label: "Выход", type: "normal", click:  () => { handlers.exit()}},
             { label: "Добавить задание", type: "normal", click:(ev)=>{  this.#addNewTask()}}
         ])
         // this.#addNsewTask()
