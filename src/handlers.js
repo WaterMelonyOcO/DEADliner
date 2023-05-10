@@ -1,5 +1,7 @@
-const { dialog, ipcRenderer, ipcMain, BrowserWindow } = require("electron");
+const { dialog, ipcRenderer, ipcMain, BrowserWindow, app } = require("electron");
+const { join } = require("path");
 const { db_path, homeDir } = require("./paths").paths;
+const CustomDialog = require("./CustomDialog")
 
 class Handlers {
 
@@ -34,36 +36,58 @@ class Handlers {
 
     }
 
-    rewriteFile() {
-        let chooses = dialog.showMessageBoxSync(null, {
-            title: "rewrite data",
-            message: "файл с таким именем уже существует.\n Перезаписать существующий файл?",
-            buttons: ['нет', 'да']
+    rewriteFile(app, load = join(__dirname, "CustomDialog", 'rewriteDialog', "main.html"), preload = join(__dirname, "CustomDialog", "rewriteDialog", "preload.js")) {
+        let a = new Promise((resolve, reject) => {
+            CustomDialog.showMessageDialog(load, preload, (arg)=>{
+                resolve(arg)
+            })
         })
-        return chooses;
-        // return new Promise((resolve, reject)=>{
-        //     CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
-        //         resolve(data);
-        //     })
-        // })
+
+        a.then((arg)=>{console.log(arg,"lkdflkdfkldfkldfkldkfldfk");})
     }
+
 
     invalidDate(arg = null) {
         dialog.showErrorBox("Неправильное время", "Вы ввели неправильно время.\n пожалуйста введите корректную дату и время")
         console.log(arg);
     }
 
-    onDeleteTask(title = "удаление задания", message = "Вы точно хотите удалить задание?") {
-
-        CustomDialog.showMessage({ button: ['yes', 'no'], title: title, desc: message })
-        return new Promise((resolve, reject) => {
-            ipcRenderer.on("dialog::Send::Data", (data) => { resolve(data) })
-        })
-        // return 1
+    onDeleteTask(_) {
+        _.returnValue = 1
     }
 
-    exit(title = "выход из приложения", message = "вы уверены, что хотите закрыть приложение?") {
-        
+    exit(app, load = join(__dirname, "CustomDialog", 'exitDialog', "main.html"), preload = join(__dirname, "CustomDialog", "exitDialog", "preload.js")) {
+
+        // CustomDialog.exit(app, load, preload)
+        let win = CustomDialog.showMessageDialog(load, preload, (arg) => {
+            if (!+arg) {
+                app.exit(0)
+            }
+            else {
+                win.destroy()
+            }
+        })
+        // console.log(a, 'kjfekldsk');
+
+        // const win = new BrowserWindow({
+        //     webPreferences: {
+        //         nodeIntegration: true,
+        //         preload: preload,
+        //         webSecurity: false,
+        //         devTools: true,
+        //     }
+        // })
+        // win.loadFile(load)
+
+        // ipcMain.on('exit', (_, data) => {
+        //     console.log(data);
+        //     if ( +data === 1 ){
+        //         app.exit(0)
+        //     }
+        //     else{
+        //         win.destroy()
+        //     }
+        // });
     }
 }
 

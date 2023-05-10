@@ -46,8 +46,8 @@ class MainWindow extends BrowserWindow {
     ipcMain.handle('DOOMDAY', (_event) => Handlers.DOOMDAY(paths.config_path, null, app, this));
     ipcMain.on('dataErr', (_event) => Handlers.invalidDate());
     ipcMain.on("rewriteError", (_event) => Handlers.rewriteFile());
-    // ipcMain.on("deleteTask", async (_event) => Handlers.onDeleteTask(_event))
-    ipcMain.on("exit", (_event) => Handlers.exit(_event))
+    ipcMain.on("deleteTask", (_event) => Handlers.onDeleteTask(_event))
+    // ipcMain.on("exit", (_event) => Handlers.exit(_event))
     ipcMain.on('trayTask', (_event, tName, time, desc, file) => {
       console.log("main aaaaaaaaaa");
       // console.log(tName, time, desc, file);
