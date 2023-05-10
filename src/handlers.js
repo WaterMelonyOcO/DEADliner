@@ -1,7 +1,7 @@
 const { dialog, ipcRenderer, ipcMain, BrowserWindow, app } = require("electron");
 const { join } = require("path");
 const { db_path, homeDir } = require("./paths").paths;
-const CustomDialog = require("./CustomDialog")
+let CustomDialog = require("./CustomDialog")
 
 class Handlers {
 
@@ -36,29 +36,29 @@ class Handlers {
 
     }
 
-    rewriteFile(app, load = join(__dirname, "CustomDialog", 'rewriteDialog', "main.html"), preload = join(__dirname, "CustomDialog", "rewriteDialog", "preload.js")) {
-        let a = new Promise((resolve, reject) => {
-            CustomDialog.showMessageDialog(load, preload, (arg)=>{
-                resolve(arg)
+    rewriteFile(_, load = join(__dirname, "CustomDialog", 'rewriteDialog', "main.html"), preload = join(__dirname, "CustomDialog", "rewriteDialog", "preload.js")) {
+        this.#templateVoid(_, load, preload)
+    }
+
+
+    invalidDate(_, load = join(__dirname, "CustomDialog", 'rewriteDialog', "main.html"), preload = join(__dirname, "CustomDialog", "rewriteDialog", "preload.js")) {
+        this.#templateVoid(_, load, preload)
+    }
+
+    async onDeleteTask(_,load = join(__dirname, "CustomDialog", 'exitDialog', "main.html"), preload = join(__dirname, "CustomDialog", "exitDialog", "preload.js")) {
+        let num = new Promise((resolve, reject) => {
+            let win = CustomDialog.showMessageDialog(load, preload, async (data) => {
+                resolve(data)
+                win.destroy()
             })
         })
-
-        a.then((arg)=>{console.log(arg,"lkdflkdfkldfkldfkldkfldfk");})
-    }
-
-
-    invalidDate(arg = null) {
-        dialog.showErrorBox("Неправильное время", "Вы ввели неправильно время.\n пожалуйста введите корректную дату и время")
-        console.log(arg);
-    }
-
-    onDeleteTask(_) {
-        _.returnValue = 1
+        console.log("data promise: " + await num);
+        _.returnValue = await num
     }
 
     exit(app, load = join(__dirname, "CustomDialog", 'exitDialog', "main.html"), preload = join(__dirname, "CustomDialog", "exitDialog", "preload.js")) {
 
-        // CustomDialog.exit(app, load, preload)
+        //
         let win = CustomDialog.showMessageDialog(load, preload, (arg) => {
             if (!+arg) {
                 app.exit(0)
@@ -88,6 +88,17 @@ class Handlers {
         //         win.destroy()
         //     }
         // });
+    }
+
+    async #templateVoid(_,load, preload){
+        let num = new Promise((resolve, reject) => {
+            let win = CustomDialog.showMessageDialog(load, preload, async (data) => {
+                resolve(data)
+                win.destroy()
+            })
+        })
+        console.log("data promise: " + await num);
+        _.returnValue = await num
     }
 }
 

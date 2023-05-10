@@ -12,6 +12,7 @@ class CustomDialog {
             }
         })
     }
+
     static showErrorDialog(app, load, preload) {
         const win = new CustomDialog(load, preload)
         win.loadFile(load)
@@ -32,8 +33,8 @@ class CustomDialog {
         const win = new CustomDialog(load, preload)
         win.loadFile(load)
 
-        ipcMain.on('showData', (_, data) => {
-            callback(data)
+        ipcMain.on('MessageData', (_, data) => {
+            return callback(data)
         });
         return win
     }

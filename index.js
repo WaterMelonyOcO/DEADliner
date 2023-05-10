@@ -48,7 +48,7 @@ class MainWindow extends BrowserWindow {
     ipcMain.on("rewriteError", (_event) => Handlers.rewriteFile());
     ipcMain.on("deleteTask", (_event) => Handlers.onDeleteTask(_event))
     // ipcMain.on("exit", (_event) => Handlers.exit(_event))
-    ipcMain.on('trayTask', (_event, tName, time, desc, file) => {
+    ipcMain.on('trayTask', (_event, tName, time, desc, file) => {//это для доп окна добавления заданий
       console.log("main aaaaaaaaaa");
       // console.log(tName, time, desc, file);
       this.webContents.send('trayAddTask', tName, time, desc, file);

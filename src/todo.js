@@ -4,6 +4,7 @@ const { ipcRenderer, dialog, shell } = require("electron");
 const clock = require("date-events");
 const { paths } = require("./paths");
 const { resolve, sep, join, dirname } = require("path");
+const handlers = require("./handlers");
 
 
 
@@ -30,9 +31,9 @@ class TodoList {
             this.#TodoListArr.forEach((i) => this.#checkDEAD(i.deadline));
         })
 
-        
 
-        ipcRenderer.on("trayAddTask", (ev,taskName, deadline, description, files) =>{
+
+        ipcRenderer.on("trayAddTask", (ev, taskName, deadline, description, files) => {
             console.log("todo event", taskName, deadline, description, files);
             this.addTask(taskName, deadline, description, files);
         })
@@ -93,10 +94,10 @@ class TodoList {
     }
 
     getTask(id) {
-        return this.#TodoListArr.filter((i) => i.id === id);
+        return this.#TodoListArr.filter((i) => i.id === id)[0];
     }
 
-    editTask(id, taskName, taskDesc = '', file=[]) {
+    editTask(id, taskName, taskDesc = '', file = []) {
         this.taskName = taskName;
         let TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
 
@@ -123,8 +124,8 @@ class TodoList {
         if (TaskIndex < 0) { throw new Error("NO_ELEMENT_TO_REMOVE") }
 
         const data = ipcRenderer.sendSync("deleteTask");
-        console.log(data);
-        if (data) {
+        console.log("todo delete code: " + data);
+        if (!+data) {
             try {
                 const deletedTask = this.#TodoListArr.splice(TaskIndex, 1);
                 this.removeTaskFolder(deletedTask[0].filePath);
@@ -136,11 +137,11 @@ class TodoList {
             } catch (error) {
                 console.log("error on delete task\n", error);
             }
-            finally{
+            finally {
                 console.log(this.#TodoListArr);
             }
         }
-        else{
+        else {
             return false;
         }
     }

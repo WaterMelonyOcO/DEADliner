@@ -1,6 +1,6 @@
 
 const btns = document.querySelectorAll("button")
-console.log(btns);
+// console.log(btns);
 btns.forEach(element => {
     element.addEventListener('click', (e)=>api.send(element.id))
 });
