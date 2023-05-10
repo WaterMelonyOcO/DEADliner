@@ -70,7 +70,6 @@ class CustomDialog extends BrowserWindow {
         // .then((data)=>{ipcMain.handle("show",(ev, da)=>{console.log(da);})})
 
         ipcMain.on("dialog::Send", (ev, data) => {
-            callback( data );
             dial.destroy()
         });
     }

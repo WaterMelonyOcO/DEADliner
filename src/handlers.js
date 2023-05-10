@@ -1,4 +1,4 @@
-const { dialog } = require("electron");
+const { dialog, ipcMain, ipcRenderer } = require("electron");
 const { db_path, homeDir } = require("./paths").paths;
 const { CustomDialog } = require("./CustomDialog/CustomDialog")
 
@@ -36,17 +36,15 @@ class Handlers {
     }
 
     rewriteFile() {
-        // let chooses = dialog.showMessageBoxSync(null, {
-        //     title: "rewrite data",
-        //     message: "файл с таким именем уже существует.\n Перезаписать существующий файл?",
-        //     buttons: ['нет', 'да']
-        // })
-        // return chooses;
-        return new Promise((resolve, reject)=>{
-            CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
-                resolve(data);
-            })
+        let chooses = dialog.showMessageBoxSync(null, {
+            title: "rewrite data",
+            message: "файл с таким именем уже существует.\n Перезаписать существующий файл?",
+            buttons: ['нет', 'да']
         })
+        return chooses;
+        // CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
+        //     data;
+        // })
     }
 
     invalidDate(arg = null) {
@@ -54,21 +52,19 @@ class Handlers {
         console.log(arg);
     }
 
-    onDeleteTask(title = "удаление задания", message = "Вы точно хотите удалить задание?"){
-        // return new Promise((resolve, reject)=>{
-        //     CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
-        //         resolve(data);
-        //     })
-        // })
-        return 1
+    onDeleteTask(_,title = "удаление задания", message = "Вы точно хотите удалить задание?"){
+        CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
+          return 
+        })
+        // return 1
     }
 
     exit(title = "выход из приложения", message = "вы уверены, что хотите закрыть приложение?"){
-        return new Promise((resolve, reject)=>{
-            CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
-                resolve(data);
-            })
-        })
+        
+        // CustomDialog.showMessage({button:['yes', 'no'], title:title, desc: message}, (data)=>{
+        //    data;
+        // })
+        return 1
     }
 }
 
