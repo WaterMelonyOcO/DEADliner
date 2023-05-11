@@ -5,6 +5,9 @@ const clock = require("date-events");
 const { paths } = require("./paths");
 const { resolve, sep, join, dirname } = require("path");
 
+const { createNotification, setContainerWidth, setGlobalStyles } = require("electron-custom-notifications");
+const handlers = require("./handlers");
+
 class TodoList {
     #TodoListArr = [];
 
@@ -28,9 +31,9 @@ class TodoList {
             this.#TodoListArr.forEach((i) => this.#checkDEAD(i.deadline));
         })
 
-        
 
-        ipcRenderer.on("trayAddTask", (ev,taskName, deadline, description, files) =>{
+
+        ipcRenderer.on("trayAddTask", (ev, taskName, deadline, description, files) => {
             console.log("todo event", taskName, deadline, description, files);
             this.addTask(taskName, deadline, description, files);
         })
@@ -79,6 +82,36 @@ class TodoList {
             filePath: newTaskFolder
         };
 
+        //подготовка для уведомления
+//         setContainerWidth()
+//         setGlobalStyles(`
+//     * {
+//       font-family: Helvetica;
+//     }
+//     .notification {
+//       display: block;
+//       padding: 20px;
+//       background-color: #fff;
+//       border-radius: 12px;
+//       margin: 10px;
+//       box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+//     }
+//     .notification h1 {
+//       font-weight: bold;
+//     }
+//   `);
+//         const NotaficationContent = `
+//   <div class="notification">
+//   <h1>my Notafication</h1>
+//   <p>Noafication body</p>
+// </div>
+//   `;
+        // createNotification({
+        //     content: NotaficationContent
+        // })
+
+        // handlers.myNotafication()
+
         this.#TodoListArr.push(Task);
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
 
@@ -125,11 +158,11 @@ class TodoList {
             } catch (error) {
                 console.log("error on delete task\n", error);
             }
-            finally{
+            finally {
                 console.log(this.#TodoListArr);
             }
         }
-        else{
+        else {
             return false;
         }
     }
