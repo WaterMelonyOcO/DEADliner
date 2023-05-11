@@ -41,6 +41,7 @@
   "license": "ISC",
   "dependencies": {
     "date-events": "^1.0.1",
+    "electron-custom-notifications": "^8.0.5",
     "luxon": "^3.3.0"
   },
   "devDependencies": {

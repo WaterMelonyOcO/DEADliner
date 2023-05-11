@@ -1,12 +1,11 @@
 const { app, BrowserWindow, dialog, ipcMain, BrowserView } = require("electron");
 const { writeFile, existsSync, mkdirSync } = require("fs");
-const Handlers  = require("./src/handlers");
+const Handlers = require("./src/handlers");
 const { mkdir } = require("fs/promises");
 const { paths } = require("./src/paths");
 const { resolve } = require("path");
 const handlers = require("./src/handlers");
 const { MTray } = require("./src/tray");
-
 
 class MainWindow extends BrowserWindow {
 
@@ -18,7 +17,7 @@ class MainWindow extends BrowserWindow {
       height: h,
       webPreferences: {
         nodeIntegration: true,
-        preload: resolve(__dirname, "src","preload.js"),
+        preload: resolve(__dirname, "src", "preload.js"),
         webSecurity: false,
         devTools: true,
       }
@@ -28,7 +27,7 @@ class MainWindow extends BrowserWindow {
     // console.log(paths.homeDir);
     //проверяю есть ли конфиги
     if (!existsSync(paths.homeDir)) {
-      mkdirSync(paths.homeDir, {recursive: true})//если нету конфигов, то создаю папку
+      mkdirSync(paths.homeDir, { recursive: true })//если нету конфигов, то создаю папку
 
       console.log(paths.homeDir, paths.db_path, paths.config_path);
     }
@@ -38,29 +37,28 @@ class MainWindow extends BrowserWindow {
     this.#confCheck();//проверка на существование конфигов
     this.#filesFolderCheck();
 
-    this.on("close", (ev)=>{
+    this.on("close", (ev) => {
       ev.preventDefault();
       this.hide();
     })
 
     //создаю событие при натсуплении которого будет происходить удаление
-    ipcMain.handle('DOOMDAY', (_event)=>Handlers.DOOMDAY(paths.config_path, null, app, this));
-    ipcMain.on('dataErr', (_event)=>Handlers.invalidDate());
-    ipcMain.on("rewriteError", (_event)=>Handlers.rewriteFile());
-    ipcMain.on("deleteTask", (_event)=>Handlers.onDeleteTask(_event))
-    ipcMain.on("exit", (_event)=>Handlers.exit(_event))
-    ipcMain.on('trayTask', (_event, tName, time, desc, file)=>{
+    ipcMain.handle('DOOMDAY', (_event) => Handlers.DOOMDAY(paths.config_path, null, app, this));
+    ipcMain.on('dataErr', (_event) => Handlers.invalidDate());
+    ipcMain.on("rewriteError", (_event) => Handlers.rewriteFile());
+    ipcMain.on("deleteTask", (_event) => Handlers.onDeleteTask(_event))
+    ipcMain.on("exit", (_event) => Handlers.exit(_event))
+    ipcMain.on('trayTask', (_event, tName, time, desc, file) => {
       console.log("main aaaaaaaaaa");
       // console.log(tName, time, desc, file);
       this.webContents.send('trayAddTask', tName, time, desc, file);
       this.reload()
     })
 
-    this.loadFile(resolve(__dirname, "public","index.html"));//основная страница
-
+    this.loadFile(resolve(__dirname, "public", "index.html"));//основная страница
   }
 
-  
+
   #confCheck() {
     if (!existsSync(paths.config_path)) {//если конфигов нету
       let code = dialog.showMessageBoxSync(this, {//вопрос на удаление всей системы или только бд
@@ -80,11 +78,11 @@ class MainWindow extends BrowserWindow {
     }
   }
 
-  #filesFolderCheck(){
-    if (!existsSync(paths.filesFolder)){
+  #filesFolderCheck() {
+    if (!existsSync(paths.filesFolder)) {
       mkdir(paths.filesFolder)
-      .then(data => {console.log("files folder not exist. create....", data);})
-      .catch((err)=>{console.log("error on create files folder\n"+err);})
+        .then(data => { console.log("files folder not exist. create....", data); })
+        .catch((err) => { console.log("error on create files folder\n" + err); })
     }
   }
 
@@ -101,7 +99,7 @@ app.whenReady().then(() => {
   const tray = new MTray(win, app);//tray
 
   app.on('activate', () => {
-    if (win.getAllWindows().length === 0) new MainWindow ()
+    if (win.getAllWindows().length === 0) new MainWindow()
   })
 });
 

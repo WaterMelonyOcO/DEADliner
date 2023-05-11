@@ -1,6 +1,6 @@
 const { dialog } = require("electron");
 const { db_path, homeDir } = require("./paths").paths;
-
+const { createNotification, setContainerWidth, setGlobalStyles } = require("electron-custom-notifications")
 class Handlers {
 
     async DOOMDAY(confg, db = null, app, windw) {//событие удаления всего
@@ -10,7 +10,7 @@ class Handlers {
         const isBabe = await readFile(confg)
             .then(data => JSON.parse(data))
             .then(data => data.option.isBaby)
-        
+
         /*if ( !isBabe ){//если false то удаляются только задния
             
             writeFile( db_path, defaultDB,{force: true})
@@ -48,19 +48,48 @@ class Handlers {
         console.log(arg);
     }
 
-    onDeleteTask(_, title = "удаление задания", message = "Вы точно хотите удалить задание?"){
-        _.returnValue =  dialog.showMessageBoxSync(null, {
-            title:title,
+    onDeleteTask(_, title = "удаление задания", message = "Вы точно хотите удалить задание?") {
+        _.returnValue = dialog.showMessageBoxSync(null, {
+            title: title,
             message: message,
             buttons: ['Нет', 'Да']
         })
     }
 
-    exit(title = "выход из приложения", message = "вы уверены, что хотите закрыть приложение?"){
+    exit(title = "выход из приложения", message = "вы уверены, что хотите закрыть приложение?") {
         return dialog.showMessageBoxSync({
             title: title,
             message: message,
             buttons: ["Нет", "Да"]
+        })
+    }
+
+    myNotafication(name='', description, width = 300, html='', css='') {
+        setContainerWidth()
+        setGlobalStyles(`
+            * {
+              font-family: Helvetica;
+            }
+            .notification {
+              display: block;
+              padding: 20px;
+              background-color: #fff;
+              border-radius: 12px;
+              margin: 10px;
+              box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+            }
+            .notification h1 {
+              font-weight: bold;
+            }
+          `);
+        const NotaficationContent = `
+          <div class="notification">
+          <h1>my Notafication</h1>
+          <p>Noafication body</p>
+        </div>
+          `;
+        createNotification({
+            content: NotaficationContent
         })
     }
 }
