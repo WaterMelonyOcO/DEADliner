@@ -73,6 +73,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "concurrently": "^8.0.1",
     "electron": "^23.2.1",
     "nodemon": "^2.0.22"
   }
