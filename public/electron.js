@@ -22,7 +22,7 @@ class MainWindow extends BrowserWindow {
                 // webSecurity: false,
                 devTools: true,
             },
-            // icon: paths.trayIcon
+            icon: paths.trayIcon
         });
 
         this.menuBarVisible = false;
@@ -45,33 +45,33 @@ class MainWindow extends BrowserWindow {
         })
 
         //создаю событие при натсуплении которого будет происходить удаление
-        // ipcMain.handle('DOOMDAY', (_event) => handlers.DOOMDAY(paths.config_path, null, app, this));
-        // ipcMain.on('dataErr', (_event) => handlers.invalidDate());
-        // ipcMain.on("rewriteError", (_event) => handlers.rewriteFile());
-        // ipcMain.on("deleteTask", (_event) => handlers.onDeleteTask(_event))
-        // ipcMain.on("exit", (_event) => handlers.exit(_event))
-        // ipcMain.on('trayTask', (_event, tName, time, desc, file) => {
-        //     console.log("main aaaaaaaaaa");
-        //     // console.log(tName, time, desc, file);
-        //     this.webContents.send('trayAddTask', tName, time, desc, file);
-        //     this.reload()
-        // })
+        ipcMain.handle('DOOMDAY', (_event) => handlers.DOOMDAY(paths.config_path, null, app, this));
+        ipcMain.on('dataErr', (_event) => handlers.invalidDate());
+        ipcMain.on("rewriteError", (_event) => handlers.rewriteFile());
+        ipcMain.on("deleteTask", (_event) => handlers.onDeleteTask(_event))
+        ipcMain.on("exit", (_event) => handlers.exit(_event))
+        ipcMain.on('trayTask', (_event, tName, time, desc, file) => {
+            console.log("main aaaaaaaaaa");
+            // console.log(tName, time, desc, file);
+            this.webContents.send('trayAddTask', tName, time, desc, file);
+            this.reload()
+        })
 
-        const appURL = app.isPackaged
-            ? url.format({
-                pathname: join(__dirname, "index.html"),
-                protocol: "file:",
-                slashes: true,
-            })
-            : "http://localhost:3000";
-        this.loadURL(appURL);
+        // const appURL = app.isPackaged
+        //     ? url.format({
+        //         pathname: join(__dirname, "index.html"),
+        //         protocol: "file:",
+        //         slashes: true,
+        //     })
+        //     : "http://localhost:3000";
+        // this.loadURL(appURL);
 
         // Automatically open Chrome's DevTools in development mode.
         // if (!app.isPackaged) {
         //     this.webContents.openDevTools();
         // }
         // this.loadURL("http://localhost:3000")
-        // this.loadFile(resolve(__dirname, "public","index.html"));//основная страница
+        this.loadFile(resolve(__dirname, "..", "oldPublic","index.html"));//основная страница
 
     }
 

@@ -1,6 +1,10 @@
 const { dialog } = require("electron");
-const { db_path, homeDir } = require("./paths").paths;
-const { createNotification, setContainerWidth, setGlobalStyles } = require("electron-custom-notifications")
+const { db_path, homeDir, soundPath } = require("./paths").paths;
+const { createNotification, setContainerWidth, setGlobalStyles } = require("electron-custom-notifications");
+const { join } = require("path");
+const sound = require("play-sound")
+
+
 class Handlers {
 
     async DOOMDAY(confg, db = null, app, windw) {//событие удаления всего
@@ -11,6 +15,10 @@ class Handlers {
             .then(data => JSON.parse(data))
             .then(data => data.option.isBaby)
 
+        
+        sound({players:["play"]}).play(join(soundPath,"duck.mp3"), (err)=>{
+            console.log(err);
+        })
         /*if ( !isBabe ){//если false то удаляются только задния
             
             writeFile( db_path, defaultDB,{force: true})
