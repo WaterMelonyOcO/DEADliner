@@ -1,10 +1,21 @@
-// All of the Node.js APIs are available in the preload process.
-// It has the same sandbox as a Chrome extension.
-const { contextBridge } = require("electron");
+const { contextBridge, BrowserWindow, ipcRenderer } = require("electron");
+const elec = require("electron").remote
+const { TL } = require("./backend/todo");
+const { DateTime } = require("luxon")
+const { sep } = require("path");
+const { electron } = require("process");
+// const TLs = new TL()
+//time
+//
 
-// As an example, here we use the exposeInMainWorld API to expose the browsers
-// and node versions to the main window.
-// They'll be accessible at "window.versions".
-process.once("loaded", () => {
-  contextBridge.exposeInMainWorld("versions", process.versions);
-});
+contextBridge.exposeInMainWorld("todo", {
+    add: (task, deadline, description, files) => TL.addTask(task, deadline, description, files),
+    getTask: (id) => TL.getTask(id),
+    delete: (id) => TL.deleteTask(id),
+    get: () => TL.getTasks(),
+    edit: (id, name) => TL.editTask(id, name),
+    removeFile: (name) => TL.removeTaskFile(name),
+    timeDiff: DateTime,
+    openFile: (file) => TL.openFile(file),
+    sep: sep,
+})

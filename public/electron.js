@@ -1,10 +1,10 @@
 const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const { writeFile, existsSync, mkdirSync } = require("fs");
 const { mkdir } = require("fs/promises");
-const { paths } = require("./src/backend/paths");
+const { paths } = require("./backend/paths");
 const { resolve, join } = require("path");
-const handlers = require("./src/backend/handlers");
-const { MTray } = require("./src/backend/tray");
+const handlers = require("./backend/handlers");
+const { MTray } = require("./backend/tray");
 const url = require("url");
 
 
