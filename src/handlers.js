@@ -67,32 +67,32 @@ class Handlers {
                 win.destroy()
             }
         })
-        // console.log(a, 'kjfekldsk');
-
-        // const win = new BrowserWindow({
-        //     webPreferences: {
-        //         nodeIntegration: true,
-        //         preload: preload,
-        //         webSecurity: false,
-        //         devTools: true,
-        //     }
-        // })
-        // win.loadFile(load)
-
-        // ipcMain.on('exit', (_, data) => {
-        //     console.log(data);
-        //     if ( +data === 1 ){
-        //         app.exit(0)
-        //     }
-        //     else{
-        //         win.destroy()
-        //     }
-        // });
     }
 
+    /**
+     * 
+     * @description "шаблон" для окна. Ничего не возвращает, просто закрывает окно с сообщением
+     */
     async #templateVoid(_,load, preload){
         let num = new Promise((resolve, reject) => {
+            let win = CustomDialog.showBoxDialog(load, preload, async (data) => {
+                resolve(1)
+                win.destroy()
+            })
+        })
+        console.log("data promise: " + await num);
+    }
+
+    /**
+     * @description "шаблон" для окон с возвращяемыми значениями
+     */
+    async #templateData(){
+        let num = new Promise((resolve, reject) => {
             let win = CustomDialog.showMessageDialog(load, preload, async (data) => {
+                win.on("close", (e)=>{
+                    e.preventDefault();
+                    resolve(0);
+                })
                 resolve(data)
                 win.destroy()
             })

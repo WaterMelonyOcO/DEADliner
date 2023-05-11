@@ -50,15 +50,15 @@ class TodoList {
         catch (err) {
             console.log(err);
             if (err.name === "TypeError") {
-                ipcRenderer.invoke("dataErr", "TypeError");
+                ipcRenderer.send("dataErr");
                 return;
             }
             else if (err.name === "RangeError") {
-                ipcRenderer.invoke("dataErr");
+                ipcRenderer.send("dataErr");
                 return;
             }
             else if (err.message === "Date_Error") {
-                ipcRenderer.invoke("dataErr");
+                ipcRenderer.send("dataErr");
                 return;
             }
             return false;
@@ -123,9 +123,9 @@ class TodoList {
 
         if (TaskIndex < 0) { throw new Error("NO_ELEMENT_TO_REMOVE") }
 
-        const data = ipcRenderer.sendSync("deleteTask");
+        let data = ipcRenderer.sendSync("deleteTask");
         console.log("todo delete code: " + data);
-        if (!+data) {
+        if (+data) {
             try {
                 const deletedTask = this.#TodoListArr.splice(TaskIndex, 1);
                 this.removeTaskFolder(deletedTask[0].filePath);

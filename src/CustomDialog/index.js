@@ -29,13 +29,20 @@ class CustomDialog {
 
     }
 
-    static showMessageDialog(load, preload, callback){
+    static showMessageDialog(load, preload, callback, chanelName = "MessageData"){
         const win = new CustomDialog(load, preload)
         win.loadFile(load)
 
-        ipcMain.on('MessageData', (_, data) => {
+        ipcMain.on(chanelName, (_, data) => {
             return callback(data)
         });
+        return win
+    }
+
+    static showBoxDialog(load, preload, callback){
+        const win = new CustomDialog(load, preload)
+        win.loadFile(load)
+
         return win
     }
 

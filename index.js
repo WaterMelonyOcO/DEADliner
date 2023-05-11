@@ -19,8 +19,9 @@ class MainWindow extends BrowserWindow {
         nodeIntegration: true,
         preload: resolve(__dirname, "src", "preload.js"),
         webSecurity: false,
-        devTools: true,
-      }
+        devTools: true
+      },
+      icon: paths.trayIcon
     });
 
     // this.menuBarVisible = false;
@@ -55,16 +56,6 @@ class MainWindow extends BrowserWindow {
       this.reload()
     })
 
-//CUSTOM DIALOG WINDOW
-    
-    // new Notification({
-    //   title:"djsok",
-    //   body: "<h1 style='color:red;'>dlfmglmdfg</h1>"
-    // }).show()
-    // CustomDialog.showMessage({button:["one", "two"],title: "new title"},(data)=>{
-    //   console.log(data);
-    // })
-    // CustomDialog.showError({desc:"some err title"})
     this.loadFile(resolve(__dirname, "public", "index.html"));//основная страница
 
   }
