@@ -25,6 +25,7 @@ class TaskItem{
         taskName.className = "taskName";
         taskName.value = Name.length !== 0 ? Name : "no_name";
         taskName.dataset.taskName = taskName.value;
+        // eslint-disable-next-line no-undef
         taskName.addEventListener("input", chNameListener)
 
         const taskDeadline = document.createElement("p");
@@ -38,12 +39,14 @@ class TaskItem{
         const delButton = document.createElement("button")
 
         editButton.classList = "optionsBtn editBtn";
+        // eslint-disable-next-line no-undef
         editButton.addEventListener("click", editTask)
         editButton.disabled = true;
         editButton.textContent = "edit"
 
         delButton.classList = "optionsBtn deleteBtn";
         delButton.textContent = "delete";
+        // eslint-disable-next-line no-undef
         delButton.addEventListener("click", deleteTask)
 
         let docConteiner = document.createElement("div");
@@ -67,6 +70,7 @@ class TaskItem{
             cont.style.backgroundColor="pink";
             cont.textContent=i
             
+            // eslint-disable-next-line no-undef
             cont.addEventListener("click", openFile)
 
             return cont;

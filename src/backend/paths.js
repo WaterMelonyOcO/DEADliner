@@ -16,7 +16,7 @@ function paths() {
         db_path: this.db_path = join(this.homeDir, "db.json"),
         config_path: this.config_path = join(this.homeDir, "config.json"),
         filesFolder: this.filesFolder = join(this.homeDir, "pickedFiles"),
-        trayIcon: this.trayIcon = join(__dirname, 'images', 'favicon.png')
+        trayIcon: this.trayIcon = join("..", 'images', 'favicon.png')
     }
 }
 

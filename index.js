@@ -1,11 +1,11 @@
 const { app, BrowserWindow, dialog, ipcMain, BrowserView } = require("electron");
 const { writeFile, existsSync, mkdirSync } = require("fs");
-const Handlers  = require("./src/handlers");
+const Handlers  = require("./src/backend/handlers");
 const { mkdir } = require("fs/promises");
-const { paths } = require("./src/paths");
+const { paths } = require("./src/backend/paths");
 const { resolve } = require("path");
-const handlers = require("./src/handlers");
-const { MTray } = require("./src/tray");
+const handlers = require("./src/backend/handlers");
+const { MTray } = require("./src/backend/tray");
 
 
 class MainWindow extends BrowserWindow {
@@ -18,10 +18,11 @@ class MainWindow extends BrowserWindow {
       height: h,
       webPreferences: {
         nodeIntegration: true,
-        preload: resolve(__dirname, "src","preload.js"),
-        webSecurity: false,
+        // preload: resolve(__dirname, "src", "preload.js"),
+        // webSecurity: false,
         devTools: true,
-      }
+      },
+      icon: paths.trayIcon
     });
 
     this.menuBarVisible = false;
@@ -56,7 +57,8 @@ class MainWindow extends BrowserWindow {
       this.reload()
     })
 
-    this.loadFile(resolve(__dirname, "public","index.html"));//основная страница
+    this.loadURL("http://localhost:3000")
+    // this.loadFile(resolve(__dirname, "public","index.html"));//основная страница
 
   }
 
