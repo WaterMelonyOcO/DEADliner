@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "mstart": "concurrently -k \"BROWSER=none npm start\" \"npm run electron-start\"",
-    "electron-start": "wait-on http://192.168.0.104:3000 && electron .",
+    "mstart": "concurrently -k \"BROWSER=none npm start\" \"npm run wait-electron-start\"",
+    "wait-electron-start": "wait-on http://192.168.0.104:3000 && electron .",
+    "electron-start": "electron .",
     "buildW": "electron-packager . --out=build --overwrite --platform=win32",
     "buildL": "electron-packager . --out=build --overwrite --platform=linux",
     "electron-build": "electron-builder --win --x64",

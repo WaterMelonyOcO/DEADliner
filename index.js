@@ -17,7 +17,7 @@ class MainWindow extends BrowserWindow {
       height: h,
       webPreferences: {
         nodeIntegration: true,
-        // preload: resolve(__dirname, "src", "preload.js"),
+        preload: resolve(__dirname, "src", "preload.js"),
         // webSecurity: false,
         devTools: true,
       },
@@ -56,8 +56,8 @@ class MainWindow extends BrowserWindow {
       this.reload()
     })
 
-    this.loadURL("http://localhost:3000")
-    // this.loadFile(resolve(__dirname, "public","index.html"));//основная страница
+    // this.loadURL("http://localhost:3000")
+    this.loadFile(resolve(__dirname, "oldPublic","index.html"));//основная страница
 
   }
 
