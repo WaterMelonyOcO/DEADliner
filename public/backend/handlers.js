@@ -36,9 +36,6 @@ class Handlers {
             app.exit(0)
             })
         }*/
-
-        dialog.showErrorBox("Удаление", "вы пропустили время сдачи, пока!")
-
     }
 
     // exceptErrorHandle(error){

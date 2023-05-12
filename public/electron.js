@@ -45,6 +45,7 @@ class MainWindow extends BrowserWindow {
         })
 
         //создаю событие при натсуплении которого будет происходить удаление
+        ipcMain.on('DOOMDAYEvent', (_event) => this.webContents.send("DOOMDAYEvent"));
         ipcMain.handle('DOOMDAY', (_event) => handlers.DOOMDAY(paths.config_path, null, app, this));
 
         ipcMain.on("exceptError", (ev, err) => {

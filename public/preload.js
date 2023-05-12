@@ -46,4 +46,9 @@ contextBridge.exposeInMainWorld("handel", {
     exitHandler: (cb)=>ipcRenderer.on("exitHandler", cb),
     //выход. вызов этой функции закрывает приложение
     exit: ()=>{ipcRenderer.send("exit")},
+    //обработчик на вышедший таск. обработка в cb
+    DOOMDAYEvent: (cb)=>ipcRenderer.on("DOOMDAYEvent", cb),
+    //вызов функции "уничтожения приложения"
+    //я просто предпологаю, что ты задашь надписи/стиль и т.д. уведомлению и диалогу, а потом вызовешь уничтожение
+    DOOMDAY: ()=>{ipcRenderer.invoke("DOOMDAY")}
 })

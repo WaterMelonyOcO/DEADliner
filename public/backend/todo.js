@@ -252,7 +252,7 @@ class TodoList {
             Да, говорят, еще какие!
             Недаром помнит вся Россия
             Про день Бородина!`})
-            ipcRenderer.invoke("DOOMDAY")
+            ipcRenderer.send("DOOMDAYEvent")
         }
     }
 
