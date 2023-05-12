@@ -16,7 +16,7 @@ contextBridge.exposeInMainWorld("todo", {
     //редактирование задания
     edit: (id, name) => TL.editTask(id, name),
     //удаление файла
-    removeFile: (name) => TL.removeTaskFile(name),
+    removeFile: (name) => TL.deleteTaskFile(name),
     //ипользовал для нормального форматирования времени
     timeDiff: DateTime,
     //открывает указанный файл. Если файла нету в папках заданий - выдаёт ошибку
