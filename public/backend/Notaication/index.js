@@ -7,11 +7,11 @@ const { createNotification, setContainerWidth, setGlobalStyles} = require("elect
 class MyNotafication{
 
     /**
-     * 
-     * @param {*} opt 
-     * @returns Notification
+     * @description функция создаёт уведомление без картинки
+     * @param {Object} opt
+     * @param {title:String, description:String, html: String, css: String, timeout: Number, width: Number}
      */
-    createEmptyNotif(opt={title, description, width, html, css, timeout}){
+    createEmptyNotif(opt){
 
         this.title = opt.title || 'title';
         this.desc = opt.description || "desc";
@@ -38,10 +38,10 @@ class MyNotafication{
         this.timeout = opt.timeout || 5000
         
 
-        setContainerWidth(width);
+        setContainerWidth(350);
         setGlobalStyles(this.css);
 
-        createNotification({content: this.html, timeout: this.timeout})
+        return createNotification({content: this.html, timeout: this.timeout})
 
     }
 }

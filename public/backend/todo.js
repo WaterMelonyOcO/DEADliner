@@ -1,11 +1,9 @@
 const luxon = require("luxon")
 const { writeFile, readFileSync, mkdir, existsSync, copyFileSync, rmSync, mkdirSync, readdirSync, rm } = require("fs");
-const { ipcRenderer, dialog, shell } = require("electron");
+const { ipcRenderer, shell } = require("electron");
 const clock = require("date-events");
 const { paths } = require("./paths");
 const { resolve, sep, join, dirname } = require("path");
-
-const { createNotification, setContainerWidth, setGlobalStyles } = require("electron-custom-notifications");
 const handlers = require("./handlers");
 
 class TodoList {
@@ -31,7 +29,11 @@ class TodoList {
             this.#TodoListArr.forEach((i) => this.#checkDEAD(i.deadline));
         })
 
-
+        ipcRenderer.on("deleteTask", (_, data) => {
+            if (data) {
+                this.deleteTask(data)
+            }
+        })
 
         ipcRenderer.on("trayAddTask", (ev, taskName, deadline, description, files) => {
             console.log("todo event", taskName, deadline, description, files);
@@ -39,9 +41,15 @@ class TodoList {
         })
     }
 
+    /**
+     * 
+     * @param {String} taskName 
+     * @param {String} deadline @description дата должна быть в формате DD:MM:YYYYThh:mm
+     * @param {String} description 
+     * @param {Array[String || path]} files 
+     * @return {Number} возвращает id таска
+     */
     addTask(taskName, deadline, description = "", files = []) {
-
-        ipcRenderer.send("EmptyNotafication", {title:"hsjdhjhjjhdhjf"})
 
         let id = this.#TodoListArr.length + 1;
         this.files = [];
@@ -50,22 +58,10 @@ class TodoList {
             [this.deadline, this.cTime] = this.#verifyTime(deadline)
         }
         catch (err) {
-            console.log(err);
-            if (err.name === "TypeError") {
-                ipcRenderer.invoke("dataErr", "TypeError");
-                return;
-            }
-            else if (err.name === "RangeError") {
-                ipcRenderer.invoke("dataErr");
-                return;
-            }
-            else if (err.message === "Date_Error") {
-                ipcRenderer.invoke("dataErr");
-                return;
-            }
+            // console.log(err);
+            ipcRenderer.send("exceptError", err)
             return false;
         }
-
         let newTaskFolder = join(paths.filesFolder, `task_${id}_${Math.floor(Math.random() * 20)}`)
         mkdirSync(newTaskFolder);
         for (let file of files) {
@@ -84,51 +80,60 @@ class TodoList {
             filePath: newTaskFolder
         };
 
-        //подготовка для уведомления
-//         setContainerWidth()
-//         setGlobalStyles(`
-//     * {
-//       font-family: Helvetica;
-//     }
-//     .notification {
-//       display: block;
-//       padding: 20px;
-//       background-color: #fff;
-//       border-radius: 12px;
-//       margin: 10px;
-//       box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-//     }
-//     .notification h1 {
-//       font-weight: bold;
-//     }
-//   `);
-//         const NotaficationContent = `
-//   <div class="notification">
-//   <h1>my Notafication</h1>
-//   <p>Noafication body</p>
-// </div>
-//   `;
-        // createNotification({
-        //     content: NotaficationContent
-        // })
-
-        // handlers.myNotafication()
-
         this.#TodoListArr.push(Task);
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
 
         console.log(this.#TodoListArr);
+        ipcRenderer.send("createNotafication", {
+            title: "добавление задание", description: `У лукоморья дуб зелёный;
+        Златая цепь на дубе том:
+        И днём и ночью кот учёный
+        Всё ходит по цепи кругом;
+        Идёт направо — песнь заводит,
+        Налево — сказку говорит.
+        Там чудеса: там леший бродит,
+        Русалка на ветвях сидит;
+        Там на неведомых дорожках
+        Следы невиданных зверей;
+        Избушка там на курьих ножках
+        Стоит без окон, без дверей;
+        Там лес и дол видений полны;
+        Там о заре прихлынут волны
+        На брег песчаный и пустой,
+        И тридцать витязей прекрасных
+        Чредой из вод выходят ясных,
+        И с ними дядька их морской;
+        Там королевич мимоходом
+        Пленяет грозного царя;
+        Там в облаках перед народом`})
+
         return id;
     }
 
+    /**
+     * 
+     * @return {Array} 
+     */
     getTasks() {
         return this.#TodoListArr;
     }
 
+    /**
+     * 
+     * @param {Number} id 
+     * @return {Object}
+     */
     getTask(id) {
-        return this.#TodoListArr.filter((i) => i.id === id);
+        return this.#TodoListArr.filter((i) => i.id === id)[0];
     }
 
+    /**
+     * 
+     * @param {Number} id 
+     * @param {String} taskName 
+     * @param {String} taskDesc 
+     * @description функция для изменения даынных о задании
+     */
     editTask(id, taskName, taskDesc = '') {
         this.taskName = taskName;
         let TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
@@ -141,34 +146,39 @@ class TodoList {
         console.log(this.#TodoListArr);
     }
 
+    /**
+     * 
+     * @param {Number} id 
+     * 
+     */
     deleteTask(id) {
         const TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
 
         if (TaskIndex < 0) { throw new Error("NO_ELEMENT_TO_REMOVE") }
 
-        const data = ipcRenderer.sendSync("deleteTask");
-        console.log(data);
-        if (data) {
-            try {
-                const deletedTask = this.#TodoListArr.splice(TaskIndex, 1);
-                this.removeTaskFolder(deletedTask[0].filePath);
-                writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => {
-                    if (err)
-                        console.log(err.message, "write error");
-                });
-                return true
-            } catch (error) {
-                console.log("error on delete task\n", error);
-            }
-            finally {
-                console.log(this.#TodoListArr);
-            }
-        }
-        else {
+        try {
+            const deletedTask = this.#TodoListArr.splice(TaskIndex, 1);
+            this.removeTaskFolder(deletedTask[0].filePath);
+            writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => {
+                if (err)
+                    console.log(err.message, "write error");
+            });
+            return true
+        } catch (error) {
+            console.log("error on delete task\n", error);
+            ipcRenderer("excetError", new Error("DELETE_TASK_ERROR"))
             return false;
         }
+        finally {
+            console.log(this.#TodoListArr);
+        }
+
     }
 
+    /**
+     * 
+     * @param {path} path 
+     */
     removeTaskFolder(path) {
         if (!existsSync(path)) {
             throw SyntaxError("removed file not exist");
@@ -176,16 +186,26 @@ class TodoList {
         rmSync(path, { force: true, recursive: true });
     }
 
+    /**
+     * 
+     * @param {String} fileName 
+     * @description рекурсивно обойдёт все папки заданий. Если ничего не найдёт - выкинет ошибку
+     */
     openFile(fileName) {
         const path = this.#getFilePath(fileName);
         if (path) {
             shell.openPath(path)
                 .then((data) => { console.log("open file ---- ", data); return })
-                .catch((err) => { console.log("error on open file"); return })
+                .catch((err) => { console.log("error on open file"); ipcRenderer("excetError", err); return })
         }
         // throw new Error("FILE_NOT_FOUND").name="FILE_NOT_EXIST";
     }
 
+    /**
+     * 
+     * @param {String} filename 
+     * @description удаляет файл задания
+     */
     deleteTaskFile(filename) {
         const path = this.#getFilePath(filename);
         rm(path, (data) => {
@@ -193,6 +213,11 @@ class TodoList {
         })
     }
 
+    /**
+     * 
+     * @param {String} time 
+     * @returns {luxon}
+     */
     #timeFormat(time) {
         this.time = new Date(time).toISOString();
         // console.log(this.time);
@@ -219,6 +244,14 @@ class TodoList {
             console.log("checked time");
         } catch (error) {
             console.log("DOOOM");
+            ipcRenderer.send("createNotafication", {
+                title: "Время вышло", description: `Скажи-ка, дядя, ведь недаром
+            Москва, спаленная пожаром,
+            Французу отдана?
+            Ведь были ж схватки боевые,
+            Да, говорят, еще какие!
+            Недаром помнит вся Россия
+            Про день Бородина!`})
             ipcRenderer.invoke("DOOMDAY")
         }
     }

@@ -1,9 +1,8 @@
-const { dialog } = require("electron");
+const { dialog, ipcRenderer } = require("electron");
 const { db_path, homeDir, soundPath } = require("./paths").paths;
 const { createNotification, setContainerWidth, setGlobalStyles } = require("electron-custom-notifications");
 const { join } = require("path");
 const sound = require("play-sound")
-const notif = require("./Notaication")
 
 
 class Handlers {
@@ -16,8 +15,6 @@ class Handlers {
             .then(data => JSON.parse(data))
             .then(data => data.option.isBaby)
 
-        
-            this.EmptyNotafication()
         // sound({players:["play"]}).play(join(soundPath,"duck.mp3"), (err)=>{
         //     console.log(err);
         // })
@@ -44,45 +41,58 @@ class Handlers {
 
     }
 
-    rewriteFile() {
-        let chooses = dialog.showMessageBoxSync(null, {
-            title: "rewrite data",
-            message: "файл с таким именем уже существует.\n Перезаписать существующий файл?",
-            buttons: ['нет', 'да']
-        })
-        return chooses;
+    // exceptErrorHandle(error){
+    //     return error
+    // }
+
+    exit(app) {
+        app.exit(0)
     }
 
-    invalidDate(arg = null) {
-        dialog.showErrorBox("Неправильное время", "Вы ввели неправильно время.\n пожалуйста введите корректную дату и время")
-        console.log(arg);
-    }
-
-    onDeleteTask(_, title = "удаление задания", message = "Вы точно хотите удалить задание?") {
-        _.returnValue = dialog.showMessageBoxSync(null, {
-            title: title,
-            message: message,
-            buttons: ['Нет', 'Да']
-        })
-    }
-
-    exit(title = "выход из приложения", message = "вы уверены, что хотите закрыть приложение?") {
-        return dialog.showMessageBoxSync({
-            title: title,
-            message: message,
-            buttons: ["Нет", "Да"]
-        })
-    }
-
-    EmptyNotafication(opt) {
-        console.log(opt);
+    /**
+     * @description функция создаёт уведомление без картинки
+     * @param {Object} opt
+     * @param {title:String, 
+     * description:String, 
+     * html: String, 
+     * css: String, 
+     * timeout: Number, 
+     * width: Number,
+     * logo: String | Path}
+     * @todo доделать кликабельность
+     */
+    createNotafication(opt) {
+        // console.log(opt);
         this.title = opt.title || 'title';
         this.desc = opt.description || "desc";
-        this.html = `
+        this.timeout = opt.timeout || 5000
+        this.width = opt.width || 350
+        this.logo = opt.logo || undefined
+        
+        try {
+            if ( this.logo ){
+                this.logo = require("fs").readFileSync(this.logo, "base64");
+                this.htmlLogo = `<div id="logo"></div>`;
+                this.cssLogo = `.notification #logo {
+                    background-image: url("data:image/png;base64,${this.logo}");
+                    background-size: cover;
+                    background-position: center;
+                    width: 80px;
+                    height: 50px;
+                  }`
+            }
+        } catch (error) {
+            console.log(error);
+        }        
+        
+        this.html = opt.html || `
+        <div class="notification">
+        ${this.htmlLogo || ""}
             <h1>${this.title}</h1>
             <p>${this.desc}</p>
+        </div>
         ` ;
-        this.css = `
+        this.css = opt.css || `
         * {
           font-family: Helvetica;
         }
@@ -97,21 +107,26 @@ class Handlers {
         .notification h1 {
           font-weight: bold;
         }
+        ${this.cssLogo || ""}
       `;
-        this.timeout = opt.timeout || 5000
-        this.width = opt.width || 350
 
         setContainerWidth(this.width)
         setGlobalStyles(this.css);
 
-        createNotification({
+        const notification = createNotification({
             content: this.html,
-            timeout: 5000
+            timeout: this.timeout,
+            // link: "https://youtube.com"
         })
+        
+        // ipcRenderer.emit("make-clickable", notification.id)
 
-        // notif.on("click", () => {
-
-        // })
+        // notification.on("click", () => {
+        //     // Open the YouTube link in a browser.
+        //     require("electron").shell.openExternal(
+        //       "https://www.youtube.com/watch?v=M9FGaan35s0"
+        //     );
+        // })      
     }
 }
 

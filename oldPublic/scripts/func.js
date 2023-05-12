@@ -2,15 +2,18 @@
 const addBtn = document.querySelector("#addTaskBtn");
 const content = document.querySelector("#content");
 
+handel.errorHadler((_,...err)=>{console.log(err);})
+handel.exitHandler((_)=>{console.log("запрос на закрытие");
+handel.exit()
+})
+handel.eventHandler((_)=>{console.log("событие идёт в render")})
+
 function addTask() {
 
   let name = document.querySelector("#TaskName");
   let time = document.querySelector("#deadline");
   let file = Object.values(document.querySelector("#data").files);
   let timeVal = time.value.split("T").join(" ");
-
-  //СОФА ЭТО УВЕДОМЛЕНИЯ
-  // new Notification("вы добавили задание")
 
   let cr = todo.add(name.value, time.value, null, file);
   if (cr) content.appendChild(new TaskItem(cr, name.value, timeVal, file.map((i) => i.name)))
@@ -81,6 +84,7 @@ function chNameListener(e) {
   if (defaultName !== e.target.value) { editBtn.disabled = false }
 
 }
+
 
 // window.Electron.ipcRenderer.on("Timer", ()=>{ таймер
 //   const taskTimer = document.querySelector(".taskTimer")

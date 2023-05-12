@@ -46,10 +46,17 @@ class MainWindow extends BrowserWindow {
 
         //создаю событие при натсуплении которого будет происходить удаление
         ipcMain.handle('DOOMDAY', (_event) => handlers.DOOMDAY(paths.config_path, null, app, this));
-        ipcMain.on('dataErr', (_event) => handlers.invalidDate());
-        ipcMain.on("rewriteError", (_event) => handlers.rewriteFile());
-        ipcMain.on("deleteTask", (_event) => handlers.onDeleteTask(_event))
-        ipcMain.on("exit", (_event) => handlers.exit(_event))
+
+        ipcMain.on("exceptError", (ev, err) => {
+            // console.log(err);
+            this.webContents.send("exceptErrorHandler", err.message)
+        })
+        ipcMain.on("someEvent", (ev)=> this.webContents.emit("eventHandler"))
+
+        ipcMain.on("exitHandler", (_event)=>{console.log("tray exit event");this.webContents.emit("exitHandler")})
+        ipcMain.on("exit", (_event) => handlers.exit(app))
+
+        // ipcMain.on("deleteTask", (_event,)=>{_event.returnValue = 1})
         ipcMain.on('trayTask', (_event, tName, time, desc, file) => {
             console.log("main aaaaaaaaaa");
             // console.log(tName, time, desc, file);
@@ -57,8 +64,7 @@ class MainWindow extends BrowserWindow {
             this.reload()
         })
 
-        ipcMain.on("EmptyNotafication", (e, opt)=>{handlers.EmptyNotafication(opt)})
-
+        ipcMain.on("createNotafication", (e, opt)=>{handlers.createNotafication(opt)})
      
 
         // const appURL = app.isPackaged
@@ -71,7 +77,6 @@ class MainWindow extends BrowserWindow {
         // this.loadURL(appURL);
         // handlers.EmptyNotafication()
         this.loadFile(resolve(__dirname, "..", "oldPublic", "index.html"));//основная страница
-
     }
 
 
