@@ -41,6 +41,8 @@ class TodoList {
 
     addTask(taskName, deadline, description = "", files = []) {
 
+        ipcRenderer.send("EmptyNotafication", {title:"hsjdhjhjjhdhjf"})
+
         let id = this.#TodoListArr.length + 1;
         this.files = [];
 

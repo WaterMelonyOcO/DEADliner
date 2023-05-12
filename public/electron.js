@@ -6,7 +6,7 @@ const { resolve, join } = require("path");
 const handlers = require("./backend/handlers");
 const { MTray } = require("./backend/tray");
 const url = require("url");
-
+const { createNotification, setContainerWidth, setGlobalStyles } = require("electron-custom-notifications");
 
 class MainWindow extends BrowserWindow {
 
@@ -57,6 +57,10 @@ class MainWindow extends BrowserWindow {
             this.reload()
         })
 
+        ipcMain.on("EmptyNotafication", (e, opt)=>{handlers.EmptyNotafication(opt)})
+
+     
+
         // const appURL = app.isPackaged
         //     ? url.format({
         //         pathname: join(__dirname, "index.html"),
@@ -65,13 +69,8 @@ class MainWindow extends BrowserWindow {
         //     })
         //     : "http://localhost:3000";
         // this.loadURL(appURL);
-
-        // Automatically open Chrome's DevTools in development mode.
-        // if (!app.isPackaged) {
-        //     this.webContents.openDevTools();
-        // }
-        // this.loadURL("http://localhost:3000")
-        this.loadFile(resolve(__dirname, "..", "oldPublic","index.html"));//основная страница
+        // handlers.EmptyNotafication()
+        this.loadFile(resolve(__dirname, "..", "oldPublic", "index.html"));//основная страница
 
     }
 
@@ -111,7 +110,7 @@ class MainWindow extends BrowserWindow {
 
 
 app.whenReady().then(() => {
-    const win = new MainWindow(1280, 985);
+    const win = new MainWindow(800, 600);
 
     const tray = new MTray(win, app);//tray
 

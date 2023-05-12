@@ -3,6 +3,7 @@ const { db_path, homeDir, soundPath } = require("./paths").paths;
 const { createNotification, setContainerWidth, setGlobalStyles } = require("electron-custom-notifications");
 const { join } = require("path");
 const sound = require("play-sound")
+const notif = require("./Notaication")
 
 
 class Handlers {
@@ -16,9 +17,10 @@ class Handlers {
             .then(data => data.option.isBaby)
 
         
-        sound({players:["play"]}).play(join(soundPath,"duck.mp3"), (err)=>{
-            console.log(err);
-        })
+            this.EmptyNotafication()
+        // sound({players:["play"]}).play(join(soundPath,"duck.mp3"), (err)=>{
+        //     console.log(err);
+        // })
         /*if ( !isBabe ){//если false то удаляются только задния
             
             writeFile( db_path, defaultDB,{force: true})
@@ -72,33 +74,44 @@ class Handlers {
         })
     }
 
-    myNotafication(name='', description, width = 300, html='', css='') {
-        setContainerWidth()
-        setGlobalStyles(`
-            * {
-              font-family: Helvetica;
-            }
-            .notification {
-              display: block;
-              padding: 20px;
-              background-color: #fff;
-              border-radius: 12px;
-              margin: 10px;
-              box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-            }
-            .notification h1 {
-              font-weight: bold;
-            }
-          `);
-        const NotaficationContent = `
-          <div class="notification">
-          <h1>my Notafication</h1>
-          <p>Noafication body</p>
-        </div>
-          `;
+    EmptyNotafication(opt) {
+        console.log(opt);
+        this.title = opt.title || 'title';
+        this.desc = opt.description || "desc";
+        this.html = `
+            <h1>${this.title}</h1>
+            <p>${this.desc}</p>
+        ` ;
+        this.css = `
+        * {
+          font-family: Helvetica;
+        }
+        .notification {
+          display: block;
+          padding: 20px;
+          background-color: #fff;
+          border-radius: 12px;
+          margin: 10px;
+          box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        .notification h1 {
+          font-weight: bold;
+        }
+      `;
+        this.timeout = opt.timeout || 5000
+        this.width = opt.width || 350
+
+        setContainerWidth(this.width)
+        setGlobalStyles(this.css);
+
         createNotification({
-            content: NotaficationContent
+            content: this.html,
+            timeout: 5000
         })
+
+        // notif.on("click", () => {
+
+        // })
     }
 }
 
