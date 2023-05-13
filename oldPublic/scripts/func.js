@@ -2,11 +2,13 @@
 const addBtn = document.querySelector("#addTaskBtn");
 const content = document.querySelector("#content");
 
-handel.errorHadler((_,...err)=>{console.log(err);})
-handel.exitHandler((_)=>{console.log("запрос на закрытие");
-handel.exit()
+handel.errorHadler((_, ...err) => { console.log(err); })
+handel.exitHandler((_) => {
+  console.log("запрос на закрытие");
+  handel.exit()
 })
-handel.eventHandler((_)=>{console.log("событие идёт в render")})
+handel.eventHandler((_) => { console.log("событие идёт в render") })
+handel.addTaskTrayHandler((_)=>{ console.log("событие открытие диалога добавления");})
 
 function addTask() {
 
@@ -22,6 +24,13 @@ function addTask() {
   time.value = "";
 }
 
+function toComplite(id){
+  todo.toCompTask(id)
+}
+
+function getcomplitedTask(){
+  console.log(todo.getCompTask());
+}
 
 function openFile(e) {
   const nameFile = e.target.dataset.file;

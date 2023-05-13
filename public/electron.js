@@ -6,7 +6,6 @@ const { resolve, join } = require("path");
 const handlers = require("./backend/handlers");
 const { MTray } = require("./backend/tray");
 const url = require("url");
-const sound = require("play-sound")
 
 class MainWindow extends BrowserWindow {
 
@@ -50,10 +49,7 @@ class MainWindow extends BrowserWindow {
         ipcMain.handle('DOOMDAY', (_event) => handlers.DOOMDAY(paths.config_path, null, app, this));
 
         //обработчик ошибок
-        ipcMain.on("exceptError", (ev, err) => {
-            // console.log(err);
-            this.webContents.send("exceptErrorHandler", err.message)
-        })
+        ipcMain.on("exceptError", (ev, err) => { this.webContents.send("exceptErrorHandler", err.message) })
         ipcMain.on("someEvent", (ev)=> this.webContents.emit("eventHandler"))//обработчик остальных событий
 
         //обработчики для закрытия приложения
@@ -61,7 +57,9 @@ class MainWindow extends BrowserWindow {
         ipcMain.on("exit", (_event) => handlers.exit(app))
 
         //ДОДЕЛАТЬ
-        // ipcMain.on("deleteTask", (_event,)=>{_event.returnValue = 1})
+        //
+        ipcMain.on("addTaskHandler:Tray",(ev)=>{ this.webContents.send("addTaskHandler:Tray")})
+        // ipcMain.on("addTask:Tray", this.webContents.send("addTaskHandler:Tray"))
         ipcMain.on('trayTask', (_event, tName, time, desc, file) => {
             console.log("main aaaaaaaaaa");
             // console.log(tName, time, desc, file);

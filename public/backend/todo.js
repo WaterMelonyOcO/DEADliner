@@ -4,10 +4,11 @@ const { ipcRenderer, shell } = require("electron");
 const clock = require("date-events");
 const { paths } = require("./paths");
 const { resolve, sep, join, dirname } = require("path");
-const handlers = require("./handlers");
 
 class TodoList {
     #TodoListArr = [];
+    #complitedTodoList = []
+    #uncomplitedTodoList = []
 
     constructor() {
 
@@ -18,6 +19,13 @@ class TodoList {
             this.exempleDate = luxon.DateTime;
             // console.log(this.#TodoListArr);
             this.#TodoListArr = JSON.parse(readFileSync(paths.db_path));
+            this.#TodoListArr.forEach((i) => {//проверяю есть ли свойво "выполнено"
+                if (i.isDone === undefined) i.isDone = 0;
+            })
+
+            this.#complitedTodoList = this.#TodoListArr.filter((i) => i.isDone)//массив с выпонеными заданиями
+            this.#uncomplitedTodoList = this.#TodoListArr.filter((i) => !i.isDone)//массив с не выполненными заданиями
+
 
         } catch (error) {
             console.log(error.message);
@@ -40,7 +48,9 @@ class TodoList {
             this.addTask(taskName, deadline, description, files);
         })
 
-        ipcRenderer.send("createNotafication", {title:"вход", description: this.#randomPhrase()})
+        console.log("un|complited");
+        console.log(this.#complitedTodoList);
+        console.log(this.#uncomplitedTodoList);
     }
 
     /**
@@ -79,10 +89,12 @@ class TodoList {
             CreateTime: this.cTime,
             description: description,
             files: this.files,
-            filePath: newTaskFolder
+            filePath: newTaskFolder,
+            isDone: 0
         };
 
         this.#TodoListArr.push(Task);
+        this.#uncomplitedTodoList.push(Task)
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
 
         console.log(this.#TodoListArr);
@@ -90,34 +102,44 @@ class TodoList {
             title: "добавление задание", description: `У лукоморья дуб зелёный;
         Златая цепь на дубе том:
         И днём и ночью кот учёный
-        Всё ходит по цепи кругом;
-        Идёт направо — песнь заводит,
-        Налево — сказку говорит.
-        Там чудеса: там леший бродит,
-        Русалка на ветвях сидит;
-        Там на неведомых дорожках
-        Следы невиданных зверей;
-        Избушка там на курьих ножках
-        Стоит без окон, без дверей;
-        Там лес и дол видений полны;
-        Там о заре прихлынут волны
-        На брег песчаный и пустой,
-        И тридцать витязей прекрасных
-        Чредой из вод выходят ясных,
-        И с ними дядька их морской;
-        Там королевич мимоходом
-        Пленяет грозного царя;
-        Там в облаках перед народом`})
+        Всё ходит по цепи кругом;`})
 
+        console.log("un|complited");
+        console.log(this.#uncomplitedTodoList);
+        console.log(this.#complitedTodoList);
         return id;
     }
 
     /**
      * 
      * @return {Array} 
+     * @description возвращает не отфильтрованный массив заданий
      */
     getTasks() {
         return this.#TodoListArr;
+    }
+
+    /**
+     * @description возвращает массив с выполненными заданиями
+     * @returns {Array}
+     */
+    getComplitedTask() {
+        return this.#complitedTodoList
+    }
+
+    /**
+     * 
+     * @param {Number} id 
+     * @description меняет статус задания на "выполненно"
+     */
+    toCompliteTask(id) {
+        const TaskIndex = this.#uncomplitedTodoList.findIndex((i) => i.id === +id);
+        const compTask = this.#uncomplitedTodoList.splice(TaskIndex, 1)[0];
+
+        compTask.isDone = 1;
+        this.#complitedTodoList.push(compTask);
+        writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
+        console.log(`задание ${compTask} перенесено в выполненые`);
     }
 
     /**
@@ -146,6 +168,9 @@ class TodoList {
         this.#TodoListArr[TaskIndex].name = this.taskName;
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
         console.log(this.#TodoListArr);
+        console.log("un|complited");
+        console.log(this.#uncomplitedTodoList);
+        console.log(this.#complitedTodoList);
     }
 
     /**
@@ -161,6 +186,8 @@ class TodoList {
         try {
             const deletedTask = this.#TodoListArr.splice(TaskIndex, 1);
             this.removeTaskFolder(deletedTask[0].filePath);
+            this.#uncomplitedTodoList.splice(TaskIndex, 1);
+            // this.#complitedTodoList.splice(TaskIndex, 1);
             writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => {
                 if (err)
                     console.log(err.message, "write error");
@@ -173,6 +200,9 @@ class TodoList {
         }
         finally {
             console.log(this.#TodoListArr);
+            console.log("un|complited");
+            console.log(this.#uncomplitedTodoList);
+            console.log(this.#complitedTodoList);
         }
 
     }
@@ -269,9 +299,9 @@ class TodoList {
         return false;
     }
 
-    #randomPhrase(){
-        const phrases = JSON.parse(readFileSync( paths.phrasesPath ))
-        const randNumber = Math.floor(Math.random() * (phrases.length ))
+    #randomPhrase() {
+        const phrases = JSON.parse(readFileSync(paths.phrasesPath))
+        const randNumber = Math.floor(Math.random() * (phrases.length))
         const phrase = phrases[randNumber]
 
         return phrase

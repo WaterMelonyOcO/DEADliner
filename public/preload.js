@@ -9,6 +9,10 @@ contextBridge.exposeInMainWorld("todo", {
     add: (task, deadline, description, files) => TL.addTask(task, deadline, description, files),
     //получение задания по id
     getTask: (id) => TL.getTask(id),
+    //получени массива всех выполненных заданий
+    getCompTask: (id) => TL.getComplitedTask(id),
+    //меняет состояние задания на "выполненно"
+    toCompTask: (id) => TL.toCompliteTask(id),
     //удвляет задание из БД
     delete: (id) => TL.deleteTask(id),
     //получение всех заданий
@@ -46,6 +50,7 @@ contextBridge.exposeInMainWorld("handel", {
     exitHandler: (cb)=>ipcRenderer.on("exitHandler", cb),
     //выход. вызов этой функции закрывает приложение
     exit: ()=>{ipcRenderer.send("exit")},
+    addTaskTrayHandler: (cb)=>ipcRenderer.on("addTaskHandler:Tray", cb),
     //обработчик на вышедший таск. обработка в cb
     DOOMDAYEvent: (cb)=>ipcRenderer.on("DOOMDAYEvent", cb),
     //вызов функции "уничтожения приложения"
