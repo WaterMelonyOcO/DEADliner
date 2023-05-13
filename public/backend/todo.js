@@ -270,7 +270,7 @@ class TodoList {
     }
 
     #randomPhrase(){
-        const phrases = ["привет, ты скоро уйдёшь?", "привет /(^ ^)/", "ух, да ты слабее, чем я думал"]
+        const phrases = JSON.parse(readFileSync( paths.phrasesPath ))
         const randNumber = Math.floor(Math.random() * (phrases.length ))
         const phrase = phrases[randNumber]
 
