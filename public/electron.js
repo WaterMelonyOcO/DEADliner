@@ -6,7 +6,7 @@ const { resolve, join } = require("path");
 const handlers = require("./backend/handlers");
 const { MTray } = require("./backend/tray");
 const url = require("url");
-const { createNotification, setContainerWidth, setGlobalStyles } = require("electron-custom-notifications");
+const sound = require("play-sound")
 
 class MainWindow extends BrowserWindow {
 
@@ -38,6 +38,7 @@ class MainWindow extends BrowserWindow {
         this.#databaseCheck();//проверка на существование бд
         this.#confCheck();//проверка на существование конфигов
         this.#filesFolderCheck();
+        this.#phraseCheck();
 
         this.on("close", (ev) => {
             ev.preventDefault();
@@ -115,6 +116,10 @@ class MainWindow extends BrowserWindow {
 
     #databaseCheck() {//просто проверка существования файла бд
         if (!existsSync(paths.db_path)) writeFile(paths.db_path, JSON.stringify([]), (err) => { console.log(err); });
+    }
+
+    #phraseCheck(){
+        if ( !existsSync( paths.phrasesPath )) writeFile(paths.phrasesPath, JSON.stringify([]), (err)=>{console.log(err);})
     }
 }
 

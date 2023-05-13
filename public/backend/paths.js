@@ -17,7 +17,8 @@ function paths() {
         config_path: this.config_path = join(this.homeDir, "config.json"),
         filesFolder: this.filesFolder = join(this.homeDir, "pickedFiles"),
         trayIcon: this.trayIcon = resolve(__dirname, "..", "..", "media", 'images', 'favicon.png'),
-        soundPath: this.soundPath = resolve(__dirname, "..", "..", "media", 'sound')
+        soundPath: this.soundPath = resolve(__dirname, "..", "..", "media", 'sound'),
+        phrasesPath: this.phrasesPath = resolve(this.homeDir, "phrases.json")
     }
 }
 
