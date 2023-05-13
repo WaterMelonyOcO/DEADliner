@@ -6,7 +6,6 @@ const { resolve, join } = require("path");
 const handlers = require("./backend/handlers");
 const { MTray } = require("./backend/tray");
 const url = require("url");
-const { createNotification, setContainerWidth, setGlobalStyles } = require("electron-custom-notifications");
 
 class MainWindow extends BrowserWindow {
 

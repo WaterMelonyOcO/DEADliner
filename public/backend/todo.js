@@ -39,6 +39,8 @@ class TodoList {
             console.log("todo event", taskName, deadline, description, files);
             this.addTask(taskName, deadline, description, files);
         })
+
+        ipcRenderer.send("createNotafication", {title:"вход", description: this.#randomPhrase()})
     }
 
     /**
@@ -265,6 +267,14 @@ class TodoList {
             }
         }
         return false;
+    }
+
+    #randomPhrase(){
+        const phrases = ["привет, ты скоро уйдёшь?", "привет /(^ ^)/", "ух, да ты слабее, чем я думал"]
+        const randNumber = Math.floor(Math.random() * (phrases.length ))
+        const phrase = phrases[randNumber]
+
+        return phrase
     }
 }
 
