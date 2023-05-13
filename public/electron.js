@@ -48,15 +48,18 @@ class MainWindow extends BrowserWindow {
         ipcMain.on('DOOMDAYEvent', (_event) => this.webContents.send("DOOMDAYEvent"));
         ipcMain.handle('DOOMDAY', (_event) => handlers.DOOMDAY(paths.config_path, null, app, this));
 
+        //обработчик ошибок
         ipcMain.on("exceptError", (ev, err) => {
             // console.log(err);
             this.webContents.send("exceptErrorHandler", err.message)
         })
-        ipcMain.on("someEvent", (ev)=> this.webContents.emit("eventHandler"))
+        ipcMain.on("someEvent", (ev)=> this.webContents.emit("eventHandler"))//обработчик остальных событий
 
+        //обработчики для закрытия приложения
         ipcMain.on("exitHandler", (_event)=>{console.log("tray exit event");this.webContents.emit("exitHandler")})
         ipcMain.on("exit", (_event) => handlers.exit(app))
 
+        //ДОДЕЛАТЬ
         // ipcMain.on("deleteTask", (_event,)=>{_event.returnValue = 1})
         ipcMain.on('trayTask', (_event, tName, time, desc, file) => {
             console.log("main aaaaaaaaaa");
@@ -65,6 +68,7 @@ class MainWindow extends BrowserWindow {
             this.reload()
         })
 
+        //обработчик создания уведомлений
         ipcMain.on("createNotafication", (e, opt)=>{handlers.createNotafication(opt)})
      
 
@@ -78,6 +82,7 @@ class MainWindow extends BrowserWindow {
         // this.loadURL(appURL);
         // handlers.EmptyNotafication()
         this.loadFile(resolve(__dirname, "..", "oldPublic", "index.html"));//основная страница
+        //пока что использую как тестовый полигон
     }
 
 
