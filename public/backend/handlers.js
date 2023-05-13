@@ -15,9 +15,9 @@ class Handlers {
             .then(data => JSON.parse(data))
             .then(data => data.option.isBaby)
 
-        // sound({players:["play"]}).play(join(soundPath,"duck.mp3"), (err)=>{
-        //     console.log(err);
-        // })
+        sound().play(join(soundPath,"duck.mp3"), (err)=>{
+            console.log(err);
+        })
         /*if ( !isBabe ){//если false то удаляются только задния
             
             writeFile( db_path, defaultDB,{force: true})

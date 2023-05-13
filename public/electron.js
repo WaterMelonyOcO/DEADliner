@@ -6,6 +6,7 @@ const { resolve, join } = require("path");
 const handlers = require("./backend/handlers");
 const { MTray } = require("./backend/tray");
 const url = require("url");
+const sound = require("play-sound")
 
 class MainWindow extends BrowserWindow {
 
