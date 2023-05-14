@@ -19,11 +19,15 @@
  $second-orange-color: #E57C00;
  $hover-red-color: #C12121;
 
+ //---------text--------
 
- body {
-   color: $primary-color;
- }
+ * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 
- h1 {
-    color: red;
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color:  $main-gray-color;
  }
