@@ -1,5 +1,24 @@
  // styles.scss
- $primary-color: #333;
+
+//---------colors----------
+ $main-dark-gray: #1A1B1F;
+ $dark-gray_for_pannel-color: #202125;
+ $dark_for_cheked_tasks-color: #1C1D21;
+ $gray_for_border-color: #2C2D33;
+ $main-gray-color: #97989C;
+ $gray_for_text-color: #ABACAF;
+ $dark-gray_for_text_and_elem-color: #797A7D;
+ $main-white-color: #DFE0E1;
+ $main-red-color: #FF0028;
+ $second-red-color: #E50024;
+ $second-green-color: #00E585;
+ $second-blue-color: #00AEE5;
+ $second-yel-color: #E5DC00;
+ $second-purple-color: #8000E5;
+ $second-pink-color: #E50089;
+ $second-orange-color: #E57C00;
+ $hover-red-color: #C12121;
+
 
  body {
    color: $primary-color;
