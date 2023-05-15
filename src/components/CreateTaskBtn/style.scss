@@ -1,0 +1,28 @@
+@import '../../style.scss';
+
+.wrapper{
+    position: relative;
+    &__btn {
+        position: absolute;
+        bottom: 25px;
+        right: 30px;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: $second-red-color;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        &:hover {
+            background-color: #f30528;
+            cursor: pointer;
+            transition: 0.5s;
+        }
+        &:active {
+            background-color: #FF0028;
+        }
+    }
+
+    
+}
