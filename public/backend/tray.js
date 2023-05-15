@@ -9,13 +9,8 @@ class MTray extends Tray {
         super(icon)
         console.log(paths.trayIcon);
         const ContextMenu = Menu.buildFromTemplate([
-<<<<<<< HEAD:src/tray.js
-            { label: "Выход", type: "normal", click: async () => { await handlers.exit().then((data)=>{ if (!data) app.exit(0)}) } },
-            { label: "Добавить задание", type: "normal", click:(ev)=>{  this.#addNewTask()}}
-=======
             { label: "Выход", type: "normal", click: ()=>{win.webContents.send("exitHandler")} },
             { label: "Добавить задание", type: "normal", click:(ev)=>{ win.webContents.send("addTaskHandler:Tray")}}
->>>>>>> Notafication:public/backend/tray.js
         ])
         // this.#addNsewTask()
         this.setToolTip("DEADliner");
