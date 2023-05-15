@@ -1,5 +1,7 @@
 .dropdown {
     &__menu {
+       &.width_menu {
         width: 230px;
+       }
     }
 }

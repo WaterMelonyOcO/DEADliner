@@ -6,7 +6,7 @@ import { Layout } from './components/Layout/Layout';
 import { LeftMenu } from './components/LeftMenu/LeftMenu';
 
 function App() {
-  return (<>
+  return (<div className='body'>
     <BrowserRouter>
     <Layout>
         <Routes>
@@ -14,7 +14,7 @@ function App() {
           </Routes>
       </Layout>
       </BrowserRouter>
-  </>
+  </div>
 
   );
 }

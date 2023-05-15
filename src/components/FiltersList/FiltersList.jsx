@@ -48,7 +48,7 @@ export function FiltersList ({placeholder, options}) {
         </div>
     </div>
     {showMenu && (
-    <div className='dropdown__menu'>
+    <div className='dropdown__menu width_menu'>
         {options.map((option) => (
             <div key={option.value} className={`dropdown__item ${isSelected(option) && "selected"}`} onClick={() => onItemClick(option)}>
                 {option.label}
