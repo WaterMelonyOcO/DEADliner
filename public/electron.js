@@ -18,7 +18,7 @@ class MainWindow extends BrowserWindow {
             height: h,
             webPreferences: {
                 nodeIntegration: true,
-                preload: resolve(__dirname, "preload.js"),
+                preload: join(__dirname, "src", "preload.js"),
                 // webSecurity: false,
                 devTools: true,
             },
