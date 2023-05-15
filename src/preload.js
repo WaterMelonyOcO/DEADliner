@@ -1,5 +1,5 @@
 const { contextBridge, ipcRenderer } = require("electron");
-const { TL } = require("./backend/todo");
+const { TL } = require("../public/backend/todo");
 const { DateTime } = require("luxon")
 const { sep } = require("path");
 
@@ -10,7 +10,7 @@ contextBridge.exposeInMainWorld("todo", {
     //получение задания по id
     getTask: (id) => TL.getTask(id),
     //получени массива всех выполненных заданий
-    getCompTask: (id) => TL.getComplitedTask(id),
+    getCompTask: () => TL.getComplitedTask(),
     //меняет состояние задания на "выполненно"
     toCompTask: (id) => TL.toCompliteTask(id),
     //удвляет задание из БД
