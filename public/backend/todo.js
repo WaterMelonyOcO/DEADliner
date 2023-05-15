@@ -1,4 +1,4 @@
-const { v4 } = require("uuid")
+// const { v4 } = require("uuid")
 const luxon = require("luxon")
 const { writeFile, readFileSync, mkdir, existsSync, copyFileSync, rmSync, mkdirSync, readdirSync, rm } = require("fs");
 const { ipcRenderer, shell } = require("electron");
@@ -133,14 +133,10 @@ class TodoList {
      * @description создаёт тег и возвращает его
      * @example {id, name, color}
      */
-    createTag(name, color) {
+    createTag(name, color = '', value = '') {
 
         try {
-            this.#tagsArr.forEach((i) => {
-                if (i.name === name) {
-                    throw new Error("TAG_WITH_SAME_NAME_IS_EXIST")
-                }
-            })
+            this.#existTagCheck(name);
         } catch (error) {
             console.error('[ERR] error on create tag');
             ipcRenderer.send("exceptError", error)
@@ -148,9 +144,9 @@ class TodoList {
         }
 
         const Tag = {
-            id: v4(),
             name: name,
-            color: color
+            color: color,
+            value: value
         }
         console.log(Tag);
         console.log("CREATE TEG " + Tag.name);
@@ -177,8 +173,18 @@ class TodoList {
      * @param {Object} tag 
      */
     addTagToTask(id, tag) {
-
         const innerTags = this.getTask(id).tags;
+
+        try {
+            if ( innerTags.includes(tag) ){
+                throw new Error("TASK_HAS_CURRENT_TEG")
+            }
+        } catch (error) {
+            console.error('[ERR] error on create tag');
+            ipcRenderer.send("exceptError", error)
+            return
+        }
+
         innerTags.push(tag);
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
     }
@@ -214,8 +220,8 @@ class TodoList {
      * @param {number} id 
      * @description удаляет тег, вообще
      */
-    removeTag(id) {
-        const index = this.#tagsArr.findIndex((i) => i.id === id)
+    removeTag(tegName) {
+        const index = this.#tagsArr.findIndex((i) => i.name === tegName)
         const delTag = this.#tagsArr.splice(index, 1)[0]
         console.log('[LOG] remove tag ' + delTag.name);
         writeFile(paths.tagsDataPath, JSON.stringify(this.#tagsArr), (err) => { if (err) console.log(err.message, "write error"); });
@@ -397,11 +403,21 @@ class TodoList {
         }
     }
 
-    #existTagCheck(tags) {
+    #existTagCheck(name) {
         this.#tagsArr.forEach((i) => {
-            tags.forEach((j) => {
-                if (i.name === j.name) {
-                    throw new Error("TAG_WITH_SAME_NAME_IS_EXIST")
+            if (i.name === name) {
+                throw new Error("TAG_WITH_SAME_NAME_IS_EXIST")
+            }
+        })
+        return true;
+    }
+
+    #existTagsCheck(tags) {
+        this.#tagsArr.forEach((i) => {
+            tags.forEach((j)=>{
+                if ( i.name === j.name ){
+                    console.log(i.name + "уже сущесвует, пропускаю");
+                    return false;
                 }
             })
         })
