@@ -2,41 +2,65 @@
 
 .head {
     width: 320px;
-    height: 880px;
+    height: 100vh;
     background-color: $dark-gray_for_pannel-color;
     display: flex;
     flex-direction: column;
-    // justify-content: space-between;
     align-items: center;
+    position: relative;
 
-    .head__logo {
+    &__logo {
         margin: 65px auto 0;
+        width: 161px;
+        height: 36px;
+    }
+    &__nav {
+        width: 100%;
+        height: max-content;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        margin-top: 85px;
+    }
+    &__link {
+        display: block;
+        width: 100%;
+        height: 70px;
+        text-decoration: none;
+
+        &_selected {
+            color: $main-red-color;
+            text-decoration: none;
+        }
+    }
+
+    &__span {
+         width: 100%;
+         height: 70px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        padding-left: 45px;
+
+        &__img {
+            margin-right: 10px;
+        }
+
+        &_active {
+            color: $main-red-color;
+            background-color: $dark_for_cheked_tasks-color;
+        }
+        &:hover {
+            background-color: $dark_for_cheked_tasks-color;
+            cursor: pointer;
+        }
+
+    }
+    &__version__p {
+        position: absolute;
+        bottom: 20px;
     }
 }
 
-// .head__ul {
-//     width: 100%;
-//     display: flex;
-//     flex-direction: column;
-//     justify-content: center;
-//     align-items: flex-start;
-//      margin-top: 85px;
-//     li {
-//         display: block;
-//         width: 100%;
-//         list-style-type: none;
-//         display: flex;
-//         flex-direction: row;
-//         justify-content: center;
-//         align-items: center;
-//         align-self: flex-start;
-//         width: 100%;
-//         // background-color: $dark_for_cheked_tasks-color;
-//         padding: 20px auto 50px;
-//         color:  $main-gray-color;
-
-//         img {
-//             margin-right: 10px;
-//         }
-//     }
-// }
