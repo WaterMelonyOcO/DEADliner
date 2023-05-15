@@ -14,7 +14,6 @@ function App() {
           </Routes>
       </Layout>
       </BrowserRouter>
-<LeftMenu/>
   </>
 
   );

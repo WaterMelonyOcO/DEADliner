@@ -1,0 +1,25 @@
+@import '../../style.scss';
+
+.search {
+    padding: 50px 0 45px 50px;
+
+.input__search {
+    width: 500px;
+    height: 50px;
+    border-radius: 20px;
+    border: none;
+    position: relative;
+    padding: 0 20px 0 50px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background: $dark-gray_for_pannel-color url(../../images/search_icon.svg) no-repeat scroll;
+    background-position: 20px center;
+
+    &:focus {
+        outline-color: $gray_for_border-color;
+    }
+}
+}
