@@ -152,20 +152,22 @@ class TodoList {
     }
 
     /**
-     * 
+     * @param {Object} opt
      * @param {Number} id 
      * @param {String} taskName 
      * @param {String} taskDesc 
      * @description функция для изменения даынных о задании
      */
-    editTask(id, taskName, taskDesc = '') {
+    editTask({id, taskName, taskDesc}) {
         this.taskName = taskName;
+        this.taskDesc = taskDesc
         let TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
 
         // console.log(TaskIndex);
         if (TaskIndex < 0) { throw new Error("NO_ELEMENT") }
 
         this.#TodoListArr[TaskIndex].name = this.taskName;
+        this.#TodoListArr[TaskIndex].description = this.taskDesc;
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
         console.log(this.#TodoListArr);
         console.log("un|complited");
@@ -176,7 +178,7 @@ class TodoList {
     /**
      * 
      * @param {Number} id 
-     * 
+     * @return {Boolean}
      */
     deleteTask(id) {
         const TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
@@ -209,17 +211,6 @@ class TodoList {
 
     /**
      * 
-     * @param {path} path 
-     */
-    removeTaskFolder(path) {
-        if (!existsSync(path)) {
-            throw SyntaxError("removed file not exist");
-        }
-        rmSync(path, { force: true, recursive: true });
-    }
-
-    /**
-     * 
      * @param {String} fileName 
      * @description рекурсивно обойдёт все папки заданий. Если ничего не найдёт - выкинет ошибку
      */
@@ -235,6 +226,17 @@ class TodoList {
 
     /**
      * 
+     * @param {path} path 
+     */
+    removeTaskFolder(path) {
+        if (!existsSync(path)) {
+            throw SyntaxError("removed file not exist");
+        }
+        rmSync(path, { force: true, recursive: true });
+    }
+
+    /**
+     * 
      * @param {String} filename 
      * @description удаляет файл задания
      */
@@ -243,6 +245,18 @@ class TodoList {
         rm(path, (data) => {
             if (data) console.log(data);
         })
+    }
+
+    /**
+     * 
+     * @param {path | string} file 
+     */
+    addFileToTask(id, file){
+        const Task = this.getTask(id);
+
+        copyFileSync(file, Task.filePath);
+        Task.file.push(file)
+        console.log(`[LOG] добавлен файл в ${Task.filePath}`);
     }
 
     /**

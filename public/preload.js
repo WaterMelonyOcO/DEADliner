@@ -25,6 +25,8 @@ contextBridge.exposeInMainWorld("todo", {
     timeDiff: DateTime,
     //открывает указанный файл. Если файла нету в папках заданий - выдаёт ошибку
     openFile: (file) => TL.openFile(file),
+    //добавляет файл в задание
+    addFileToTask: (id, file) => TL.addFileToTask(id, file),
     //сепаратор. Использовал для ..... а я не поню уже, короче это разделитель для путей в ФС
     //пусть будет
     sep: sep,
