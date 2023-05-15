@@ -46,6 +46,7 @@
         &_selected {
             color: $main-red-color;
             @include links;
+            background-color: $dark_for_cheked_tasks-color;
         }
         &:hover {
             background-color: $dark_for_cheked_tasks-color;

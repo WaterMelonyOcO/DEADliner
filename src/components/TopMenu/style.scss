@@ -24,7 +24,8 @@
     margin-right: 25px;
 
     &:focus {
-        outline-color: $gray_for_border-color;
+        outline: 2px solid $gray_for_border-color;
     }
+
 }
 }
