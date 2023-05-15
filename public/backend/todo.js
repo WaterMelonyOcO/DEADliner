@@ -1,3 +1,4 @@
+import { v4 as uuid} from "uuid"
 const luxon = require("luxon")
 const { writeFile, readFileSync, mkdir, existsSync, copyFileSync, rmSync, mkdirSync, readdirSync, rm } = require("fs");
 const { ipcRenderer, shell } = require("electron");
@@ -74,7 +75,7 @@ class TodoList {
             ipcRenderer.send("exceptError", err)
             return false;
         }
-        let newTaskFolder = join(paths.filesFolder, `task_${id}_${Math.floor(Math.random() * 20)}`)
+        let newTaskFolder = join(paths.filesFolder, `task_${uuid()}`)
         mkdirSync(newTaskFolder);
         for (let file of files) {
             copyFileSync(file.path, join(newTaskFolder, file.name));
