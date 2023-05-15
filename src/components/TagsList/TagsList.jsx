@@ -37,20 +37,22 @@ export function TagsList ({placeholder, options}) {
     };
 
     return(
-    <div className="dropdown-container">
-        <div onClick={handleInputClick} className="dropdown-input">
-            <div className="dropdown-selected-value">{getDisplay()}</div>
-            <div className="dropdown-tools">
-                <div className="dropdown-tool">
+    <div className="dropdown__container">
+        <div onClick={handleInputClick} className="dropdown__input">
+            <div>{getDisplay()}</div>
+            <div>
+                <div>
                     <img src={arrow_icon} alt="icon"/>
                 </div>
             </div>
         </div>
         {showMenu && (
-        <div className='dropdown-menu'>
+        <div className='dropdown__menu'>
             {options.map((option) => (
-                <div key={option.value} className="dropdown-item" onClick={() => onItemClick(option)}>
+                <div key={option.value} className={`dropdown__item ${isSelected(option) && "selected"}`} onClick={() => onItemClick(option)}>
                     {option.label}
+                    <img src={option.image}/>
+                    
                     </div>
             ))}
         </div>
