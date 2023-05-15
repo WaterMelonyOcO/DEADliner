@@ -38,6 +38,7 @@ class MainWindow extends BrowserWindow {
         this.#confCheck();//проверка на существование конфигов
         this.#filesFolderCheck();
         this.#phraseCheck();
+        this.#tagsDataCheck()
 
         this.on("close", (ev) => {
             ev.preventDefault();
@@ -118,6 +119,10 @@ class MainWindow extends BrowserWindow {
 
     #phraseCheck(){
         if ( !existsSync( paths.phrasesPath )) writeFile(paths.phrasesPath, JSON.stringify([]), (err)=>{console.log(err);})
+    }
+
+    #tagsDataCheck(){
+        if ( !existsSync( paths.tagsDataPath )) writeFile(paths.tagsDataPath, JSON.stringify([]), (err)=>{console.log(err);})
     }
 }
 

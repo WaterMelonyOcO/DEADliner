@@ -10,6 +10,7 @@ class TodoList {
     #TodoListArr = [];
     #complitedTodoList = []
     #uncomplitedTodoList = []
+    #tagsArr = []
 
     constructor() {
 
@@ -20,6 +21,7 @@ class TodoList {
             this.exempleDate = luxon.DateTime;
             // console.log(this.#TodoListArr);
             this.#TodoListArr = JSON.parse(readFileSync(paths.db_path));
+            this.#tagsArr = JSON.parse(readFileSync(paths.tagsDataPath));
             this.#TodoListArr.forEach((i) => {//проверяю есть ли свойво "выполнено"
                 if (i.isDone === undefined) i.isDone = 0;
             })
@@ -60,12 +62,14 @@ class TodoList {
      * @param {String} deadline @description дата должна быть в формате DD:MM:YYYYThh:mm
      * @param {String} description 
      * @param {Array[String || path]} files 
+     * @param {Array} tags
      * @return {Number} возвращает id таска
      */
-    addTask(taskName, deadline, description = "", files = []) {
+    addTask(taskName, deadline, description = "", files = [], tags = []) {
 
         let id = this.#TodoListArr.length + 1;
         this.files = [];
+        this.tags = tags
 
         try {
             [this.deadline, this.cTime] = this.#verifyTime(deadline)
@@ -83,6 +87,7 @@ class TodoList {
         }
 
         console.log("configure task");
+
         let Task = {
             id: id,
             name: taskName,
@@ -91,7 +96,8 @@ class TodoList {
             description: description,
             files: this.files,
             filePath: newTaskFolder,
-            isDone: 0
+            isDone: 0,
+            tags: this.tags
         };
 
         this.#TodoListArr.push(Task);
@@ -109,6 +115,110 @@ class TodoList {
         console.log(this.#uncomplitedTodoList);
         console.log(this.#complitedTodoList);
         return id;
+    }
+
+    getAllTags() {
+        return this.#tagsArr;
+    }
+
+    getTeg(name){
+        return this.#tagsArr.filter((i)=>i.name === name)[0]
+    }
+
+    /**
+     * 
+     * @param {string} name 
+     * @param {string} color 
+     * @return {object}
+     * @description создаёт тег и возвращает его
+     * @example {id, name, color}
+     */
+    createTag(name, color) {
+
+        try {
+            this.#tagsArr.forEach((i) => {
+                if (i.name === name) {
+                    throw new Error("TAG_WITH_SAME_NAME_IS_EXIST")
+                }
+            })
+        } catch (error) {
+            console.error('[ERR] error on create tag');
+            ipcRenderer.send("exceptError", error)
+            return
+        }
+
+        const Tag = {
+            id: v4(),
+            name: name,
+            color: color
+        }
+        console.log(Tag);
+        console.log("CREATE TEG " + Tag.name);
+        this.#tagsArr.push(Tag)
+        writeFile(paths.tagsDataPath, JSON.stringify(this.#tagsArr), (err) => { if (err) console.log(err.message, "write error"); });
+        return Tag;
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {Array} tags 
+     */
+    addTagsToTask(id, tags) {
+
+        const innerTags = this.getTask(id).tags;
+        innerTags.push(...tags);
+        writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {Object} tag 
+     */
+    addTagToTask(id, tag) {
+
+        const innerTags = this.getTask(id).tags;
+        innerTags.push(tag);
+        writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {string} name 
+     * @description удаляет тег из задания 
+     */
+    removeTagFromTask(id, name) {
+        const Task = this.getTask(id)
+        console.log("removeTagFromTask *****");
+        console.log(Task);
+        const delTagInd = Task.tags.findIndex((i) => i.name === name)
+        console.log(delTagInd);
+        try {
+            if (delTagInd < 0) { throw new Error("THIS_TAG_IS_NOT_EXIST") }
+        } catch (error) {
+            console.error('[ERR] error on create tag');
+            ipcRenderer.send("exceptError", error)
+            return
+        }
+
+        Task.tags.splice(delTagInd, 1);
+        writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
+        console.log("****************");
+        return true;
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @description удаляет тег, вообще
+     */
+    removeTag(id) {
+        const index = this.#tagsArr.findIndex((i) => i.id === id)
+        const delTag = this.#tagsArr.splice(index, 1)[0]
+        console.log('[LOG] remove tag ' + delTag.name);
+        writeFile(paths.tagsDataPath, JSON.stringify(this.#tagsArr), (err) => { if (err) console.log(err.message, "write error"); });
     }
 
     /**
@@ -159,9 +269,10 @@ class TodoList {
      * @param {String} taskDesc 
      * @description функция для изменения даынных о задании
      */
-    editTask({id, taskName, taskDesc}) {
+    editTask({ id, taskName, taskDesc, tags }) {
         this.taskName = taskName;
         this.taskDesc = taskDesc
+        this.tags = tags;
         let TaskIndex = this.#TodoListArr.findIndex((i) => i.id === +id);
 
         // console.log(TaskIndex);
@@ -169,6 +280,7 @@ class TodoList {
 
         this.#TodoListArr[TaskIndex].name = this.taskName;
         this.#TodoListArr[TaskIndex].description = this.taskDesc;
+        this.#TodoListArr[TaskIndex].tags = this.tags;
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
         console.log(this.#TodoListArr);
         console.log("un|complited");
@@ -252,7 +364,7 @@ class TodoList {
      * 
      * @param {path | string} file 
      */
-    addFileToTask(id, file){
+    addFileToTask(id, file) {
         const Task = this.getTask(id);
 
         copyFileSync(file, Task.filePath);
@@ -283,6 +395,17 @@ class TodoList {
         else {
             return [this.dTime, this.cTime];
         }
+    }
+
+    #existTagCheck(tags) {
+        this.#tagsArr.forEach((i) => {
+            tags.forEach((j) => {
+                if (i.name === j.name) {
+                    throw new Error("TAG_WITH_SAME_NAME_IS_EXIST")
+                }
+            })
+        })
+        return true;
     }
 
     #checkDEAD(elem) {

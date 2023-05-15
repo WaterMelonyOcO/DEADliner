@@ -18,7 +18,8 @@ function paths() {
         filesFolder: this.filesFolder = join(this.homeDir, "pickedFiles"),
         trayIcon: this.trayIcon = resolve(__dirname, "..", "..", "media", 'images', 'favicon.png'),
         soundPath: this.soundPath = resolve(__dirname, "..", "..", "media", 'sound'),
-        phrasesPath: this.phrasesPath = resolve(this.homeDir, "phrases.json")
+        phrasesPath: this.phrasesPath = resolve(this.homeDir, "phrases.json"),
+        tagsDataPath: this.tagsDataPath = resolve(this.homeDir, "tags.json")
     }
 }
 

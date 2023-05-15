@@ -30,12 +30,28 @@ contextBridge.exposeInMainWorld("todo", {
     //сепаратор. Использовал для ..... а я не поню уже, короче это разделитель для путей в ФС
     //пусть будет
     sep: sep,
+
+    /// работа с тегами
+    //отдаёт массив со всеми тегами в приложении
+    getTegs: () => TL.getAllTags(),
+    getTeg: (name) => TL.getTeg(name),
+    //создаёт тег с правильными параметрами
+    //можно и самим, но там может быть проблема с id
+    createTeg: (name, color) => TL.createTag(name, color),
+    //добавление тега для кауого-либо задания
+    //id имеется в виду id задания
+    addTagToTask: (id, teg) => TL.addTagToTask(id, teg),
+    //удаялет тег из задания
+    removeTagFromTask: (id, name) => TL.removeTagFromTask(id, name),
+    //удаляет тег из приложения
+    removeTag: (id) => TL.removeTag(id),
+
 })
 
 contextBridge.exposeInMainWorld("notification", {
     //уведомления. Функция для создания уведомления. в opt передаёшь объект
     //что передавать смотри при наведении на фунцию в handlers.js
-    createNotification: (opt)=>{ipcRenderer.send("createNotafication", opt)}
+    createNotification: (opt) => { ipcRenderer.send("createNotafication", opt) }
 })
 
 //здесь находятся обработчики, которые ты можешь использовать
@@ -45,17 +61,17 @@ contextBridge.exposeInMainWorld("handel", {
     2-м передаётся название ошибки
     сделал так, чтобы ты сама подбирала диалоговые окна
     */
-    errorHadler: (cb)=>ipcRenderer.on("exceptErrorHandler", cb),
+    errorHadler: (cb) => ipcRenderer.on("exceptErrorHandler", cb),
     //тоже самое что с ошибками, только сюда прилетаю различные вызываемые сной события(я ещё думаю нужен ли этот обработчик)
-    eventHandler: (cb)=>ipcRenderer.on("exceptErrorHandler", cb),
+    eventHandler: (cb) => ipcRenderer.on("exceptErrorHandler", cb),
     //обработчик выхода. Сделан для прослкшки нажатия в трее. так же что делать при событии определяешь в callback'е
-    exitHandler: (cb)=>ipcRenderer.on("exitHandler", cb),
+    exitHandler: (cb) => ipcRenderer.on("exitHandler", cb),
     //выход. вызов этой функции закрывает приложение
-    exit: ()=>{ipcRenderer.send("exit")},
-    addTaskTrayHandler: (cb)=>ipcRenderer.on("addTaskHandler:Tray", cb),
+    exit: () => { ipcRenderer.send("exit") },
+    addTaskTrayHandler: (cb) => ipcRenderer.on("addTaskHandler:Tray", cb),
     //обработчик на вышедший таск. обработка в cb
-    DOOMDAYEvent: (cb)=>ipcRenderer.on("DOOMDAYEvent", cb),
+    DOOMDAYEvent: (cb) => ipcRenderer.on("DOOMDAYEvent", cb),
     //вызов функции "уничтожения приложения"
     //я просто предпологаю, что ты задашь надписи/стиль и т.д. уведомлению и диалогу, а потом вызовешь уничтожение
-    DOOMDAY: ()=>{ipcRenderer.invoke("DOOMDAY")}
+    DOOMDAY: () => { ipcRenderer.invoke("DOOMDAY") }
 })
