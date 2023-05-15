@@ -1,11 +1,16 @@
 import style from './style.scss';
-import search_icon from '../../images/search_icon.svg';
+import { TagsList } from '../TagsList/TagsList';
 
 export function TopMenu () {
+    const options = [
+        { value: 'работа', label: 'Работа'},
+        { value: 'учеба', label: 'Учеба'},
+        { value: 'дом', label: 'Дом'},
+        { value: 'новый тег', label: 'Новый тег'}
+      ];
     return <div className='search'>
-        <label for="search_input" className='input__search__label'>
             <input type='search' name="search_input" className='input__search' placeholder='Поиск'/>
-            {/* <img src={search_icon} alt='search_icon' className='input__search__img'/> */}
-        </label>
+            <TagsList placeholder="Теги" options={options}/>
+
     </div>
 }
