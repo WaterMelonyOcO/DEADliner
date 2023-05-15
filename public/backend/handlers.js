@@ -1,6 +1,10 @@
-const { dialog } = require("electron");
-const { db_path, homeDir } = require("./paths").paths;
-const { createNotification, setContainerWidth, setGlobalStyles } = require("electron-custom-notifications")
+const { dialog, ipcRenderer } = require("electron");
+const { db_path, homeDir, soundPath } = require("./paths").paths;
+const { createNotification, setContainerWidth, setGlobalStyles } = require("electron-custom-notifications");
+const { join } = require("path");
+const sound = require("play-sound")
+
+
 class Handlers {
 
     async DOOMDAY(confg, db = null, app, windw) {//событие удаления всего
@@ -11,6 +15,9 @@ class Handlers {
             .then(data => JSON.parse(data))
             .then(data => data.option.isBaby)
 
+        sound().play(join(soundPath,"duck.mp3"), (err)=>{
+            console.log(err);
+        })
         /*if ( !isBabe ){//если false то удаляются только задния
             
             writeFile( db_path, defaultDB,{force: true})
@@ -29,68 +36,94 @@ class Handlers {
             app.exit(0)
             })
         }*/
-
-        dialog.showErrorBox("Удаление", "вы пропустили время сдачи, пока!")
-
     }
 
-    rewriteFile() {
-        let chooses = dialog.showMessageBoxSync(null, {
-            title: "rewrite data",
-            message: "файл с таким именем уже существует.\n Перезаписать существующий файл?",
-            buttons: ['нет', 'да']
-        })
-        return chooses;
+    // exceptErrorHandle(error){
+    //     return error
+    // }
+
+    exit(app) {
+        app.exit(0)
     }
 
-    invalidDate(arg = null) {
-        dialog.showErrorBox("Неправильное время", "Вы ввели неправильно время.\n пожалуйста введите корректную дату и время")
-        console.log(arg);
-    }
-
-    onDeleteTask(_, title = "удаление задания", message = "Вы точно хотите удалить задание?") {
-        _.returnValue = dialog.showMessageBoxSync(null, {
-            title: title,
-            message: message,
-            buttons: ['Нет', 'Да']
-        })
-    }
-
-    exit(title = "выход из приложения", message = "вы уверены, что хотите закрыть приложение?") {
-        return dialog.showMessageBoxSync({
-            title: title,
-            message: message,
-            buttons: ["Нет", "Да"]
-        })
-    }
-
-    myNotafication(name='', description, width = 300, html='', css='') {
-        setContainerWidth()
-        setGlobalStyles(`
-            * {
-              font-family: Helvetica;
+    /**
+     * @description функция создаёт уведомление без картинки
+     * @param {Object} opt
+     * @param {title:String, 
+     * description:String, 
+     * html: String, 
+     * css: String, 
+     * timeout: Number, 
+     * width: Number,
+     * logo: String | Path}
+     * @todo доделать кликабельность
+     */
+    createNotafication(opt) {
+        // console.log(opt);
+        this.title = opt.title || 'title';
+        this.desc = opt.description || "desc";
+        this.timeout = opt.timeout || 5000
+        this.width = opt.width || 350
+        this.logo = opt.logo || undefined
+        
+        try {
+            if ( this.logo ){
+                this.logo = require("fs").readFileSync(this.logo, "base64");
+                this.htmlLogo = `<div id="logo"></div>`;
+                this.cssLogo = `.notification #logo {
+                    background-image: url("data:image/png;base64,${this.logo}");
+                    background-size: cover;
+                    background-position: center;
+                    width: 80px;
+                    height: 50px;
+                  }`
             }
-            .notification {
-              display: block;
-              padding: 20px;
-              background-color: #fff;
-              border-radius: 12px;
-              margin: 10px;
-              box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-            }
-            .notification h1 {
-              font-weight: bold;
-            }
-          `);
-        const NotaficationContent = `
-          <div class="notification">
-          <h1>my Notafication</h1>
-          <p>Noafication body</p>
+        } catch (error) {
+            console.log(error);
+        }        
+        
+        this.html = opt.html || `
+        <div class="notification">
+        ${this.htmlLogo || ""}
+            <h1>${this.title}</h1>
+            <p>${this.desc}</p>
         </div>
-          `;
-        createNotification({
-            content: NotaficationContent
+        ` ;
+        this.css = opt.css || `
+        * {
+          font-family: Helvetica;
+        }
+        .notification {
+          display: block;
+          padding: 20px;
+          background-color: #fff;
+          border-radius: 12px;
+          margin: 10px;
+          box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        .notification h1 {
+          font-weight: bold;
+        }
+        ${this.cssLogo || ""}
+      `;
+
+        setContainerWidth(this.width)
+        setGlobalStyles(this.css);
+
+        const notification = createNotification({
+            content: this.html,
+            timeout: this.timeout,
+            // link: "https://youtube.com"
         })
+        
+        // ipcRenderer.emit("make-clickable", notification.id)
+
+        // notification.on("click", () => {
+        //     // Open the YouTube link in a browser.
+        //     require("electron").shell.openExternal(
+        //       "https://www.youtube.com/watch?v=M9FGaan35s0"
+        //     );
+        // })      
     }
 }
 

@@ -7,7 +7,6 @@ const handlers = require("./backend/handlers");
 const { MTray } = require("./backend/tray");
 const url = require("url");
 
-
 class MainWindow extends BrowserWindow {
 
 
@@ -22,7 +21,7 @@ class MainWindow extends BrowserWindow {
                 // webSecurity: false,
                 devTools: true,
             },
-            // icon: paths.trayIcon
+            icon: paths.trayIcon
         });
 
         this.menuBarVisible = false;
@@ -38,6 +37,8 @@ class MainWindow extends BrowserWindow {
         this.#databaseCheck();//проверка на существование бд
         this.#confCheck();//проверка на существование конфигов
         this.#filesFolderCheck();
+        this.#phraseCheck();
+        this.#tagsDataCheck()
 
         this.on("close", (ev) => {
             ev.preventDefault();
@@ -45,34 +46,43 @@ class MainWindow extends BrowserWindow {
         })
 
         //создаю событие при натсуплении которого будет происходить удаление
-        // ipcMain.handle('DOOMDAY', (_event) => handlers.DOOMDAY(paths.config_path, null, app, this));
-        // ipcMain.on('dataErr', (_event) => handlers.invalidDate());
-        // ipcMain.on("rewriteError", (_event) => handlers.rewriteFile());
-        // ipcMain.on("deleteTask", (_event) => handlers.onDeleteTask(_event))
-        // ipcMain.on("exit", (_event) => handlers.exit(_event))
-        // ipcMain.on('trayTask', (_event, tName, time, desc, file) => {
-        //     console.log("main aaaaaaaaaa");
-        //     // console.log(tName, time, desc, file);
-        //     this.webContents.send('trayAddTask', tName, time, desc, file);
-        //     this.reload()
-        // })
+        ipcMain.on('DOOMDAYEvent', (_event) => this.webContents.send("DOOMDAYEvent"));
+        ipcMain.handle('DOOMDAY', (_event) => handlers.DOOMDAY(paths.config_path, null, app, this));
 
-        const appURL = app.isPackaged
-            ? url.format({
-                pathname: join(__dirname, "index.html"),
-                protocol: "file:",
-                slashes: true,
-            })
-            : "http://localhost:3000";
-        this.loadURL(appURL);
+        //обработчик ошибок
+        ipcMain.on("exceptError", (ev, err) => { this.webContents.send("exceptErrorHandler", err.message) })
+        ipcMain.on("someEvent", (ev)=> this.webContents.emit("eventHandler"))//обработчик остальных событий
 
-        // Automatically open Chrome's DevTools in development mode.
-        // if (!app.isPackaged) {
-        //     this.webContents.openDevTools();
-        // }
-        // this.loadURL("http://localhost:3000")
-        // this.loadFile(resolve(__dirname, "public","index.html"));//основная страница
+        //обработчики для закрытия приложения
+        ipcMain.on("exitHandler", (_event)=>{console.log("tray exit event");this.webContents.emit("exitHandler")})
+        ipcMain.on("exit", (_event) => handlers.exit(app))
 
+        //ДОДЕЛАТЬ
+        //
+        ipcMain.on("addTaskHandler:Tray",(ev)=>{ this.webContents.send("addTaskHandler:Tray")})
+        // ipcMain.on("addTask:Tray", this.webContents.send("addTaskHandler:Tray"))
+        ipcMain.on('trayTask', (_event, tName, time, desc, file) => {
+            console.log("main aaaaaaaaaa");
+            // console.log(tName, time, desc, file);
+            this.webContents.send('trayAddTask', tName, time, desc, file);
+            this.reload()
+        })
+
+        //обработчик создания уведомлений
+        ipcMain.on("createNotafication", (e, opt)=>{handlers.createNotafication(opt)})
+     
+
+        // const appURL = app.isPackaged
+        //     ? url.format({
+        //         pathname: join(__dirname, "index.html"),
+        //         protocol: "file:",
+        //         slashes: true,
+        //     })
+        //     : "http://localhost:3000";
+        // this.loadURL(appURL);
+        // handlers.EmptyNotafication()
+        this.loadFile(resolve(__dirname, "..", "oldPublic", "index.html"));//основная страница
+        //пока что использую как тестовый полигон
     }
 
 
@@ -106,12 +116,20 @@ class MainWindow extends BrowserWindow {
     #databaseCheck() {//просто проверка существования файла бд
         if (!existsSync(paths.db_path)) writeFile(paths.db_path, JSON.stringify([]), (err) => { console.log(err); });
     }
+
+    #phraseCheck(){
+        if ( !existsSync( paths.phrasesPath )) writeFile(paths.phrasesPath, JSON.stringify([]), (err)=>{console.log(err);})
+    }
+
+    #tagsDataCheck(){
+        if ( !existsSync( paths.tagsDataPath )) writeFile(paths.tagsDataPath, JSON.stringify([]), (err)=>{console.log(err);})
+    }
 }
 
 
 
 app.whenReady().then(() => {
-    const win = new MainWindow(1280, 985);
+    const win = new MainWindow(800, 600);
 
     const tray = new MTray(win, app);//tray
 
