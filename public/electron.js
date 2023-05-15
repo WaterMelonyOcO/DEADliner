@@ -11,7 +11,7 @@ class MainWindow extends BrowserWindow {
 
 
     //создаю основное окно
-    constructor(w = 800, h = 600) {
+    constructor(w = 1280, h = 985) {
         super({
             width: w,
             height: h,
@@ -72,16 +72,16 @@ class MainWindow extends BrowserWindow {
         ipcMain.on("createNotafication", (e, opt)=>{handlers.createNotafication(opt)})
      
 
-        // const appURL = app.isPackaged
-        //     ? url.format({
-        //         pathname: join(__dirname, "index.html"),
-        //         protocol: "file:",
-        //         slashes: true,
-        //     })
-        //     : "http://localhost:3000";
-        // this.loadURL(appURL);
+        const appURL = app.isPackaged
+            ? url.format({
+                pathname: join(__dirname, "index.html"),
+                protocol: "file:",
+                slashes: true,
+            })
+            : "http://localhost:3000";
+        this.loadURL(appURL);
         // handlers.EmptyNotafication()
-        this.loadFile(resolve(__dirname, "..", "oldPublic", "index.html"));//основная страница
+        // this.loadFile(resolve(__dirname, "..", "oldPublic", "index.html"));//основная страница
         //пока что использую как тестовый полигон
     }
 
@@ -129,7 +129,7 @@ class MainWindow extends BrowserWindow {
 
 
 app.whenReady().then(() => {
-    const win = new MainWindow(800, 600);
+    const win = new MainWindow(1280, 985);
 
     const tray = new MTray(win, app);//tray
 

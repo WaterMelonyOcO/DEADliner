@@ -1,0 +1,22 @@
+@import '../../style.scss';
+
+
+.button {
+    width: max-content;
+    height: max-content;
+    background-color: $second-red-color;
+    padding: 10px 20px;
+    outline: 2px solid $second-red-color;
+
+    &__text {
+        color: $main-white-color;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 19px;
+    }
+    &:hover {
+        opacity: 0.9;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+}

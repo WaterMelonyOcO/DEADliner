@@ -3,7 +3,6 @@ import './App.css';
 import './style.scss';
 import { MainPage } from './pages/MainPage/MainPage';
 import { Layout } from './components/Layout/Layout';
-import { LeftMenu } from './components/LeftMenu/LeftMenu';
 
 function App() {
   return (<div className='body'>
