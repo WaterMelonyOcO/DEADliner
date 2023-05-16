@@ -47,7 +47,7 @@ class Handlers {
     }
 
     /**
-     * @description функция создаёт уведомление без картинки
+     * @description функция создаёт уведомление
      * @param {Object} opt
      * @param {title:String, 
      * description:String, 
@@ -64,14 +64,16 @@ class Handlers {
         this.desc = opt.description || "desc";
         this.timeout = opt.timeout || 5000
         this.width = opt.width || 350
-        this.logo = opt.logo || undefined
+        let logo = opt.logo || undefined
         
         try {
-            if ( this.logo ){
-                this.logo = require("fs").readFileSync(this.logo, "base64");
+            if ( logo ){
+                logo = require("fs").readFileSync(logo, "base64");
+            }
+            if ( !opt.html && !opt.css ){
                 this.htmlLogo = `<div id="logo"></div>`;
                 this.cssLogo = `.notification #logo {
-                    background-image: url("data:image/png;base64,${this.logo}");
+                    background-image: url("data:image/png;base64,${logo}");
                     background-size: cover;
                     background-position: center;
                     width: 80px;

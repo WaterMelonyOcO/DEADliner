@@ -10,7 +10,7 @@ class TodoList {
     #TodoListArr = [];
     #complitedTodoList = []
     #uncomplitedTodoList = []
-    #tagsArr = []
+    #tegsArr = []
 
     constructor() {
 
@@ -21,7 +21,7 @@ class TodoList {
             this.exempleDate = luxon.DateTime;
             // console.log(this.#TodoListArr);
             this.#TodoListArr = JSON.parse(readFileSync(paths.db_path));
-            this.#tagsArr = JSON.parse(readFileSync(paths.tagsDataPath));
+            this.#tegsArr = JSON.parse(readFileSync(paths.tagsDataPath));
             this.#TodoListArr.forEach((i) => {//проверяю есть ли свойво "выполнено"
                 if (i.isDone === undefined) i.isDone = 0;
             })
@@ -65,11 +65,11 @@ class TodoList {
      * @param {Array} tags
      * @return {Number} возвращает id таска
      */
-    addTask(taskName, deadline, description = "", files = [], tags = []) {
+    addTask(taskName, deadline, description = "", files = [], tegs = []) {
 
         let id = this.#TodoListArr.length + 1;
         this.files = [];
-        this.tags = tags
+        this.tegs = tegs
 
         try {
             [this.deadline, this.cTime] = this.#verifyTime(deadline)
@@ -97,7 +97,7 @@ class TodoList {
             files: this.files,
             filePath: newTaskFolder,
             isDone: 0,
-            tags: this.tags
+            tegs: this.tegs
         };
 
         this.#TodoListArr.push(Task);
@@ -117,12 +117,12 @@ class TodoList {
         return id;
     }
 
-    getAllTags() {
-        return this.#tagsArr;
+    getAllTegs() {
+        return this.#tegsArr;
     }
 
-    getTeg(name){
-        return this.#tagsArr.filter((i)=>i.name === name)[0]
+    getTeg(name) {
+        return this.#tegsArr.filter((i) => i.name === name)[0]
     }
 
     /**
@@ -133,7 +133,7 @@ class TodoList {
      * @description создаёт тег и возвращает его
      * @example {id, name, color}
      */
-    createTag(name, color = '', value = '') {
+    createTeg(name, color = '', value = '') {
 
         try {
             this.#existTagCheck(name);
@@ -143,16 +143,16 @@ class TodoList {
             return
         }
 
-        const Tag = {
+        const Teg = {
             name: name,
             color: color,
             value: value
         }
-        console.log(Tag);
-        console.log("CREATE TEG " + Tag.name);
-        this.#tagsArr.push(Tag)
-        writeFile(paths.tagsDataPath, JSON.stringify(this.#tagsArr), (err) => { if (err) console.log(err.message, "write error"); });
-        return Tag;
+        console.log(Teg);
+        console.log("CREATE TEG " + Teg.name);
+        this.#tegsArr.push(Teg)
+        writeFile(paths.tagsDataPath, JSON.stringify(this.#tegsArr), (err) => { if (err) console.log(err.message, "write error"); });
+        return Teg;
     }
 
     /**
@@ -160,10 +160,10 @@ class TodoList {
      * @param {number} id 
      * @param {Array} tags 
      */
-    addTagsToTask(id, tags) {
+    addTegsToTask(id, tegs) {
 
         const innerTags = this.getTask(id).tags;
-        innerTags.push(...tags);
+        innerTags.push(...tegs);
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
     }
 
@@ -172,11 +172,11 @@ class TodoList {
      * @param {number} id 
      * @param {Object} tag 
      */
-    addTagToTask(id, tag) {
+    addTagToTask(id, teg) {
         const innerTags = this.getTask(id).tags;
 
         try {
-            if ( innerTags.includes(tag) ){
+            if (innerTags.includes(teg)) {
                 throw new Error("TASK_HAS_CURRENT_TEG")
             }
         } catch (error) {
@@ -185,7 +185,7 @@ class TodoList {
             return
         }
 
-        innerTags.push(tag);
+        innerTags.push(teg);
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
     }
 
@@ -195,11 +195,11 @@ class TodoList {
      * @param {string} name 
      * @description удаляет тег из задания 
      */
-    removeTagFromTask(id, name) {
+    removeTegFromTask(id, name) {
         const Task = this.getTask(id)
         console.log("removeTagFromTask *****");
         console.log(Task);
-        const delTagInd = Task.tags.findIndex((i) => i.name === name)
+        const delTagInd = Task.tegs.findIndex((i) => i.name === name)
         console.log(delTagInd);
         try {
             if (delTagInd < 0) { throw new Error("THIS_TAG_IS_NOT_EXIST") }
@@ -209,7 +209,7 @@ class TodoList {
             return
         }
 
-        Task.tags.splice(delTagInd, 1);
+        Task.tegs.splice(delTagInd, 1);
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
         console.log("****************");
         return true;
@@ -220,20 +220,11 @@ class TodoList {
      * @param {number} id 
      * @description удаляет тег, вообще
      */
-    removeTag(tegName) {
-        const index = this.#tagsArr.findIndex((i) => i.name === tegName)
-        const delTag = this.#tagsArr.splice(index, 1)[0]
+    removeTeg(tegName) {
+        const index = this.#tegsArr.findIndex((i) => i.name === tegName)
+        const delTag = this.#tegsArr.splice(index, 1)[0]
         console.log('[LOG] remove tag ' + delTag.name);
-        writeFile(paths.tagsDataPath, JSON.stringify(this.#tagsArr), (err) => { if (err) console.log(err.message, "write error"); });
-    }
-
-    /**
-     * 
-     * @return {Array} 
-     * @description возвращает не отфильтрованный массив заданий
-     */
-    getTasks() {
-        return this.#TodoListArr;
+        writeFile(paths.tagsDataPath, JSON.stringify(this.#tegsArr), (err) => { if (err) console.log(err.message, "write error"); });
     }
 
     /**
@@ -242,6 +233,14 @@ class TodoList {
      */
     getComplitedTask() {
         return this.#complitedTodoList
+    }
+
+    /**
+    * @description возвращает массив с невыполненными заданиями
+    * @returns {Array}
+    */
+    getUnComplitedTask() {
+        return this.#uncomplitedTodoList
     }
 
     /**
@@ -404,7 +403,7 @@ class TodoList {
     }
 
     #existTagCheck(name) {
-        this.#tagsArr.forEach((i) => {
+        this.#tegsArr.forEach((i) => {
             if (i.name === name) {
                 throw new Error("TAG_WITH_SAME_NAME_IS_EXIST")
             }
@@ -413,9 +412,9 @@ class TodoList {
     }
 
     #existTagsCheck(tags) {
-        this.#tagsArr.forEach((i) => {
-            tags.forEach((j)=>{
-                if ( i.name === j.name ){
+        this.#tegsArr.forEach((i) => {
+            tags.forEach((j) => {
+                if (i.name === j.name) {
                     console.log(i.name + "уже сущесвует, пропускаю");
                     return false;
                 }
