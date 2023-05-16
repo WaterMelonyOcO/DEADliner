@@ -1,0 +1,95 @@
+@import '../../style.scss';
+
+@mixin input_style {
+        width: 450px;
+        height: 45px;
+        font-size: 14px;
+        line-height: 17px;
+        color: #797A7D;
+        border-radius: 12px;
+        background-color: #2B2E33;
+        border: none;
+        padding: 15px 20px;
+}
+
+.modal {
+    &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  &__dialog {
+    background-color: $dark-gray_for_pannel-color;
+    width: 540px;
+    height: max-content;
+    padding: 40px;
+    border: 2px solid #2B2E33;
+    border-radius: 20px;
+  }
+  
+  &__content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  &__header {
+    display: flex;
+    justify-content: space-between;
+
+    &__title {
+        font-size: 20px;
+        line-height: 24px;
+        margin-bottom: 45px;
+    }
+  }
+  
+  &__close {
+    display: block;
+    background: url('../../images/close_red_icon.svg');
+    border: none;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  &__body {
+    &__wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        margin-bottom: 30px;
+        &:last-child {
+            margin-bottom: 45px;
+        }
+    }
+    &__label {
+        font-size: 16px;
+        line-height: 19px;
+        margin-bottom: 10px;
+    }
+    &__input {
+        @include input_style;
+        &.small__input {
+            width: 200px;
+
+        }
+
+    }
+    &__textarea {
+        @include input_style;
+        height: 130px;
+        resize: none;
+
+    }
+
+  }
+}
