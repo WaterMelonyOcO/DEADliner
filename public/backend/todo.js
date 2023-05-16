@@ -1,4 +1,4 @@
-// const { v4 } = require("uuid")
+const { v4 } = require("uuid")
 const luxon = require("luxon")
 const { writeFile, readFileSync, mkdir, existsSync, copyFileSync, rmSync, mkdirSync, readdirSync, rm } = require("fs");
 const { ipcRenderer, shell } = require("electron");
