@@ -155,6 +155,30 @@ class TodoList {
         return Teg;
     }
 
+    createTegs(arr) {
+        const tegsToAdd = []
+        try {
+            arr.forEach((el) => {
+                console.log(el.name);
+                if (this.#existTagCheck(el.name)) {
+                    console.log(`${el.name} - такой тег уже есть. Пропускаю`);
+                }
+                else {
+                    console.log("CREATE TEG " + el.name);
+                    tegsToAdd.push({ name: el.name, value: el.value, color: el.color })
+                }
+            })
+        } catch (error) {
+            console.error('[ERR] error on create tag');
+            ipcRenderer.send("exceptError", error)
+            return
+        }
+        this.#tegsArr.push(...tegsToAdd)
+        writeFile(paths.tagsDataPath, JSON.stringify(this.#tegsArr), (err) => { if (err) console.log(err.message, "write error"); });
+        return tegsToAdd
+    }
+
+
     /**
      * 
      * @param {number} id 
@@ -267,6 +291,10 @@ class TodoList {
         return this.#TodoListArr.filter((i) => i.id === id)[0];
     }
 
+    getTasks(){
+        return this.#TodoListArr
+    }
+
     /**
      * @param {Object} opt
      * @param {Number} id 
@@ -336,7 +364,7 @@ class TodoList {
         const path = this.#getFilePath(fileName);
         if (path) {
             shell.openPath(path)
-                .then((data) => { console.log("open file ---- ", data); return })
+               `` .then((data) => { console.log("open file ---- ", data); return })
                 .catch((err) => { console.log("error on open file"); ipcRenderer("excetError", err); return })
         }
         // throw new Error("FILE_NOT_FOUND").name="FILE_NOT_EXIST";
@@ -405,23 +433,24 @@ class TodoList {
     #existTagCheck(name) {
         this.#tegsArr.forEach((i) => {
             if (i.name === name) {
-                throw new Error("TAG_WITH_SAME_NAME_IS_EXIST")
+                // throw new Error("TAG_WITH_SAME_NAME_IS_EXIST")
+                return true
             }
         })
-        return true;
+        return false;
     }
 
-    #existTagsCheck(tags) {
-        this.#tegsArr.forEach((i) => {
-            tags.forEach((j) => {
-                if (i.name === j.name) {
-                    console.log(i.name + "уже сущесвует, пропускаю");
-                    return false;
-                }
-            })
-        })
-        return true;
-    }
+    // #existTagsCheck(tags) {
+    //     this.#tegsArr.forEach((i) => {
+    //         tags.forEach((j) => {
+    //             if (i.name === j.name) {
+    //                 console.log(i.name + "уже сущесвует, пропускаю");
+    //                 return false;
+    //             }
+    //         })
+    //     })
+    //     return true;
+    // }
 
     #checkDEAD(elem) {
         try {

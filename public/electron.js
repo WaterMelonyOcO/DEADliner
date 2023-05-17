@@ -72,16 +72,16 @@ class MainWindow extends BrowserWindow {
         ipcMain.on("createNotafication", (e, opt)=>{handlers.createNotafication(opt)})
      
 
-        const appURL = app.isPackaged
-            ? url.format({
-                pathname: join(__dirname, "index.html"),
-                protocol: "file:",
-                slashes: true,
-            })
-            : "http://localhost:3000";
-        this.loadURL(appURL);
+        // const appURL = app.isPackaged
+        //     ? url.format({
+        //         pathname: join(__dirname, "index.html"),
+        //         protocol: "file:",
+        //         slashes: true,
+        //     })
+        //     : "http://localhost:3000";
+        // this.loadURL(appURL);
         // handlers.EmptyNotafication()
-        // this.loadFile(resolve(__dirname, "..", "oldPublic", "index.html"));//основная страница
+        this.loadFile(resolve(__dirname, "..", "oldPublic", "index.html"));//основная страница
         //пока что использую как тестовый полигон
     }
 

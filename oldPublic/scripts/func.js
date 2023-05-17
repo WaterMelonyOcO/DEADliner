@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 
 const addBtn = document.querySelector("#addTaskBtn");
 const content = document.querySelector("#content");
@@ -111,8 +112,8 @@ getTasks()
 // console.log(todo.getTegs());
 // console.log("\n");
 
-console.log('создаю первый тег');
-let tt = todo.createTeg('some1', 'blue')
+// console.log('создаю первый тег');
+// let tt = todo.createTeg('some1', 'blue')
 
 // console.log("добавляю первый тег в первое задание");
 // todo.addTagToTask(1, tt)
@@ -144,5 +145,13 @@ let tt = todo.createTeg('some1', 'blue')
 // console.log("все задания");
 // console.log(todo.get());
 
-console.log("удалю полностю тег 1");
-todo.removeTag(todo.getTeg('some1').id)
+// console.log("удалю полностю тег 1");
+// todo.removeTag(todo.getTeg('some1').id)
+
+todo.createTegs([{name:"oskd", color: "d34545FFF",value: "value"},
+{name:"os3kd", color: "d34545FFF",value: "value"},
+{name:"osk4d", color: "d34545FFF",value: "value"},
+{name:"o6skd", color: "d34545FFF",value: "value"},
+])
+
+console.log(todo.getTegs())

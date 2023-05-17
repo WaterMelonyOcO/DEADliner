@@ -33,11 +33,12 @@ contextBridge.exposeInMainWorld("todo", {
 
     /// работа с тегами
     //отдаёт массив со всеми тегами в приложении
-    getTegs: () => TL.getAllTags(),
+    getTegs: () => TL.getAllTegs(),
     getTeg: (name) => TL.getTeg(name),
     //создаёт тег с правильными параметрами
     //можно и самим, но там может быть проблема с id
-    createTeg: (name, color) => TL.createTag(name, color),
+    createTeg: (name, color) => TL.createTeg(name, color),
+    createTegs: (arr) => TL.createTegs(arr),
     //добавление тега для кауого-либо задания
     //id имеется в виду id задания
     addTagToTask: (id, teg) => TL.addTagToTask(id, teg),
