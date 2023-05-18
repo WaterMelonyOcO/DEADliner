@@ -159,7 +159,6 @@ class TodoList {
         const tegsToAdd = []
         try {
             arr.forEach((el) => {
-                console.log(el.name);
                 if (this.#existTagCheck(el.name)) {
                     console.log(`${el.name} - такой тег уже есть. Пропускаю`);
                 }
@@ -169,7 +168,7 @@ class TodoList {
                 }
             })
         } catch (error) {
-            console.error('[ERR] error on create tag');
+            console.error('[ERR] error on create tag', error);
             ipcRenderer.send("exceptError", error)
             return
         }
@@ -431,12 +430,13 @@ class TodoList {
     }
 
     #existTagCheck(name) {
-        this.#tegsArr.forEach((i) => {
-            if (i.name === name) {
+        for ( let i of this.#tegsArr ){
+            if (i.name === String(name)) {
+                console.log(i.name + '----'+name);
                 // throw new Error("TAG_WITH_SAME_NAME_IS_EXIST")
                 return true
             }
-        })
+        }
         return false;
     }
 
