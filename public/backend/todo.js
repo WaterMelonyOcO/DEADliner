@@ -185,13 +185,32 @@ class TodoList {
      */
     addTegsToTask(id, tegs) {
 
-        const innerTags = this.getTask(id).tags;
-        innerTags.push(...tegs);
+        const innerTags = this.getTask(id);
+        const haveTegsName = innerTags.tegs.map((i)=>i.name);
+        console.log(haveTegsName);
+        let uniquTegs;
+        try {
+            uniquTegs = tegs.map((i)=>{
+                if ( haveTegsName.includes(i.name) ){
+                    console.log("тег уже есть в этом задании");
+                }
+                else{
+                    console.log('add tegs to task');
+                    return i;
+                }
+            })
+        } catch (error) {
+            console.error('[ERR] error on create tag', error);
+            ipcRenderer.send("exceptError", error);
+            return
+        }
+        
+        uniquTegs = uniquTegs.filter((i)=>i!==undefined);
+        innerTags.tegs.push(...uniquTegs);
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
     }
 
     /**
-     * 
      * @param {number} id 
      * @param {Object} tag 
      */
@@ -439,18 +458,6 @@ class TodoList {
         }
         return false;
     }
-
-    // #existTagsCheck(tags) {
-    //     this.#tegsArr.forEach((i) => {
-    //         tags.forEach((j) => {
-    //             if (i.name === j.name) {
-    //                 console.log(i.name + "уже сущесвует, пропускаю");
-    //                 return false;
-    //             }
-    //         })
-    //     })
-    //     return true;
-    // }
 
     #checkDEAD(elem) {
         try {

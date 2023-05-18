@@ -42,6 +42,7 @@ contextBridge.exposeInMainWorld("todo", {
     //добавление тега для кауого-либо задания
     //id имеется в виду id задания
     addTagToTask: (id, teg) => TL.addTagToTask(id, teg),
+    addTagsToTask: (id, tegs) => TL.addTegsToTask(id ,tegs),
     //удаялет тег из задания
     removeTagFromTask: (id, name) => TL.removeTagFromTask(id, name),
     //удаляет тег из приложения

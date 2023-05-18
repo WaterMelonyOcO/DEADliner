@@ -148,10 +148,12 @@ getTasks()
 // console.log("удалю полностю тег 1");
 // todo.removeTag(todo.getTeg('some1').id)
 
-todo.createTegs([{name:"oskd", color: "d34545FFF",value: "value"},
-{name:"os3kd", color: "d34545FFF",value: "value"},
-{name:"osk4d", color: "d34545FFF",value: "value"},
-{name:"o6skd", color: "d34545FFF",value: "value"},
-])
+// let a =todo.createTegs([{name:"oskd", color: "d34545FFF",value: "value"},
+// {name:"os3kd", color: "d34545FFF",value: "value"},
+// {name:"osk4d", color: "d34545FFF",value: "value"},
+// {name:"o6skd", color: "d34545FFF",value: "value"},
+// ])
 
-console.log(todo.getTegs())
+// todo.addTagsToTask(1, a)
+
+// console.log(todo.getTask(1))
