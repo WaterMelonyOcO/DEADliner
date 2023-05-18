@@ -155,6 +155,12 @@ class TodoList {
         return Teg;
     }
 
+    /**
+     * 
+     * @param {Array} arr 
+     * @returns {Array}
+     * @description создаёт несколько тегов и возвращает массив содержащий их
+     */
     createTegs(arr) {
         const tegsToAdd = []
         try {
@@ -182,6 +188,7 @@ class TodoList {
      * 
      * @param {number} id 
      * @param {Array} tags 
+     * @description принимает массив тегов и добавляет их заданое задание. если в задание уже есть какие-то теги - удаляет
      */
     addTegsToTask(id, tegs) {
 
