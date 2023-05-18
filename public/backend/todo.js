@@ -193,15 +193,15 @@ class TodoList {
     addTegsToTask(id, tegs) {
 
         const innerTags = this.getTask(id);
-        const haveTegsName = innerTags.tegs.map((i)=>i.name);
+        const haveTegsName = innerTags.tegs.map((i) => i.name);
         console.log(haveTegsName);
         let uniquTegs;
         try {
-            uniquTegs = tegs.map((i)=>{
-                if ( haveTegsName.includes(i.name) ){
+            uniquTegs = tegs.map((i) => {
+                if (haveTegsName.includes(i.name)) {
                     console.log("тег уже есть в этом задании");
                 }
-                else{
+                else {
                     console.log('add tegs to task');
                     return i;
                 }
@@ -211,8 +211,8 @@ class TodoList {
             ipcRenderer.send("exceptError", error);
             return
         }
-        
-        uniquTegs = uniquTegs.filter((i)=>i!==undefined);
+
+        uniquTegs = uniquTegs.filter((i) => i !== undefined);
         innerTags.tegs.push(...uniquTegs);
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
     }
@@ -316,7 +316,7 @@ class TodoList {
         return this.#TodoListArr.filter((i) => i.id === id)[0];
     }
 
-    getTasks(){
+    getTasks() {
         return this.#TodoListArr
     }
 
@@ -389,7 +389,7 @@ class TodoList {
         const path = this.#getFilePath(fileName);
         if (path) {
             shell.openPath(path)
-               `` .then((data) => { console.log("open file ---- ", data); return })
+                .then((data) => { console.log("open file ---- ", data); return })
                 .catch((err) => { console.log("error on open file"); ipcRenderer("excetError", err); return })
         }
         // throw new Error("FILE_NOT_FOUND").name="FILE_NOT_EXIST";
@@ -456,9 +456,9 @@ class TodoList {
     }
 
     #existTagCheck(name) {
-        for ( let i of this.#tegsArr ){
+        for (let i of this.#tegsArr) {
             if (i.name === String(name)) {
-                console.log(i.name + '----'+name);
+                console.log(i.name + '----' + name);
                 // throw new Error("TAG_WITH_SAME_NAME_IS_EXIST")
                 return true
             }
