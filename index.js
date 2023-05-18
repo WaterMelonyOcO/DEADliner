@@ -4,7 +4,6 @@ const Handlers = require("./src/handlers");
 const { mkdir } = require("fs/promises");
 const { paths } = require("./src/paths");
 const { resolve } = require("path");
-const handlers = require("./src/handlers");
 const { MTray } = require("./src/tray");
 const { CustomDialog } = require("./src/CustomDialog/CustomDialog")
 
@@ -47,7 +46,7 @@ class MainWindow extends BrowserWindow {
     ipcMain.handle('DOOMDAY', (_event) => Handlers.DOOMDAY(paths.config_path, null, app, this));
     ipcMain.on('dataErr', (_event) => Handlers.invalidDate());
     ipcMain.on("rewriteError", (_event) => Handlers.rewriteFile());
-    // ipcMain.on("deleteTask", async (_event) => Handlers.onDeleteTask(_event))
+    ipcMain.on("deleteTask", async (_event) => Handlers.onDeleteTask(_event))
     ipcMain.on("exit", (_event) => Handlers.exit(_event))
     ipcMain.on('trayTask', (_event, tName, time, desc, file) => {
       console.log("main aaaaaaaaaa");
@@ -55,6 +54,16 @@ class MainWindow extends BrowserWindow {
       this.webContents.send('trayAddTask', tName, time, desc, file);
       this.reload()
     })
+
+
+    ipcMain.on("dialog::Send", (ev, data) => {
+      // callback(data);
+    });
+    //   ipcMain.handle("show", (ev, num)=>{
+    //     console.log(num);
+    //     console.log("abobos");
+    //     // return num
+    // })
 
     // new Notification({
     //   title:"djsok",

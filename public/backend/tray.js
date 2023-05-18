@@ -1,4 +1,4 @@
-const { Tray, Menu, nativeImage, BrowserWindow } = require("electron");
+const { Tray, Menu, nativeImage, BrowserWindow, ipcRenderer } = require("electron");
 const handlers = require("./handlers");
 const { resolve } = require("path");
 const { paths } = require('./paths')
@@ -9,11 +9,10 @@ class MTray extends Tray {
         super(icon)
         console.log(paths.trayIcon);
         const ContextMenu = Menu.buildFromTemplate([
-            { label: "Выход", type: "normal", click:  () => { handlers.exit().then(data=>{console.log(data);}) }},
-            { label: "Добавить задание", type: "normal", click:(ev)=>{  this.#addNewTask()}}
+            { label: "Выход", type: "normal", click: ()=>{win.webContents.send("exitHandler")} },
+            { label: "Добавить задание", type: "normal", click:(ev)=>{ win.webContents.send("addTaskHandler:Tray")}}
         ])
         // this.#addNsewTask()
-
         this.setToolTip("DEADliner");
         this.setTitle("DEADliner");
         this.setContextMenu(ContextMenu);
