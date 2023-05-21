@@ -36,4 +36,38 @@
   width: 100vw;
   height: 100vh;
   background-color: $main-dark-gray;
+  display: flex;
+  // display: grid;
+  // grid-template-areas: "one two two"
+  //                       "one three three"
+  //                       "one three three";
+  // position: relative;
+      // &__container {
+      //   display: flex;
+      // }
+      &__content {
+        width: 100%;
+    height: 100%;
+        display: grid;
+  grid-template-areas: "one two two"
+                        "one three three"
+                        "one three three"
+                        ;
+  grid-template-rows: 145px auto auto;
+  grid-template-columns: min-content auto auto;
+        // grid-area: three;
+        &-left {
+          display: flex;
+          flex-direction: row;
+grid-area: one;
+        }
+        &-top {
+          grid-area: two;
+          height: max-content;
+        }
+        &-center {
+          grid-area: three;
+        }
+      }
+      
  }
