@@ -50,6 +50,7 @@
         flex-direction: column;
         justify-content: space-around;
         align-items: flex-start;
+        z-index: 5;
     }
 
     &__item {

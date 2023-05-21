@@ -1,19 +1,32 @@
 @import '../../style.scss';
 
+@mixin font {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+    color: $gray_for_text-color;
+}
 .wrapper {
     width: 810px;
     min-height: 150px;
     background-color: $dark-gray_for_pannel-color;
+    border-radius: 20px;
+    padding: 25px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
     &__text {
-        font-size: 18px;
-        line-height: 22px;
-        color: $gray_for_text-color;
+        @include font;
         & span {
+            @include font;
             font-weight: 700;
             color: $main-red-color;
             letter-spacing: 0.015em;
         }
         & strong {
+            @include font;
             font-weight: 800;
         }
     }

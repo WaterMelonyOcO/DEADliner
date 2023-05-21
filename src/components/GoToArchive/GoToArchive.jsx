@@ -8,9 +8,9 @@ export function GoToArchive (props) {
     return (
         <div className='wrapper'>
         <h4 className='wrapper__text'>
-        Вау, никогда не видел <span>таких</span> маленьких цифр. Ты смог выполнить<strong>{`${1} заданий`} </strong>.  
+        Вау, никогда не видел <span>таких</span> маленьких цифр. Ты смог выполнить<strong>{` ${1} заданий`}</strong>.  
         </h4>
-        <RedBtn text="Перейти в архив"/>
+        <RedBtn text="Перейти в архив" path="/archive"/>
     </div>
         // <LessTenTasks />
     // <div className='wrapper'>

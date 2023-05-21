@@ -4,6 +4,7 @@ import { MainPage } from './pages/MainPage/MainPage';
 import { LeftMenu } from './components/LeftMenu/LeftMenu';
 import { TopMenu } from './components/TopMenu/TopMenu';
 import { CreateTaskBtn } from './components/CreateTaskBtn/CreateTaskBtn';
+import { ArchivePage } from './pages/ArchivePage/ArchivePage';
 
 function App() {
   return (<div className='body'>
@@ -23,7 +24,7 @@ function App() {
           <Routes>
             
             <Route path='/' element={<MainPage />}></Route>
-
+            <Route path='/archive' element={<ArchivePage />}></Route>
             </Routes>
         </div>
 
