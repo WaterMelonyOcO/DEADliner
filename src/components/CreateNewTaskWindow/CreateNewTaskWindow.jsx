@@ -1,5 +1,6 @@
 import style from './style.scss';
 import { RedBtn } from '../RedBtn/RedBtn';
+import plus_icon from '../../images/new_tag_icon.png';
 
 
 export function CreateNewTaskWindow ({onClose}) {
@@ -27,9 +28,12 @@ export function CreateNewTaskWindow ({onClose}) {
                     <input type="date" className='modal__body__input small__input' name="deadline"/>
                     </span>
 
-                    <span className='modal__body__wrapper'>
-                    <label className='modal__body__label' for="files">Вложение</label>
-                    <input type='file' className='modal__body__input small__input' name="files"/>
+{/*тут кастомное вложение */}
+                    <span className='modal__body__wrapper file__wrapper'>
+                    <p className='modal__body__label'>Вложение</p>
+                    <label className='modal__body__input small__input file__body'>Добавить файл</label>
+                        <input type='file' name="files" className='file'/>
+                    
                     </span>
 
 
@@ -38,10 +42,11 @@ export function CreateNewTaskWindow ({onClose}) {
 должен находиться раскрывающийся список
                     <label className='modal__body__label' for="name"> Название</label>
                     <input type='text' className='modal__body__input' name="name"/> */}
-
+            <span className='modal__body wrapper_btns'>
                     <RedBtn text="Отменить задание" outline="outline"/>
                     <RedBtn text="Создать задание"/>
-                
+            </span>      
+                      
                 </form>
                 </div>
             </div>

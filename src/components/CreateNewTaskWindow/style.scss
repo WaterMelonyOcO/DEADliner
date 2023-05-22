@@ -1,7 +1,9 @@
 @import '../../style.scss';
 
 @mixin input_style {
-        width: 450px;
+        // min-width: 360px;
+        width:100%;
+        max-width: 450px;
         height: 45px;
         font-size: 14px;
         line-height: 17px;
@@ -27,7 +29,7 @@
   
   &__dialog {
     background-color: $dark-gray_for_pannel-color;
-    width: 540px;
+    width: 490px;
     height: max-content;
     padding: 40px;
     border: 2px solid #2B2E33;
@@ -61,6 +63,16 @@
   }
 
   &__body {
+
+    &.wrapper_btns {
+      width: 100%;
+      height: max-content;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 45px;
+    }
     &__wrapper {
         display: flex;
         flex-direction: column;
@@ -69,6 +81,10 @@
         margin-bottom: 30px;
         &:last-child {
             margin-bottom: 45px;
+        }
+
+        &.file__wrapper {
+          position: relative;
         }
     }
     &__label {
@@ -80,7 +96,20 @@
         @include input_style;
         &.small__input {
             width: 200px;
-
+        }
+        &.file__body {
+          height: 40px;
+          border: 2px solid #363A40;
+          width: 170px;
+          z-index: 9;
+          position: relative;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          color:  $main-white-color;
+          font-size: 16px;
+          line-height: 19px;
         }
 
     }
@@ -92,4 +121,10 @@
     }
 
   }
+}
+
+.file {
+  position: absolute;
+  left: 36px;
+  bottom: 8px;
 }
