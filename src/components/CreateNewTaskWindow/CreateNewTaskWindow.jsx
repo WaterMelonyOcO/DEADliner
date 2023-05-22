@@ -1,17 +1,20 @@
-import style from './style.scss';
+import './style.scss';
 import { RedBtn } from '../RedBtn/RedBtn';
 import plus_icon from '../../images/new_tag_icon.png';
 
-
-export function CreateNewTaskWindow ({onClose}) {
+export function CreateNewTaskWindow ({active, setActive}) {
+// function fuck () {
+//     setActive(false);
+//     console.log("CLOSE PLS");
+// }
     return (
-        <div className="modal__overlay">
+        <div className={active ? "modal__overlay active" : "modal__overlay"} >
             <div className="modal__dialog">
                 <div className="modal__content">
                 <div className="modal__header">
                     <h1 className='modal__header__title'>Создание задания</h1>
-                    <span className="modal__close" onClick={onClose}>
-                    </span>
+                    {/* <button className="modal__close" onClick={fuck}>
+                    </button> */}
                 </div>
                 <form className="modal__body" id="createTask">
                     <span className='modal__body__wrapper'>
@@ -20,7 +23,7 @@ export function CreateNewTaskWindow ({onClose}) {
                     </span>
                     <span className='modal__body__wrapper'>
                     <label className='modal__body__label' for="description">Описание</label>
-                    <textarea className='modal__body__textarea' name="description"> Введи описание задания (не более 300 символов)</textarea>
+                    <textarea className='modal__body__textarea' name="description" placeholder="Введи описание задания (не более 300 символов)"></textarea>
                     </span>
 
                     <span className='modal__body__wrapper'>
@@ -43,10 +46,10 @@ export function CreateNewTaskWindow ({onClose}) {
                     <label className='modal__body__label' for="name"> Название</label>
                     <input type='text' className='modal__body__input' name="name"/> */}
             <span className='modal__body wrapper_btns'>
-                    <RedBtn text="Отменить задание" outline="outline"/>
+                    <RedBtn text="Отменить задание" outline="outline" onClick={() => setActive(false)}/>
                     <RedBtn text="Создать задание"/>
             </span>      
-                      
+
                 </form>
                 </div>
             </div>
