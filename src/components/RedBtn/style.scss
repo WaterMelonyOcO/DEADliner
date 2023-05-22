@@ -1,7 +1,6 @@
 @import '../../style.scss';
 
-
-.button {
+@mixin button__body {
     width: max-content;
     height: max-content;
     background-color: $second-red-color;
@@ -9,6 +8,31 @@
     border: 2px solid $second-red-color;
     border-radius: 20px;
     text-decoration: none;
+}
+@mixin button__hover {
+    opacity: 0.9;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+.button {
+    @include button__body;
+
+    &-outline {
+        @include button__body;
+        background-color: $dark-gray_for_pannel-color;
+        color: $second-red-color;
+
+        &__text {
+            color: $second-red-color;
+        }
+
+        &:hover {
+            @include button__hover;
+        }
+
+    }
+
     &__text {
         color: $main-white-color;
         font-weight: 600;
@@ -16,8 +40,6 @@
         line-height: 19px;
     }
     &:hover {
-        opacity: 0.9;
-        cursor: pointer;
-        transition: 0.3s;
+       @include button__hover;
     }
 }

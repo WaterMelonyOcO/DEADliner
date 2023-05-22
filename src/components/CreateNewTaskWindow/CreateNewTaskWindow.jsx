@@ -39,7 +39,7 @@ export function CreateNewTaskWindow ({onClose}) {
                     <label className='modal__body__label' for="name"> Название</label>
                     <input type='text' className='modal__body__input' name="name"/> */}
 
-                    <RedBtn text="Отменить задание"/>
+                    <RedBtn text="Отменить задание" outline="outline"/>
                     <RedBtn text="Создать задание"/>
                 
                 </form>

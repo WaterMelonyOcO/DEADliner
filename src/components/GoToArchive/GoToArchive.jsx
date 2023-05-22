@@ -1,23 +1,30 @@
+/* eslint-disable no-undef */
+
 import { RedBtn } from '../RedBtn/RedBtn';
 import style from './style.scss';
 
 export function GoToArchive (props) {
     // console.log(getCompTask);
-
+//     return <div className='wrapper'>
+//     <h4 className='wrapper__text'>
+//     Вау, никогда не видел <span>таких</span> маленьких цифр. Ты смог выполнить<strong>{` ${1} заданий`}</strong>.  
+//     </h4>
+//     <RedBtn text="Перейти в архив" path="/archive"/>
+// </div>
     
-    // const compliteTasks = todo.getComplitedTask();
-    // console.log(compliteTasks)
+    const {compliteTasks} = todo.getCompTask();
+    console.log(compliteTasks)
 
-    const NumberOfComplete = props.NumberOfComplete;
+    // const { NumberOfComplete } = props.NumberOfComplete;
  
-    switch (NumberOfComplete) {
-        case '<=10' :
+    switch (true) {
+        case (compliteTasks <=10) :
             return  <Less10Tasks />;
-        case '>=11 && <=20' :
+        case (compliteTasks >=11 && compliteTasks <=20) :
             return <UpTo20Tasks />;
-        case '>=21 && <=30' :
+        case (compliteTasks >=21 && compliteTasks <=30) :
             return <UpTo30Tasks />;
-        case '>=31 && <=40' :
+        case (compliteTasks >=31 && compliteTasks <=40) :
             return <UpTo40Tasks />;
         default:
         return null;

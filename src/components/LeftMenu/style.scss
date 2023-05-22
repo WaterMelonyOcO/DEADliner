@@ -48,6 +48,7 @@
             color: $main-red-color;
             @include links;
             background-color: $dark_for_cheked_tasks-color;
+            cursor: default;
         }
         &:hover {
             background-color: $dark_for_cheked_tasks-color;
