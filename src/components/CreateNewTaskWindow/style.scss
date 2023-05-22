@@ -26,6 +26,7 @@
     align-items: center;
     justify-content: center;
     display: none;
+    cursor: default;
 
     &.active {
       display: flex;
@@ -49,6 +50,8 @@
   &__header {
     display: flex;
     justify-content: space-between;
+    width: 100%;
+    height: 100%;
 
     &__title {
         font-size: 20px;
@@ -136,4 +139,38 @@
 
 .close-window {
   display: none;
+}
+
+
+/*new file btn*/
+.inputfile-box {
+  position: relative;
+}
+
+.inputfile {
+  display: none;
+}
+
+.container {
+  display: inline-block;
+  width: 100%;
+}
+
+.file-box {
+  display: inline-block;
+  width: 100%;
+  padding: 5px 0px 5px 5px;
+  box-sizing: border-box;
+  height: calc(2rem - 2px);
+  margin-left: 80px;
+}
+
+.file-button {
+  background: black;
+  color: white;
+  padding: 5px;
+  position: absolute;
+  border: 1px solid;
+  top: 0px;
+  left: 0px;
 }
