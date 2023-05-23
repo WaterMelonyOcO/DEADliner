@@ -11,6 +11,8 @@ contextBridge.exposeInMainWorld("todo", {
     getTask: (id) => TL.getTask(id),
     //получени массива всех выполненных заданий
     getCompTask: () => TL.getComplitedTask(),
+    //возвращает все НЕ выполненые задания
+    getUnCompTask: () => TL.getUnComplitedTask(),
     //меняет состояние задания на "выполненно"
     toCompTask: (id) => TL.toCompliteTask(id),
     //удвляет задание из БД

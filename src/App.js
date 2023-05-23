@@ -1,10 +1,12 @@
 /* eslint-disable no-undef */
+
 import logo from './logo.svg';
 import './App.css';
 
 console.log(todo.get())
 
 function App() {
+  todo.getCompTask()
   return (
     <div className="App">
       <header className="App-header">
