@@ -1,5 +1,5 @@
 const { contextBridge, ipcRenderer } = require("electron");
-const { TL } = require("./backend/todo");
+const { TL } = require("../public/backend/todo");
 const { DateTime } = require("luxon")
 const { sep } = require("path");
 

@@ -20,7 +20,7 @@ function paths() {
         soundPath: this.soundPath = resolve(__dirname, "..", "..", "media", 'sound'),
         phrasesPath: this.phrasesPath = resolve(this.homeDir, "phrases.json"),
         tagsDataPath: this.tagsDataPath = resolve(this.homeDir, "tags.json"),
-        frontPath: this.frontPath = resolve(__dirname, "..", "..", "src", 'preload.js')
+        frontPath: this.frontPath = resolve(__dirname, '..', '..',"src", 'preload.js')
     }
 }
 
