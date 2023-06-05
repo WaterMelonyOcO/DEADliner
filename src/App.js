@@ -5,6 +5,7 @@ import { LeftMenu } from './components/LeftMenu/LeftMenu';
 import { TopMenu } from './components/TopMenu/TopMenu';
 import { CreateTaskBtn } from './components/CreateTaskBtn/CreateTaskBtn';
 import { ArchivePage } from './pages/ArchivePage/ArchivePage';
+import { AboutProgersPage } from './pages/AboutProgersPage/AboutProgersPage';
 
 function App() {
   return (<div className='body'>
@@ -25,6 +26,7 @@ function App() {
             
             <Route path='/' element={<MainPage />}></Route>
             <Route path='/archive' element={<ArchivePage />}></Route>
+            <Route path='/about' element={<AboutProgersPage />}></Route>
             </Routes>
         </div>
 

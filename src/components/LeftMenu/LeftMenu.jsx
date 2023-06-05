@@ -19,22 +19,27 @@ export function LeftMenu () {
         {
           name: "Главная",
           selectedIcon: main_icon_red,
-          defaultIcon: main_icon
+          defaultIcon: main_icon,
+          path: '/'
         },
         {
           name: "Архив",
           selectedIcon: archive_icon_red,
           defaultIcon: archive_icon,
+          path: '/archive'
         },
         {
           name: "О разработчиках",
           selectedIcon: info_icon_red,
           defaultIcon: info_icon,
+          path: '/about'
         },
         {
           name: "Сообщить об ошибке",
           selectedIcon: error_icon_red,
           defaultIcon: error_icon,
+          /* тут ссылка на never gonna give you up */
+          path: ''
         },
       ];
 
@@ -48,7 +53,7 @@ export function LeftMenu () {
 
             <nav className='head__nav'>
                 {links.map((link, index) => (
-                    <a
+                    <Link to={link.path}
                     key={index}
                     className={selectedLink === index ? "head__link_selected" : "head__link"}
                     onClick={() => handleClick(index)}
@@ -61,7 +66,7 @@ export function LeftMenu () {
                         className='head__link__img'
                     />
                     {link.name}
-                    </a>
+                    </Link>
                 ))}
             </nav>
 

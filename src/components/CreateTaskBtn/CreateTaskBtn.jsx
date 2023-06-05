@@ -9,6 +9,46 @@ export function CreateTaskBtn() {
     с формой заполнения таски */
     const [modalActive, setModalActive] = useState(false);
     
+    // const createTaskBtn = document.querySelector("#createTaskBtn");
+    // createTaskBtn.addEventListener('click', () => {
+    //     let name = document.getElementById("name");
+    //     let description = document.getElementById("description");
+    //     let deadline_time = document.getElementById("deadline");
+    //     let files = document.getElementById("files");
+
+    //    // console.log(`name: ${name}, desc: ${description}, deadline: ${deadline_time}, files: ${files} `)
+    // })
+    
+    //    let timeVal = time.value.split("T").join(" ");
+
+    //     let cr = todo.add(name.value, time.value, null, file);
+    //     if (cr) console.log("ev")
+    // // })
+    // let name = document.getElementById("name");
+    // let description = document.getElementById("description");
+    // let deadline_time = document.getElementById("deadline");
+    // let files = document.getElementById("files");
+    // function createTask() {    
+    // }
+
+    /*тут код для кнопки списка с тегами */
+    const [selectedOptions, setSelectedOptions] = useState([]);
+
+    const handleOptionChange = (event) => {
+        const selectedOption = event.target.value;
+        setSelectedOptions([...selectedOptions, selectedOption]);
+    }
+    const renderSelectedOptions = () => {
+        if (selectedOptions.length === 0) {
+            return <p>No options selected</p>
+        } else {
+            return (<ul>
+                {selectedOptions.map((option, index) => (
+                    <li key={index}>{option}</li>
+                ))}
+            </ul>)
+        }
+    }
     return(
     
     <>
@@ -19,29 +59,53 @@ export function CreateTaskBtn() {
      <CreateNewWindowComponent active={modalActive} setActive={setModalActive} title="Создание задания">
      <form className="modal__body" id="createTask">
              <span className='modal__body__wrapper'>
-             <label className='modal__body__label' for="name"> Название</label>
-                 <input type='text' className='modal__body__input' name="name" placeholder='Введи название задания'/>
+             <label className='modal__body__label' htmlFor="name"> Название</label>
+                 <input type='text' className='modal__body__input' name="name" id="name" placeholder='Введи название задания'/>
              </span>
              <span className='modal__body__wrapper'>
-             <label className='modal__body__label' for="description">Описание</label>
-             <textarea className='modal__body__textarea' name="description" placeholder="Введи описание задания (не более 300 символов)"></textarea>
+             <label className='modal__body__label' htmlFor="description">Описание</label>
+             <textarea className='modal__body__textarea' name="description" id="description" placeholder="Введи описание задания (не более 300 символов)"></textarea>
              </span>
 
              <span className='modal__body__wrapper'>
-             <label className='modal__body__label' for="deadline">Дата завершения</label>
-             <input type="date" className='modal__body__input small__input' name="deadline"/>
+             <label className='modal__body__label' htmlFor="deadline">Дата завершения</label>
+             <input type="date" className='modal__body__input small__input' name="deadline" id="deadline"/>
              </span>
 
         {/*тут кастомное вложение */}
              <span className='modal__body__wrapper file__wrapper'>
              <p className='modal__body__label'>Вложение</p>
-             <label className='modal__body__input small__input file__body'>Добавить файл</label>
-                 <input type='file' name="files" className='file'/>
-             
+             <label className='modal__body__input small__input file__body' htmlFor='files_input'>Добавить файл</label>
+                 <input type='file' 
+                 name="files" 
+                 id="files_input"
+                 className='file'/>
              </span>
+
+                     {/*кнопка "добавить тег"*/}
+        <div>
+            <select onChange={handleOptionChange}>
+                <option value="" selected disabled hidden>
+                    Select an option
+                </option>
+                
+
+                <option value="tag1">
+                    Tag 1
+                </option>
+                <option value="tag2">
+                    Tag 2
+                </option>
+                <option value="tag3">
+                    Tag 3
+                </option>
+            </select>
+            {renderSelectedOptions()}
+        </div>
+
              <span className='modal__body wrapper_btns'>
-             <RedBtn text="Отменить задание" outline="outline" onClick={() => setModalActive(false)}/>
-             <RedBtn text="Создать задание"/>
+             <RedBtn text="Отменить создание" outline="outline" onClick={() => setModalActive(false)}/>
+             <RedBtn text="Создать задание" id="createTaskBtn" />
              </span>      
 
          </form>

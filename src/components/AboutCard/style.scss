@@ -1,0 +1,56 @@
+@import '../../style.scss';
+
+.aboutCard {
+    &__wrapper {
+        padding: 20px;
+        width: 500px;
+        height: max-content;
+        background-color: $dark-gray_for_pannel-color;
+        border-radius: 20px;
+        border:  2px solid $gray_for_border-color;
+
+        &__spans {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        &__text {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        &__icons {
+            display: flex;
+            gap: 15px;
+        }
+        &__link {
+            text-decoration: none;
+            width: 24px;
+            height: 24px;
+            background-color: $main-red-color;
+            
+            .style1 {
+
+            }
+            .style2 {
+
+            }
+            .style3 {
+
+            }
+        }
+    }
+    
+    &__title {
+        color:  $main-white-color;
+
+    }
+    &__subtitle {
+
+    }
+    &__text {
+        margin-top: 20px;
+    }
+    
+}
