@@ -19,7 +19,8 @@ function paths() {
         trayIcon: this.trayIcon = resolve(__dirname, "..", "..", "media", 'images', 'favicon.png'),
         soundPath: this.soundPath = resolve(__dirname, "..", "..", "media", 'sound'),
         phrasesPath: this.phrasesPath = resolve(this.homeDir, "phrases.json"),
-        tagsDataPath: this.tagsDataPath = resolve(this.homeDir, "tags.json")
+        tagsDataPath: this.tagsDataPath = resolve(this.homeDir, "tags.json"),
+        frontPath: this.frontPath = resolve(__dirname, '..', '..',"src", 'preload.js')
     }
 }
 
