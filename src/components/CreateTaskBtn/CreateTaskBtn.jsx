@@ -3,34 +3,29 @@ import icon_plus from '../../images/button-plus.png';
 import { CreateNewWindowComponent } from '../CreateNewWindowComponent/CreateNewWindowComponent';
 import { useState } from 'react';
 import { RedBtn } from '../RedBtn/RedBtn';
+// import todo from '../../preload';
 
 export function CreateTaskBtn() {
     /*тут функция onClick должна вызывать модальное окно 
     с формой заполнения таски */
     const [modalActive, setModalActive] = useState(false);
     
+    /*оставить код на будущее */
     // const createTaskBtn = document.querySelector("#createTaskBtn");
     // createTaskBtn.addEventListener('click', () => {
-    //     let name = document.getElementById("name");
-    //     let description = document.getElementById("description");
-    //     let deadline_time = document.getElementById("deadline");
-    //     let files = document.getElementById("files");
+    //     let name = document.getElementById("#name");
+    //     let description = document.getElementById("#description");
+    //     let time = document.getElementById("#deadline");
+    //     let files = document.getElementById("#files");
+
+    //     let timeVal = time.value.split("T").join(" ");
+
+    //     //  let cr = todo.add(name.value, description.value, time.value, null, files);
+    //     // if (cr) console.log("ev")
 
     //    // console.log(`name: ${name}, desc: ${description}, deadline: ${deadline_time}, files: ${files} `)
     // })
     
-    //    let timeVal = time.value.split("T").join(" ");
-
-    //     let cr = todo.add(name.value, time.value, null, file);
-    //     if (cr) console.log("ev")
-    // // })
-    // let name = document.getElementById("name");
-    // let description = document.getElementById("description");
-    // let deadline_time = document.getElementById("deadline");
-    // let files = document.getElementById("files");
-    // function createTask() {    
-    // }
-
     /*тут код для кнопки списка с тегами */
     const [selectedOptions, setSelectedOptions] = useState([]);
 
@@ -82,7 +77,7 @@ export function CreateTaskBtn() {
                  className='file'/>
              </span>
 
-                     {/*кнопка "добавить тег"*/}
+        {/*кнопка "добавить тег"*/}
         <div>
             <select onChange={handleOptionChange}>
                 <option value="" selected disabled hidden>

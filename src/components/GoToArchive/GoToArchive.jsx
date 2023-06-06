@@ -18,7 +18,7 @@ export function GoToArchive (props) {
     // const { NumberOfComplete } = props.NumberOfComplete;
  
     switch (true) {
-        case (compliteTasks <=10) :
+        case (compliteTasks >=0 && compliteTasks <=10) :
             return  <Less10Tasks />;
         case (compliteTasks >=11 && compliteTasks <=20) :
             return <UpTo20Tasks />;
