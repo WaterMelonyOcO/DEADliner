@@ -2,6 +2,10 @@
   "name": "deadliner",
   "version": "0.1.0",
   "private": true,
+  "jest": {
+    "verbose": true
+  },
+  "main":"./",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -20,6 +24,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "jtest": "jest ./tests/backend/**",
     "eject": "react-scripts eject",
     "electron:start": "concurrently -k \"cross-env BROWSER=none npm start\" \"wait-on http://127.0.0.1:3000 && electronmon .\"",
     "electron": "electron ."
@@ -48,6 +53,7 @@
     "electron": "^24.3.0",
     "electron-builder": "^23.6.0",
     "electronmon": "^2.0.2",
+    "jest": "^27.5.1",
     "wait-on": "^7.0.1"
   }
 }

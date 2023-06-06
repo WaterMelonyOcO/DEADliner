@@ -21,6 +21,7 @@ class TodoList {
             this.exempleDate = luxon.DateTime;
             // console.log(this.#TodoListArr);
             this.#TodoListArr = JSON.parse(readFileSync(paths.db_path));
+            console.log(this.#TodoListArr);
             this.#tegsArr = JSON.parse(readFileSync(paths.tagsDataPath));
             this.#TodoListArr.forEach((i) => {//проверяю есть ли свойво "выполнено"
                 if (i.isDone === undefined) i.isDone = 0;
@@ -40,16 +41,16 @@ class TodoList {
             this.#TodoListArr.forEach((i) => this.#checkDEAD(i.deadline));
         })
 
-        ipcRenderer.on("deleteTask", (_, data) => {
-            if (data) {
-                this.deleteTask(data)
-            }
-        })
+        // ipcRenderer.on("deleteTask", (_, data) => {
+        //     if (data) {
+        //         this.deleteTask(data)
+        //     }
+        // })
 
-        ipcRenderer.on("trayAddTask", (ev, taskName, deadline, description, files) => {
-            console.log("todo event", taskName, deadline, description, files);
-            this.addTask(taskName, deadline, description, files);
-        })
+        // ipcRenderer.on("trayAddTask", (ev, taskName, deadline, description, files) => {
+        //     console.log("todo event", taskName, deadline, description, files);
+        //     this.addTask(taskName, deadline, description, files);
+        // })
 
         console.log("un|complited");
         console.log(this.#complitedTodoList);
@@ -59,7 +60,7 @@ class TodoList {
     /**
      * 
      * @param {String} taskName 
-     * @param {String} deadline @description дата должна быть в формате DD:MM:YYYYThh:mm
+     * @param {String} deadline @description дата должна быть в формате YYTT-MM-DDThh:mm
      * @param {String} description 
      * @param {Array[String || path]} files 
      * @param {Array} tags
@@ -75,8 +76,8 @@ class TodoList {
             [this.deadline, this.cTime] = this.#verifyTime(deadline)
         }
         catch (err) {
-            // console.log(err);
-            ipcRenderer.send("exceptError", err)
+            console.log(err);
+            // ipcRenderer.send("exceptError", err)
             return false;
         }
         let newTaskFolder = join(paths.filesFolder, `task_${v4()}`)
@@ -105,11 +106,11 @@ class TodoList {
         writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
 
         console.log(this.#TodoListArr);
-        ipcRenderer.send("createNotafication", {
-            title: "добавление задание", description: `У лукоморья дуб зелёный;
-        Златая цепь на дубе том:
-        И днём и ночью кот учёный
-        Всё ходит по цепи кругом;`})
+        // ipcRenderer.send("createNotafication", {
+        //     title: "добавление задание", description: `У лукоморья дуб зелёный;
+        // Златая цепь на дубе том:
+        // И днём и ночью кот учёный
+        // Всё ходит по цепи кругом;`})
 
         console.log("un|complited");
         console.log(this.#uncomplitedTodoList);
@@ -358,17 +359,20 @@ class TodoList {
 
         try {
             const deletedTask = this.#TodoListArr.splice(TaskIndex, 1);
-            this.removeTaskFolder(deletedTask[0].filePath);
             this.#uncomplitedTodoList.splice(TaskIndex, 1);
             // this.#complitedTodoList.splice(TaskIndex, 1);
             writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => {
                 if (err)
                     console.log(err.message, "write error");
             });
+            this.removeTaskFolder(deletedTask[0].filePath);
             return true
         } catch (error) {
             console.log("error on delete task\n", error);
-            ipcRenderer("excetError", new Error("DELETE_TASK_ERROR"))
+            if( error.message === 'removed file not exist'){
+                return true
+            }
+            // ipcRenderer("excetError", new Error("DELETE_TASK_ERROR"))
             return false;
         }
         finally {
@@ -504,5 +508,15 @@ class TodoList {
     }
 }
 
-const TL = new TodoList()
-module.exports.TL = TL
+let instance;
+
+function TodoFactory(){
+    if ( !instance ){
+        instance = new TodoList()
+        delete instance.constructor;
+    }
+
+    return instance
+}
+
+module.exports = TodoFactory()

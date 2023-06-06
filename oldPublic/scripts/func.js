@@ -17,6 +17,7 @@ function addTask() {
   let time = document.querySelector("#deadline");
   let file = Object.values(document.querySelector("#data").files);
   let timeVal = time.value.split("T").join(" ");
+  console.log(timeVal);
 
   let cr = todo.add(name.value, time.value, null, file);
   if (cr) content.appendChild(new TaskItem(cr, name.value, timeVal, file.map((i) => i.name)))

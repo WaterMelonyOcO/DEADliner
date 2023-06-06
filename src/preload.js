@@ -1,8 +1,9 @@
 const { contextBridge, ipcRenderer } = require("electron");
-const { TL } = require("../public/backend/todo");
+const TL = require("../public/backend/todo");
 const { DateTime } = require("luxon")
 const { sep } = require("path");
 
+// const TL = new TodoList()
 
 contextBridge.exposeInMainWorld("todo", {
     //добавление задания
