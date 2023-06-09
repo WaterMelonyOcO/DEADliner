@@ -1,5 +1,6 @@
 const TL = require("../../../public/backend/todo");
 let delRes;
+let tegRes;
 //test singleton
 test("test on singlton", ()=>{
     let a = TL;
@@ -23,4 +24,22 @@ test("delete task", ()=>{
 
     a.deleteTask(delRes);
     expect( a ).toBeTruthy()
+})
+
+
+//create tegs
+test("create teg", ()=>{
+    let a = TL;
+
+    let res = a.createTeg('dfd', "345", 'ddodoododdood')
+    expect(typeof res === "object").toBeTruthy()
+    tegRes = res
+
+})
+
+test("remove teg", ()=>{
+    let b = TL;
+
+    let res = b.removeTeg(tegRes)
+    expect(res).toBeTruthy()
 })

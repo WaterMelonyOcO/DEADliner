@@ -1,6 +1,6 @@
 const { v4 } = require("uuid")
 const luxon = require("luxon")
-const { writeFile, readFileSync, mkdir, existsSync, copyFileSync, rmSync, mkdirSync, readdirSync, rm } = require("fs");
+const { writeFile, readFileSync, mkdir, existsSync, copyFileSync, rmSync, mkdirSync, readdirSync, rm, writeFileSync } = require("fs");
 const { ipcRenderer, shell } = require("electron");
 const clock = require("date-events");
 const { paths } = require("./paths");
@@ -103,7 +103,7 @@ class TodoList {
 
         this.#TodoListArr.push(Task);
         this.#uncomplitedTodoList.push(Task)
-        writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
+        this.#writeData(paths.db_path, JSON.stringify(this.#TodoListArr));
 
         console.log(this.#TodoListArr);
         // ipcRenderer.send("createNotafication", {
@@ -132,7 +132,7 @@ class TodoList {
      * @param {string} color 
      * @return {object}
      * @description создаёт тег и возвращает его
-     * @example {id, name, color}
+     * @example return {id, name, color}
      */
     createTeg(name, color = '', value = '') {
 
@@ -152,7 +152,7 @@ class TodoList {
         console.log(Teg);
         console.log("CREATE TEG " + Teg.name);
         this.#tegsArr.push(Teg)
-        writeFile(paths.tagsDataPath, JSON.stringify(this.#tegsArr), (err) => { if (err) console.log(err.message, "write error"); });
+        this.#writeData(paths.tagsDataPath, JSON.stringify(this.#tegsArr));
         return Teg;
     }
 
@@ -180,7 +180,7 @@ class TodoList {
             return
         }
         this.#tegsArr.push(...tegsToAdd)
-        writeFile(paths.tagsDataPath, JSON.stringify(this.#tegsArr), (err) => { if (err) console.log(err.message, "write error"); });
+        this.#writeData(paths.tagsDataPath, JSON.stringify(this.#tegsArr));
         return tegsToAdd
     }
 
@@ -215,7 +215,7 @@ class TodoList {
 
         uniquTegs = uniquTegs.filter((i) => i !== undefined);
         innerTags.tegs.push(...uniquTegs);
-        writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
+        this.#writeData(paths.db_path, JSON.stringify(this.#TodoListArr));
     }
 
     /**
@@ -236,7 +236,7 @@ class TodoList {
         }
 
         innerTags.push(teg);
-        writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
+        this.#writeData(paths.db_path, JSON.stringify(this.#TodoListArr));
     }
 
     /**
@@ -260,7 +260,7 @@ class TodoList {
         }
 
         Task.tegs.splice(delTagInd, 1);
-        writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
+        this.#writeData(paths.db_path, JSON.stringify(this.#TodoListArr));
         console.log("****************");
         return true;
     }
@@ -269,12 +269,14 @@ class TodoList {
      * 
      * @param {number} id 
      * @description удаляет тег, вообще
+     * @returns {boolean}
      */
     removeTeg(tegName) {
         const index = this.#tegsArr.findIndex((i) => i.name === tegName)
         const delTag = this.#tegsArr.splice(index, 1)[0]
         console.log('[LOG] remove tag ' + delTag.name);
-        writeFile(paths.tagsDataPath, JSON.stringify(this.#tegsArr), (err) => { if (err) console.log(err.message, "write error"); });
+        this.#writeData(paths.tagsDataPath, JSON.stringify(this.#tegsArr));
+        return true;
     }
 
     /**
@@ -304,7 +306,7 @@ class TodoList {
 
         compTask.isDone = 1;
         this.#complitedTodoList.push(compTask);
-        writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
+        this.#writeData(paths.db_path, JSON.stringify(this.#TodoListArr));
         console.log(`задание ${compTask} перенесено в выполненые`);
     }
 
@@ -340,7 +342,7 @@ class TodoList {
         this.#TodoListArr[TaskIndex].name = this.taskName;
         this.#TodoListArr[TaskIndex].description = this.taskDesc;
         this.#TodoListArr[TaskIndex].tags = this.tags;
-        writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => { if (err) console.log(err.message, "write error"); });
+        this.#writeData(paths.db_path, JSON.stringify(this.#TodoListArr));
         console.log(this.#TodoListArr);
         console.log("un|complited");
         console.log(this.#uncomplitedTodoList);
@@ -361,10 +363,7 @@ class TodoList {
             const deletedTask = this.#TodoListArr.splice(TaskIndex, 1);
             this.#uncomplitedTodoList.splice(TaskIndex, 1);
             // this.#complitedTodoList.splice(TaskIndex, 1);
-            writeFile(paths.db_path, JSON.stringify(this.#TodoListArr), (err) => {
-                if (err)
-                    console.log(err.message, "write error");
-            });
+            this.#writeData(paths.db_path, JSON.stringify(this.#TodoListArr));
             this.removeTaskFolder(deletedTask[0].filePath);
             return true
         } catch (error) {
@@ -497,6 +496,10 @@ class TodoList {
             }
         }
         return false;
+    }
+
+    #writeData(path, data){
+        writeFileSync(path, data, (err) => { if (err) console.log(err.message, "write error"); });
     }
 
     #randomPhrase() {
