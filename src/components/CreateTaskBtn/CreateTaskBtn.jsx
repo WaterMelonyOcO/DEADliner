@@ -33,13 +33,23 @@ export function CreateTaskBtn() {
         const selectedOption = event.target.value;
         setSelectedOptions([...selectedOptions, selectedOption]);
     }
+    /*удаление последнего элемента из массива - pop() 
+    const deleteOption = () => {
+        
+        setSelectedOptions.pop([...selectedOptions]);
+    }
+*/
+
     const renderSelectedOptions = () => {
         if (selectedOptions.length === 0) {
             return <p>No options selected</p>
         } else {
             return (<ul>
                 {selectedOptions.map((option, index) => (
-                    <li key={index}>{option}</li>
+                    <li key={index}>{option}
+                    {/* <button onClick={() => deleteOption()}>X</button> */}
+                    </li>
+                    
                 ))}
             </ul>)
         }
@@ -86,7 +96,8 @@ export function CreateTaskBtn() {
                 
 
                 <option value="tag1">
-                    Tag 1
+                    Tag 1 
+                    
                 </option>
                 <option value="tag2">
                     Tag 2
